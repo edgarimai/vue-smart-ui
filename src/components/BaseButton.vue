@@ -50,10 +50,14 @@ defineEmits(['click'])
 
     <slot />
 
-    <!-- If no prefix slot, spinner goes to the right -->
-    <div v-if="loading && !$slots.prefix" class="spinner"></div>
+    <!-- If suffix slot exists (icon), spinner replaces the icon -->
+    <template v-if="$slots.suffix">
+      <div v-if="loading" class="spinner"></div>
+      <slot v-else name="suffix" />
+    </template>
 
-    <slot name="suffix" />
+    <!-- If no prefix slot, spinner goes to the right -->
+    <div v-if="loading && !$slots.prefix && !$slots.suffix" class="spinner"></div>
   </button>
 </template>
 

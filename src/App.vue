@@ -69,6 +69,13 @@ const saveData = async () => {
         :loading="isLoading && isLoadingEnabled"
         >Secondary variant</BaseButton
       >
+      <!-- Gray button -->
+      <BaseButton
+        variant="gray"
+        @click="handleSaveWithLoading"
+        :loading="isLoading && isLoadingEnabled"
+        >Gray variant</BaseButton
+      >
       <!-- Outline button -->
       <BaseButton
         variant="outline"

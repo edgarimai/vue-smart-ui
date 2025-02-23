@@ -1,18 +1,29 @@
 // Variáveis com valores padrão que podem ser sobrescritos
 :root {
+  --font-family-base: 'Roboto', sans-serif;
+
+  //Buttons variables
   --button-primary-bg: #3b82f6;
   --button-primary-hover: #2563eb;
   --button-primary-text: #ffffff;
 
-  --button-secondary-bg: #9ca3af;
-  --button-secondary-hover: #6b7280;
+  --button-secondary-bg: #9333ea;
+  --button-secondary-hover: #7e22ce;
   --button-secondary-text: #ffffff;
+
+  --button-gray-bg: #f3f4f6;
+  --button-gray-hover: #e5e7eb;
+  --button-gray-text: #374151;
 
   --button-outline-border: #d1d5db;
   --button-outline-hover: #f3f4f6;
   --button-outline-text: #374151;
 
-  --button-focus-outline: #3b82f6;
-
   --button-ghost-text: #374151;
+
+  --button-focus-outline: #3b82f6;
+}
+
+body {
+  font-family: var(--font-family-base);
 }

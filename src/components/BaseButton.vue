@@ -3,7 +3,7 @@ defineProps({
   variant: {
     type: String,
     default: 'primary',
-    validator: (value) => ['primary', 'secondary', 'outline', 'ghost'].includes(value),
+    validator: (value) => ['primary', 'secondary', 'gray', 'outline', 'ghost'].includes(value),
   },
   size: {
     type: String,
@@ -90,6 +90,15 @@ defineEmits(['click'])
 
     &:hover:not(:disabled) {
       background-color: var(--button-secondary-hover);
+    }
+  }
+
+  &--gray {
+    background-color: var(--button-gray-bg);
+    color: var(--button-gray-text);
+
+    &:hover:not(:disabled) {
+      background-color: var(--button-gray-hover);
     }
   }
 

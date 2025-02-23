@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": false,
   "description": "A collection of Vue 3 components for building modern web applications",
+  "author": "Edgar Imai",
   "engines": {
     "node": ">=20.12.2"
   },

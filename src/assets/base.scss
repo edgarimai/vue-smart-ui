@@ -30,6 +30,27 @@
   --popup-warning-color: #f59e0b;
   --popup-error-color: #ef4444;
   --popup-border-color: #d1d5db;
+
+  // Toasts variables
+  --toast-default-bg: #9ca3af;
+  --toast-border-color: #e5e7eb;
+  --toast-text-color: #1f2937;
+
+  --toast-info-bg: #eff6ff;
+  --toast-info-color: #3b82f6;
+  --toast-info-text: #1e40af;
+
+  --toast-success-bg: #f0fdf4;
+  --toast-success-color: #22c55e;
+  --toast-success-text: #15803d;
+
+  --toast-warning-bg: #fefce8;
+  --toast-warning-color: #f59e0b;
+  --toast-warning-text: #92400e;
+
+  --toast-error-bg: #fee2e2;
+  --toast-error-color: #ef4444;
+  --toast-error-text: #991b1b;
 }
 
 body {

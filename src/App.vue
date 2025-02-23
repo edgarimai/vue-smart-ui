@@ -1,6 +1,7 @@
 <script setup>
 import { reactive } from 'vue'
-import { BaseButton, BasePopup } from './components'
+import { BaseButton, BasePopup, ToastsContainer } from './components'
+import { useToast } from '@/composables/toast'
 
 const pageState = reactive({
   isLoading: false,
@@ -11,7 +12,22 @@ const pageState = reactive({
     position: 'center',
     show: false,
   },
+  toast: {
+    variant: 'success',
+    position: 'top-right',
+    duration: 3000,
+    message: 'This is a toast message',
+  },
 })
+
+const toast = useToast()
+const showToast = () => {
+  toast[pageState.toast.variant](pageState.toast.message, {
+    title: 'Operação Concluída',
+    duration: pageState.toast.duration,
+    position: pageState.toast.position,
+  })
+}
 
 const handleSaveWithLoading = async () => {
   pageState.isLoading = true
@@ -240,6 +256,41 @@ const saveData = async () => {
         <span>&times;</span>
       </template>
     </BasePopup>
+  </div>
+
+  <div class="toast-container">
+    <h2>Toasts</h2>
+
+    <div class="container">
+      <h3>Toast configuration</h3>
+      <div class="select-group">
+        <label>Variant:</label>
+        <select v-model="pageState.toast.variant">
+          <option value="success">Success</option>
+          <option value="error">Error</option>
+          <option value="warning">Warning</option>
+          <option value="info">Info</option>
+        </select>
+      </div>
+      <div class="select-group">
+        <label>Position:</label>
+        <select v-model="pageState.toast.position">
+          <option value="top-right">Top Right</option>
+          <option value="top-left">Top Left</option>
+          <option value="top-center">Top Center</option>
+          <option value="bottom-right">Bottom Right</option>
+          <option value="bottom-left">Bottom Left</option>
+          <option value="bottom-center">Bottom Center</option>
+        </select>
+      </div>
+      <div class="select-group">
+        <label>Duration:</label>
+        <input type="number" v-model="pageState.toast.duration" />
+      </div>
+      <BaseButton variant="primary" @click="showToast">Show Toast</BaseButton>
+    </div>
+
+    <ToastsContainer />
   </div>
 </template>
 

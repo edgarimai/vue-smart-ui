@@ -1,16 +1,24 @@
 <script setup>
-import { ref } from 'vue'
-import BaseButton from './components/BaseButton.vue'
+import { reactive } from 'vue'
+import { BaseButton, BasePopup } from './components'
 
-const isLoading = ref(false)
-const isLoadingEnabled = ref(false)
+const pageState = reactive({
+  isLoading: false,
+  isLoadingEnabled: false,
+  popup: {
+    variant: 'default',
+    size: 'medium',
+    position: 'center',
+    show: false,
+  },
+})
 
 const handleSaveWithLoading = async () => {
-  isLoading.value = true
+  pageState.isLoading = true
   try {
     await saveData()
   } finally {
-    isLoading.value = false
+    pageState.isLoading = false
   }
 }
 
@@ -23,82 +31,87 @@ const saveData = async () => {
 
 <template>
   <div class="button-container">
-    <h2>Loading on button</h2>
+    <h2>Buttons</h2>
+    <h3>Loading on button</h3>
     <div class="container">
       <label class="checkbox-label">
-        <input type="checkbox" v-model="isLoadingEnabled" class="checkbox-input" />
+        <input type="checkbox" v-model="pageState.isLoadingEnabled" class="checkbox-input" />
         Enable loading state
       </label>
     </div>
 
-    <h2>Buttons sizes</h2>
+    <h3>Buttons sizes</h3>
     <div class="container">
       <!-- Small button -->
       <BaseButton
         size="small"
         @click="handleSaveWithLoading"
-        :loading="isLoading && isLoadingEnabled"
+        :loading="pageState.isLoading && pageState.isLoadingEnabled"
         >Small button</BaseButton
       >
       <!-- Medium button -->
-      <BaseButton @click="handleSaveWithLoading" :loading="isLoading && isLoadingEnabled" n
-        >Button</BaseButton
+      <BaseButton
+        size="medium"
+        @click="handleSaveWithLoading"
+        :loading="pageState.isLoading && pageState.isLoadingEnabled"
       >
+        Medium button
+      </BaseButton>
       <!-- Large button -->
       <BaseButton
         size="large"
         @click="handleSaveWithLoading"
-        :loading="isLoading && isLoadingEnabled"
+        :loading="pageState.isLoading && pageState.isLoadingEnabled"
         >Large button</BaseButton
       >
     </div>
 
-    <h2>Button variants</h2>
+    <h3>Button variants</h3>
     <div class="container">
       <!-- Primary button -->
       <BaseButton
         variant="primary"
         @click="handleSaveWithLoading"
-        :loading="isLoading && isLoadingEnabled"
+        :loading="pageState.isLoading && pageState.isLoadingEnabled"
         >Primary variant</BaseButton
       >
       <!-- Secondary button -->
       <BaseButton
         variant="secondary"
         @click="handleSaveWithLoading"
-        :loading="isLoading && isLoadingEnabled"
+        :loading="pageState.isLoading && pageState.isLoadingEnabled"
         >Secondary variant</BaseButton
       >
       <!-- Gray button -->
       <BaseButton
         variant="gray"
         @click="handleSaveWithLoading"
-        :loading="isLoading && isLoadingEnabled"
+        :loading="pageState.isLoading && pageState.isLoadingEnabled"
         >Gray variant</BaseButton
       >
       <!-- Outline button -->
       <BaseButton
         variant="outline"
         @click="handleSaveWithLoading"
-        :loading="isLoading && isLoadingEnabled"
+        :loading="pageState.isLoading && pageState.isLoadingEnabled"
         >Outline variant</BaseButton
       >
       <!-- Ghost button -->
       <BaseButton
         variant="ghost"
         @click="handleSaveWithLoading"
-        :loading="isLoading && isLoadingEnabled"
+        :loading="pageState.isLoading && pageState.isLoadingEnabled"
         >Ghost variant</BaseButton
       >
     </div>
 
-    <h2>Button with icons</h2>
+    <h3>Button with icons</h3>
     <div class="container">
       <!-- Button with icon left-->
       <BaseButton
         variant="primary"
         @click="handleSaveWithLoading"
-        :loading="isLoading && isLoadingEnabled"
+        :loading="pageState.isLoading && pageState.isLoadingEnabled"
       >
         Icon left
         <template #prefix>
@@ -123,7 +136,7 @@ const saveData = async () => {
       <BaseButton
         variant="primary"
         @click="handleSaveWithLoading"
-        :loading="isLoading && isLoadingEnabled"
+        :loading="pageState.isLoading && pageState.isLoadingEnabled"
       >
         Icon right
         <template #suffix>
@@ -145,19 +158,94 @@ const saveData = async () => {
       </BaseButton>
     </div>
 
-    <h2>Others</h2>
+    <h3>Others</h3>
     <div class="container">
       <!-- Disabled button -->
-      <BaseButton disabled> Disabled button </BaseButton>
+      <BaseButton disabled>Disabled button</BaseButton>
 
       <!-- Button that takes full width -->
-      <BaseButton block style="margin: 1rem 0"> Block button </BaseButton>
+      <BaseButton block style="margin: 1rem 0">Block button</BaseButton>
     </div>
+  </div>
+  <div class="popup-container">
+    <h2>Popups</h2>
+
+    <h3>Popup configuration</h3>
+    <div class="container">
+      <!-- Variant selector -->
+      <div class="select-group">
+        <label>Variant:</label>
+        <select v-model="pageState.popup.variant">
+          <option value="default">Default</option>
+          <option value="info">Info</option>
+          <option value="success">Success</option>
+          <option value="warning">Warning</option>
+          <option value="error">Error</option>
+        </select>
+      </div>
+
+      <!-- Size selector -->
+      <div class="select-group">
+        <label>Size:</label>
+        <select v-model="pageState.popup.size">
+          <option value="small">Small</option>
+          <option value="medium">Medium</option>
+          <option value="large">Large</option>
+        </select>
+      </div>
+
+      <!-- Position selector -->
+      <div class="select-group">
+        <label>Position:</label>
+        <select v-model="pageState.popup.position">
+          <option value="center">Center</option>
+          <option value="top">Top</option>
+          <option value="bottom">Bottom</option>
+          <option value="left">Left</option>
+          <option value="right">Right</option>
+        </select>
+      </div>
+
+      <BaseButton variant="primary" @click="pageState.popup.show = true"> Open Popup </BaseButton>
+    </div>
+
+    <BasePopup
+      v-model="pageState.popup.show"
+      :variant="pageState.popup.variant"
+      :size="pageState.popup.size"
+      :position="pageState.popup.position"
+    >
+      <template #header>
+        <p style="font-size: 1.2rem; font-weight: bold; text-align: center; margin-block: 0.5rem">
+          Configured Popup
+        </p>
+      </template>
+
+      <div class="popup-content">
+        <p>Current configuration:</p>
+        <ul>
+          <li>Variant: {{ pageState.popup.variant }}</li>
+          <li>Size: {{ pageState.popup.size }}</li>
+          <li>Position: {{ pageState.popup.position }}</li>
+        </ul>
+      </div>
+
+      <template #footer>
+        <div style="text-align: center">
+          <BaseButton @click="pageState.popup.show = false">Close</BaseButton>
+        </div>
+      </template>
+
+      <template #close>
+        <span>&times;</span>
+      </template>
+    </BasePopup>
   </div>
 </template>
 
 <style scoped>
-h2 {
+h2,
+h3 {
   text-align: center;
   margin-bottom: 1rem;
 }

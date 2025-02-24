@@ -2,6 +2,10 @@
 import { provide, ref } from 'vue'
 
 const props = defineProps({
+  id: {
+    type: String,
+    default: '',
+  },
   multiple: {
     type: Boolean,
     default: false,
@@ -36,7 +40,7 @@ provide('accordion', {
 </script>
 
 <template>
-  <div class="base-accordion" :class="`base-accordion--${variant}`">
+  <div class="base-accordion" :class="`base-accordion--${variant}`" :id="id">
     <slot />
   </div>
 </template>

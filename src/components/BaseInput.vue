@@ -3,6 +3,10 @@ import { ref, computed, useSlots, onMounted } from 'vue'
 
 const slots = useSlots()
 const props = defineProps({
+  id: {
+    type: String,
+    default: '',
+  },
   modelValue: {
     type: [String, Number],
     default: '',
@@ -370,6 +374,7 @@ onMounted(() => {
       </div>
 
       <input
+        :id="id"
         ref="inputRef"
         :type="type"
         :value="inputValue"

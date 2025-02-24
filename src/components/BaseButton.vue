@@ -1,5 +1,9 @@
 <script setup>
 defineProps({
+  id: {
+    type: String,
+    default: '',
+  },
   variant: {
     type: String,
     default: 'primary',
@@ -29,6 +33,7 @@ defineEmits(['click'])
 
 <template>
   <button
+    :id="id"
     class="base-button"
     :class="[
       `base-button--${variant}`,

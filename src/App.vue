@@ -7,6 +7,8 @@ import {
   BaseDropdown,
   BaseSkeleton,
   BaseInfiniteScroll,
+  BaseAccordion,
+  BaseAccordionItem,
 } from './components'
 import { useToast } from '@/composables/toast'
 
@@ -26,6 +28,10 @@ const pageState = reactive({
     message: 'This is a toast message',
   },
   dropdown: {
+    show: false,
+    variant: 'default',
+  },
+  accordion: {
     show: false,
     variant: 'default',
   },
@@ -376,6 +382,25 @@ const loadMore = async () => {
 
     <hr />
 
+    <div class="accordion-container">
+      <h2>Accordion</h2>
+      <BaseAccordion multiple variant="bordered">
+        <BaseAccordionItem title="Section 1">
+          <p>Section 1 content</p>
+        </BaseAccordionItem>
+
+        <BaseAccordionItem title="Section 2" disabled> Section 2 content </BaseAccordionItem>
+
+        <BaseAccordionItem title="Section 3">
+          <template #title>
+            <span class="custom-title">Custom title</span>
+          </template>
+          Section 3 content
+        </BaseAccordionItem>
+      </BaseAccordion>
+    </div>
+
+    <hr />
     <div class="infinite-scroll-container">
       <h2>Infinite Scroll</h2>
       <BaseInfiniteScroll

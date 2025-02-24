@@ -71,6 +71,12 @@
   --skeleton-text-height: 1rem;
   --skeleton-rounded-radius: 0.375rem;
   --skeleton-shine: rgba(255, 255, 255, 0.3);
+
+  // Accordions variables
+  --accordion-border-color: #e5e7eb;
+  --accordion-header-color: #111827;
+  --accordion-hover-bg: #f9fafb;
+  --accordion-focus-ring: #3b82f6;
 }
 
 body {

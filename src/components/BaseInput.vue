@@ -73,6 +73,10 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  mask: {
+    type: [String, Object],
+    default: null,
+  },
 })
 
 const emit = defineEmits(['update:modelValue', 'focus', 'blur', 'input', 'validation', 'mounted'])
@@ -163,13 +167,125 @@ const validate = (value) => {
 
 // Internal value to track input
 const inputValue = computed({
-  get: () => props.modelValue,
+  get: () => {
+    if (props.mask === 'currency' && props.modelValue) {
+      return maskPatterns.currency.format(props.modelValue)
+    }
+    return props.modelValue
+  },
   set: (value) => emit('update:modelValue', value),
 })
 
+// Built-in mask patterns
+const maskPatterns = {
+  phone: {
+    patterns: ['(##) ####-####', '(##) #####-####'],
+    match: (value) => {
+      const numbers = value.replace(/\D/g, '')
+      return numbers.length <= 10 ? 0 : 1
+    },
+  },
+  currency: {
+    pattern: 'currency',
+    format: (value) => {
+      if (!value) return ''
+
+      const number = typeof value === 'string' ? parseFloat(value.replace(/\D/g, '')) / 100 : value
+
+      return new Intl.NumberFormat('pt-BR', {
+        style: 'currency',
+        currency: 'BRL',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }).format(number)
+    },
+    parse: (value) => {
+      // Remove currency symbol, spaces and separators, then convert to float
+      const numericValue = value.replace(/[^\d]/g, '')
+      return parseFloat(numericValue) / 100
+    },
+  },
+  date: '##/##/####',
+  cpf: '###.###.###-##',
+  cnpj: '##.###.###/####-##',
+  cep: '#####-###',
+}
+
+// Modified applyMask to handle currency
+const applyMask = (value, maskDef) => {
+  if (!value) return value
+
+  // Handle currency mask
+  if (maskDef === 'currency' || maskDef.pattern === 'currency') {
+    const parsedValue = maskPatterns.currency.parse(value)
+    return maskPatterns.currency.format(parsedValue)
+  }
+
+  // Handle simple string pattern
+  if (typeof maskDef === 'string') {
+    return applySimpleMask(value, maskDef)
+  }
+
+  // Handle multiple patterns
+  if (maskDef.patterns) {
+    const patternIndex = maskDef.match(value)
+    return applySimpleMask(value, maskDef.patterns[patternIndex])
+  }
+
+  return value
+}
+
+// Simple mask application logic
+const applySimpleMask = (value, pattern) => {
+  if (!pattern) return value
+
+  const numbers = value.replace(/\D/g, '')
+  const chars = numbers.split('')
+  let output = ''
+  let patternIndex = 0
+
+  for (let i = 0; i < pattern.length && chars[i]; i++) {
+    if (pattern[patternIndex] === '#') {
+      output += chars[i]
+      patternIndex++
+    } else {
+      output += pattern[patternIndex]
+      patternIndex++
+      i--
+    }
+  }
+
+  return output
+}
+
+// Modified handleInput to handle currency input
 const handleInput = (event) => {
-  inputValue.value = event.target.value
-  emit('input', event)
+  let newValue = event.target.value
+
+  if (props.mask) {
+    const maskDef =
+      typeof props.mask === 'string' ? maskPatterns[props.mask] || props.mask : props.mask.pattern
+
+    // Apply mask
+    newValue = applyMask(newValue, maskDef)
+
+    // Update input value directly to show mask
+    if (inputRef.value) {
+      inputRef.value.value = newValue
+    }
+  }
+
+  // For currency, emit the numeric value with proper decimal places
+  if (props.mask === 'currency') {
+    const parsedValue = maskPatterns.currency.parse(newValue)
+    inputValue.value = parsedValue
+    emit('update:modelValue', parsedValue)
+  } else {
+    inputValue.value = newValue
+    emit('update:modelValue', newValue)
+  }
+
+  emit('input', { ...event, target: { ...event.target, value: newValue } })
 
   if (props.validateOnInput) {
     const isValid = validate(inputValue.value)
@@ -230,6 +346,24 @@ const isRequired = computed(() => {
   })
 })
 
+// Modified maxLength to handle multiple patterns
+const maxLength = computed(() => {
+  if (!props.mask) return undefined
+
+  const maskDef =
+    typeof props.mask === 'string' ? maskPatterns[props.mask] || props.mask : props.mask.pattern
+
+  if (typeof maskDef === 'string') {
+    return maskDef.length
+  }
+
+  if (maskDef.patterns) {
+    return Math.max(...maskDef.patterns.map((pattern) => pattern.length))
+  }
+
+  return undefined
+})
+
 // Emit mounted event with component reference
 onMounted(() => {
   emit('mounted', {
@@ -262,6 +396,7 @@ onMounted(() => {
         :readonly="readonly"
         :required="isRequired"
         :aria-required="isRequired"
+        :maxlength="maxLength"
         class="base-input__field"
         @input="handleInput"
         @focus="handleFocus"

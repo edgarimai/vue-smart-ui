@@ -40,7 +40,8 @@ const pageState = reactive({
     username: '',
     password: '',
     email: '',
-    amount: '',
+    price: '',
+    phone: '',
   },
   infiniteScroll: {
     items: [],
@@ -482,12 +483,22 @@ const registerInput = (name, ref) => {
         ]"
       />
 
-      <!-- Validation with events -->
+      <!-- Phone mask -->
       <BaseInput
         v-model="pageState.input.phone"
         label="Phone"
         :rules="['required', 'pattern: ^\\d{10}$']"
         @mounted="(ref) => registerInput('phone', ref)"
+        mask="phone"
+        placeholder="(00) 00000-0000"
+      />
+
+      <!-- Currency mask -->
+      <BaseInput
+        v-model="pageState.input.price"
+        label="Price"
+        mask="currency"
+        placeholder="R$ 0,00"
       />
       <BaseButton variant="primary" @click="handleSubmit">Submit</BaseButton>
     </div>

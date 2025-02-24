@@ -60,6 +60,17 @@
   --dropdown-dark-bg: #374151;
   --dropdown-dark-border-color: #4b5563;
   --dropdown-dark-item-hover-bg: #4b5563;
+
+  // Skeletons variables
+  --skeleton-bg: #e5e7eb;
+  --skeleton-rectangle-height: 1.5rem;
+  --skeleton-circle-size: 3rem;
+  --skeleton-heading-height: 2rem;
+  --skeleton-button-height: 2.5rem;
+  --skeleton-button-width: 8rem;
+  --skeleton-text-height: 1rem;
+  --skeleton-rounded-radius: 0.375rem;
+  --skeleton-shine: rgba(255, 255, 255, 0.3);
 }
 
 body {

@@ -1,6 +1,13 @@
 <script setup>
 import { reactive } from 'vue'
-import { BaseButton, BasePopup, ToastsContainer, BaseDropdown, BaseSkeleton } from './components'
+import {
+  BaseButton,
+  BasePopup,
+  ToastsContainer,
+  BaseDropdown,
+  BaseSkeleton,
+  BaseInfiniteScroll,
+} from './components'
 import { useToast } from '@/composables/toast'
 
 const pageState = reactive({
@@ -21,6 +28,12 @@ const pageState = reactive({
   dropdown: {
     show: false,
     variant: 'default',
+  },
+  infiniteScroll: {
+    items: [],
+    page: 1,
+    loading: false,
+    hasMore: true,
   },
 })
 
@@ -46,6 +59,33 @@ const saveData = async () => {
   console.log('Saving data...')
   await new Promise((resolve) => setTimeout(resolve, 2000))
   console.log('Data saved!')
+}
+
+const loadMore = async () => {
+  pageState.infiniteScroll.loading = true
+
+  try {
+    // Simulate API call with timeout
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+
+    // Generate mock data
+    const newItems = Array.from({ length: 10 }, (_, i) => ({
+      id: pageState.infiniteScroll.items.length + i + 1,
+      title: `Item ${pageState.infiniteScroll.items.length + i + 1}`,
+    }))
+
+    pageState.infiniteScroll.items.push(...newItems)
+    pageState.infiniteScroll.page++
+
+    // Simulate running out of items after 5 pages
+    if (pageState.infiniteScroll.page > 5) {
+      pageState.infiniteScroll.hasMore = false
+    }
+  } catch (error) {
+    console.error('Error loading more items:', error)
+  } finally {
+    pageState.infiniteScroll.loading = false
+  }
 }
 </script>
 
@@ -332,6 +372,34 @@ const saveData = async () => {
           <td><BaseSkeleton variant="text" width="150px" /></td>
         </tr>
       </table>
+    </div>
+
+    <hr />
+
+    <div class="infinite-scroll-container">
+      <h2>Infinite Scroll</h2>
+      <BaseInfiniteScroll
+        :loading="pageState.infiniteScroll.loading"
+        :disabled="!pageState.infiniteScroll.hasMore"
+        @load-more="loadMore"
+      >
+        <!-- Items list -->
+        <div class="items-grid">
+          <div v-for="item in pageState.infiniteScroll.items" :key="item.id" class="item">
+            {{ item.title }}
+          </div>
+        </div>
+
+        <!-- Loading custom -->
+        <template #loading>
+          <div class="custom-loader">Loading more items...</div>
+        </template>
+
+        <!-- End message -->
+        <template #disabled>
+          <div class="end-message">There are no more items to load</div>
+        </template>
+      </BaseInfiniteScroll>
     </div>
   </div>
 </template>

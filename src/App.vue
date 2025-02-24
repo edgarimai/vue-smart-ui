@@ -1,6 +1,6 @@
 <script setup>
 import { reactive } from 'vue'
-import { BaseButton, BasePopup, ToastsContainer, BaseDropdown } from './components'
+import { BaseButton, BasePopup, ToastsContainer, BaseDropdown, BaseSkeleton } from './components'
 import { useToast } from '@/composables/toast'
 
 const pageState = reactive({
@@ -304,6 +304,34 @@ const saveData = async () => {
           <div class="base-dropdown-item" style="color: red">Logout</div>
         </BaseDropdown>
       </div>
+    </div>
+
+    <hr />
+
+    <div class="skeleton-container">
+      <h2>Skeleton</h2>
+      <div class="container">
+        <!-- Avatar -->
+        <BaseSkeleton variant="circle" width="5rem" height="5rem" />
+
+        <!-- Title -->
+        <BaseSkeleton variant="heading" width="60%" />
+
+        <!-- Text -->
+        <BaseSkeleton variant="text" />
+        <BaseSkeleton variant="text" />
+        <BaseSkeleton variant="text" />
+
+        <!-- Button -->
+        <BaseSkeleton variant="button" rounded />
+      </div>
+      <table>
+        <tr v-for="n in 5" :key="n">
+          <td><BaseSkeleton variant="text" width="100px" /></td>
+          <td><BaseSkeleton variant="text" width="200px" /></td>
+          <td><BaseSkeleton variant="text" width="150px" /></td>
+        </tr>
+      </table>
     </div>
   </div>
 </template>

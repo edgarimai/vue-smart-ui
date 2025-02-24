@@ -9,6 +9,7 @@ import {
   BaseInfiniteScroll,
   BaseAccordion,
   BaseAccordionItem,
+  BaseInput,
 } from './components'
 import { useToast } from '@/composables/toast'
 
@@ -34,6 +35,12 @@ const pageState = reactive({
   accordion: {
     show: false,
     variant: 'default',
+  },
+  input: {
+    username: '',
+    password: '',
+    email: '',
+    amount: '',
   },
   infiniteScroll: {
     items: [],
@@ -401,6 +408,44 @@ const loadMore = async () => {
     </div>
 
     <hr />
+
+    <div class="input-container">
+      <h2>Inputs</h2>
+      <!-- Default input -->
+      <BaseInput
+        v-model="pageState.input.username"
+        label="Username"
+        placeholder="Enter your username"
+      />
+
+      <!-- Input with icons -->
+      <BaseInput
+        v-model="pageState.input.password"
+        type="password"
+        label="Password"
+        prefix-icon="icon-lock"
+        suffix-icon="icon-eye"
+      />
+
+      <!-- Filled variant with error -->
+      <BaseInput
+        v-model="pageState.input.email"
+        variant="filled"
+        label="Email"
+        state="error"
+        error-message="Please enter a valid email"
+        required
+      />
+
+      <!-- Custom prefix/suffix -->
+      <BaseInput v-model="pageState.input.amount">
+        <template #prefix>$</template>
+        <template #suffix>.00</template>
+      </BaseInput>
+    </div>
+
+    <hr />
+
     <div class="infinite-scroll-container">
       <h2>Infinite Scroll</h2>
       <BaseInfiniteScroll

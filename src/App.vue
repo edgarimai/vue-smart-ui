@@ -1,5 +1,5 @@
 <script setup>
-import { reactive } from 'vue'
+import { reactive, ref } from 'vue'
 import {
   BaseButton,
   BasePopup,
@@ -98,6 +98,37 @@ const loadMore = async () => {
     console.error('Error loading more items:', error)
   } finally {
     pageState.infiniteScroll.loading = false
+  }
+}
+
+const formRefs = ref({})
+
+const validateForm = () => {
+  let isValid = true
+  console.log(formRefs.value)
+  // Validate all registered inputs
+  Object.values(formRefs.value).forEach((input) => {
+    console.log(input)
+    if (input?.validate && !input.validate()) {
+      isValid = false
+    }
+  })
+
+  return isValid
+}
+
+const handleSubmit = () => {
+  if (validateForm()) {
+    console.log('Form submitted:', pageState.input)
+  } else {
+    console.log('Form has errors')
+  }
+}
+
+const registerInput = (name, ref) => {
+  console.log(name, ref)
+  if (ref) {
+    formRefs.value[name] = ref
   }
 }
 </script>
@@ -411,37 +442,54 @@ const loadMore = async () => {
 
     <div class="input-container">
       <h2>Inputs</h2>
-      <!-- Default input -->
+      <!-- Basic required validation -->
       <BaseInput
-        v-model="pageState.input.username"
-        label="Username"
-        placeholder="Enter your username"
+        v-model="pageState.input.name"
+        label="Name"
+        :rules="['required']"
+        @mounted="(ref) => registerInput('name', ref)"
       />
 
-      <!-- Input with icons -->
+      <!-- Email validation -->
+      <BaseInput
+        v-model="pageState.input.email"
+        label="Email"
+        :rules="['required', 'email']"
+        @mounted="(ref) => registerInput('email', ref)"
+      />
+
+      <!-- Multiple rules with custom messages -->
       <BaseInput
         v-model="pageState.input.password"
         type="password"
         label="Password"
-        prefix-icon="icon-lock"
-        suffix-icon="icon-eye"
+        :rules="[
+          { required: true, message: 'Password is required' },
+          { min: 8, message: 'Password must be at least 8 characters' },
+        ]"
+        @mounted="(ref) => registerInput('password', ref)"
       />
 
-      <!-- Filled variant with error -->
+      <!-- Custom validator -->
       <BaseInput
-        v-model="pageState.input.email"
-        variant="filled"
-        label="Email"
-        state="error"
-        error-message="Please enter a valid email"
-        required
+        v-model="pageState.input.username"
+        label="Username"
+        :rules="[
+          {
+            validator: (value) => /^[a-z0-9]+$/.test(value),
+            message: 'Username can only contain lowercase letters and numbers',
+          },
+        ]"
       />
 
-      <!-- Custom prefix/suffix -->
-      <BaseInput v-model="pageState.input.amount">
-        <template #prefix>$</template>
-        <template #suffix>.00</template>
-      </BaseInput>
+      <!-- Validation with events -->
+      <BaseInput
+        v-model="pageState.input.phone"
+        label="Phone"
+        :rules="['required', 'pattern: ^\\d{10}$']"
+        @mounted="(ref) => registerInput('phone', ref)"
+      />
+      <BaseButton variant="primary" @click="handleSubmit">Submit</BaseButton>
     </div>
 
     <hr />

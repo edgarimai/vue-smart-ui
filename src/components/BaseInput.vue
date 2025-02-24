@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, useSlots } from 'vue'
+import { ref, computed, useSlots, onMounted } from 'vue'
 
 const slots = useSlots()
 const props = defineProps({
@@ -57,26 +57,124 @@ const props = defineProps({
     type: String,
     default: null,
   },
+  rules: {
+    type: Array,
+    default: () => [],
+  },
+  validateOnBlur: {
+    type: Boolean,
+    default: true,
+  },
+  validateOnInput: {
+    type: Boolean,
+    default: false,
+  },
+  name: {
+    type: String,
+    default: '',
+  },
 })
 
-const emit = defineEmits(['update:modelValue', 'focus', 'blur', 'input'])
+const emit = defineEmits(['update:modelValue', 'focus', 'blur', 'input', 'validation', 'mounted'])
 
 const inputRef = ref(null)
 const isFocused = ref(false)
+const error = ref('')
 
 const inputClasses = computed(() => ({
   'base-input': true,
   [`base-input--${props.variant}`]: true,
-  [`base-input--${props.state}`]: props.state,
+  [`base-input--${inputState.value}`]: inputState.value,
   'base-input--disabled': props.disabled,
   'base-input--focused': isFocused.value,
   'base-input--with-prefix': props.prefixIcon || slots.prefix,
   'base-input--with-suffix': props.suffixIcon || slots.suffix,
 }))
 
+// Built-in validators
+const validators = {
+  required: (value) => ({
+    valid: !!value?.toString().trim(),
+    message: 'This field is required',
+  }),
+  email: (value) => ({
+    valid: !value || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
+    message: 'Please enter a valid email',
+  }),
+  min: (value, min) => ({
+    valid: !value || value.length >= min,
+    message: `Must be at least ${min} characters`,
+  }),
+  max: (value, max) => ({
+    valid: !value || value.length <= max,
+    message: `Must be no more than ${max} characters`,
+  }),
+  pattern: (value, pattern) => ({
+    valid: !value || new RegExp(pattern).test(value),
+    message: 'Invalid format',
+  }),
+}
+
+// Validation logic
+const validate = (value) => {
+  if (!props.rules.length) return true
+
+  for (const rule of props.rules) {
+    // Handle string rules (e.g., 'required', 'email')
+    if (typeof rule === 'string') {
+      const validator = validators[rule]
+      if (validator) {
+        const result = validator(value)
+        if (!result.valid) {
+          error.value = result.message
+          return false
+        }
+      }
+      continue
+    }
+
+    // Handle object rules (e.g., { required: true, message: 'Custom message' })
+    if (typeof rule === 'object') {
+      const [validatorName, config] = Object.entries(rule)[0]
+      const validator = validators[validatorName]
+
+      if (validator) {
+        const result = validator(value, config)
+        if (!result.valid) {
+          error.value = rule.message || result.message
+          return false
+        }
+      }
+
+      // Handle custom validator function
+      if (typeof rule.validator === 'function') {
+        const isValid = rule.validator(value)
+        if (!isValid) {
+          error.value = rule.message || 'Invalid value'
+          return false
+        }
+      }
+    }
+  }
+
+  error.value = ''
+  return true
+}
+
+// Internal value to track input
+const inputValue = computed({
+  get: () => props.modelValue,
+  set: (value) => emit('update:modelValue', value),
+})
+
 const handleInput = (event) => {
-  emit('update:modelValue', event.target.value)
+  inputValue.value = event.target.value
   emit('input', event)
+
+  if (props.validateOnInput) {
+    const isValid = validate(inputValue.value)
+    emit('validation', { valid: isValid, error: error.value })
+  }
 }
 
 const handleFocus = (event) => {
@@ -87,14 +185,57 @@ const handleFocus = (event) => {
 const handleBlur = (event) => {
   isFocused.value = false
   emit('blur', event)
+
+  if (props.validateOnBlur) {
+    const isValid = validate(inputValue.value)
+    emit('validation', { valid: isValid, error: error.value })
+  }
 }
 
 const focus = () => {
   inputRef.value?.focus()
 }
 
-defineExpose({
-  focus,
+// Computed state based on validation
+const inputState = computed(() => {
+  if (error.value) return 'error'
+  return props.state
+})
+
+// Computed message based on validation
+const displayMessage = computed(() => {
+  if (error.value) return error.value
+  return props.errorMessage || props.helperText
+})
+
+// Public validation method
+const validateField = () => {
+  const isValid = validate(inputValue.value)
+  emit('validation', { valid: isValid, error: error.value, name: props.name })
+  return isValid
+}
+
+// Computed to check if field is required
+const isRequired = computed(() => {
+  // Check prop required
+  if (props.required) return true
+
+  // Check rules for required validation
+  return props.rules.some((rule) => {
+    if (rule === 'required') return true
+    if (typeof rule === 'object') {
+      return rule.required || Object.keys(rule)[0] === 'required'
+    }
+    return false
+  })
+})
+
+// Emit mounted event with component reference
+onMounted(() => {
+  emit('mounted', {
+    validate: validateField,
+    focus,
+  })
 })
 </script>
 
@@ -102,7 +243,7 @@ defineExpose({
   <div :class="inputClasses">
     <label v-if="label" class="base-input__label">
       {{ label }}
-      <span v-if="required" class="base-input__required">*</span>
+      <span v-if="isRequired" class="base-input__required" aria-hidden="true">*</span>
     </label>
 
     <div class="base-input__wrapper">
@@ -115,11 +256,12 @@ defineExpose({
       <input
         ref="inputRef"
         :type="type"
-        :value="modelValue"
+        :value="inputValue"
         :placeholder="placeholder"
         :disabled="disabled"
         :readonly="readonly"
-        :required="required"
+        :required="isRequired"
+        :aria-required="isRequired"
         class="base-input__field"
         @input="handleInput"
         @focus="handleFocus"
@@ -134,9 +276,13 @@ defineExpose({
       </div>
     </div>
 
-    <!-- Helper/Error text -->
-    <div v-if="helperText || errorMessage" class="base-input__helper">
-      {{ errorMessage || helperText }}
+    <!-- Updated helper/error text -->
+    <div
+      v-if="displayMessage"
+      class="base-input__helper"
+      :class="{ 'base-input__helper--error': error }"
+    >
+      {{ displayMessage }}
     </div>
   </div>
 </template>

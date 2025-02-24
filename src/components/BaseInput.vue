@@ -124,7 +124,6 @@ const validate = (value) => {
   if (!props.rules.length) return true
 
   for (const rule of props.rules) {
-    // Handle string rules (e.g., 'required', 'email')
     if (typeof rule === 'string') {
       const validator = validators[rule]
       if (validator) {
@@ -137,7 +136,6 @@ const validate = (value) => {
       continue
     }
 
-    // Handle object rules (e.g., { required: true, message: 'Custom message' })
     if (typeof rule === 'object') {
       const [validatorName, config] = Object.entries(rule)[0]
       const validator = validators[validatorName]
@@ -150,7 +148,6 @@ const validate = (value) => {
         }
       }
 
-      // Handle custom validator function
       if (typeof rule.validator === 'function') {
         const isValid = rule.validator(value)
         if (!isValid) {
@@ -200,7 +197,6 @@ const maskPatterns = {
       }).format(number)
     },
     parse: (value) => {
-      // Remove currency symbol, spaces and separators, then convert to float
       const numericValue = value.replace(/[^\d]/g, '')
       return parseFloat(numericValue) / 100
     },
@@ -211,7 +207,6 @@ const maskPatterns = {
   cep: '#####-###',
 }
 
-// Modified applyMask to handle currency
 const applyMask = (value, maskDef) => {
   if (!value) return value
 
@@ -235,7 +230,6 @@ const applyMask = (value, maskDef) => {
   return value
 }
 
-// Simple mask application logic
 const applySimpleMask = (value, pattern) => {
   if (!pattern) return value
 
@@ -258,7 +252,6 @@ const applySimpleMask = (value, pattern) => {
   return output
 }
 
-// Modified handleInput to handle currency input
 const handleInput = (event) => {
   let newValue = event.target.value
 
@@ -266,16 +259,13 @@ const handleInput = (event) => {
     const maskDef =
       typeof props.mask === 'string' ? maskPatterns[props.mask] || props.mask : props.mask.pattern
 
-    // Apply mask
     newValue = applyMask(newValue, maskDef)
 
-    // Update input value directly to show mask
     if (inputRef.value) {
       inputRef.value.value = newValue
     }
   }
 
-  // For currency, emit the numeric value with proper decimal places
   if (props.mask === 'currency') {
     const parsedValue = maskPatterns.currency.parse(newValue)
     inputValue.value = parsedValue
@@ -312,31 +302,25 @@ const focus = () => {
   inputRef.value?.focus()
 }
 
-// Computed state based on validation
 const inputState = computed(() => {
   if (error.value) return 'error'
   return props.state
 })
 
-// Computed message based on validation
 const displayMessage = computed(() => {
   if (error.value) return error.value
   return props.errorMessage || props.helperText
 })
 
-// Public validation method
 const validateField = () => {
   const isValid = validate(inputValue.value)
   emit('validation', { valid: isValid, error: error.value, name: props.name })
   return isValid
 }
 
-// Computed to check if field is required
 const isRequired = computed(() => {
-  // Check prop required
   if (props.required) return true
 
-  // Check rules for required validation
   return props.rules.some((rule) => {
     if (rule === 'required') return true
     if (typeof rule === 'object') {
@@ -346,7 +330,6 @@ const isRequired = computed(() => {
   })
 })
 
-// Modified maxLength to handle multiple patterns
 const maxLength = computed(() => {
   if (!props.mask) return undefined
 
@@ -364,7 +347,6 @@ const maxLength = computed(() => {
   return undefined
 })
 
-// Emit mounted event with component reference
 onMounted(() => {
   emit('mounted', {
     validate: validateField,
@@ -403,7 +385,6 @@ onMounted(() => {
         @blur="handleBlur"
       />
 
-      <!-- Suffix slot/icon -->
       <div v-if="$slots.suffix || suffixIcon" class="base-input__suffix">
         <slot name="suffix">
           <i :class="suffixIcon"></i>
@@ -411,7 +392,6 @@ onMounted(() => {
       </div>
     </div>
 
-    <!-- Updated helper/error text -->
     <div
       v-if="displayMessage"
       class="base-input__helper"

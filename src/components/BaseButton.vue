@@ -42,7 +42,6 @@ defineEmits(['click'])
     :disabled="disabled || loading"
     @click="$emit('click', $event)"
   >
-    <!-- If prefix slot exists (icon), spinner replaces the icon -->
     <template v-if="$slots.prefix">
       <div v-if="loading" class="spinner"></div>
       <slot v-else name="prefix" />
@@ -50,19 +49,16 @@ defineEmits(['click'])
 
     <slot />
 
-    <!-- If suffix slot exists (icon), spinner replaces the icon -->
     <template v-if="$slots.suffix">
       <div v-if="loading" class="spinner"></div>
       <slot v-else name="suffix" />
     </template>
 
-    <!-- If no prefix slot, spinner goes to the right -->
     <div v-if="loading && !$slots.prefix && !$slots.suffix" class="spinner"></div>
   </button>
 </template>
 
 <style lang="scss">
-// Base styles with controlled specificity
 .base-button {
   display: inline-flex;
   align-items: center;

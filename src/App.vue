@@ -79,10 +79,8 @@ const loadMore = async () => {
   pageState.infiniteScroll.loading = true
 
   try {
-    // Simulate API call with timeout
     await new Promise((resolve) => setTimeout(resolve, 1000))
 
-    // Generate mock data
     const newItems = Array.from({ length: 10 }, (_, i) => ({
       id: pageState.infiniteScroll.items.length + i + 1,
       title: `Item ${pageState.infiniteScroll.items.length + i + 1}`,
@@ -91,7 +89,6 @@ const loadMore = async () => {
     pageState.infiniteScroll.items.push(...newItems)
     pageState.infiniteScroll.page++
 
-    // Simulate running out of items after 5 pages
     if (pageState.infiniteScroll.page > 5) {
       pageState.infiniteScroll.hasMore = false
     }
@@ -119,6 +116,8 @@ const validateForm = () => {
 }
 
 const handleSubmit = () => {
+  console.log(pageState.input)
+
   if (validateForm()) {
     console.log('Form submitted:', pageState.input)
   } else {

@@ -113,12 +113,10 @@ onUnmounted(() => {
 
 <template>
   <div ref="dropdownRef" class="base-dropdown">
-    <!-- Trigger slot -->
     <div class="base-dropdown__trigger" @click="emit('update:modelValue', !modelValue)">
       <slot name="trigger" />
     </div>
 
-    <!-- Dropdown menu -->
     <Transition name="dropdown">
       <div
         v-show="isVisible"

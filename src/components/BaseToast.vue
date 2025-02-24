@@ -50,9 +50,7 @@ const progressBarRef = ref(null)
 const progressWidth = ref('100%')
 const startProgress = () => {
   if (props.duration > 0) {
-    // Reset progress
     progressWidth.value = '100%'
-    // Force reflow to restart the animation
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         progressWidth.value = '0%'
@@ -81,12 +79,10 @@ const handleMouseLeave = () => {
 }
 
 onMounted(() => {
-  // Start entry animation
   setTimeout(() => {
     isVisible.value = true
   }, 100)
 
-  // Auto-close after defined duration
   if (props.duration > 0) {
     progressBarRef.value?.addEventListener('animationend', close, { once: true })
   }
@@ -113,7 +109,6 @@ onUnmounted(() => {
     @mouseenter="handleMouseEnter"
     @mouseleave="handleMouseLeave"
   >
-    <!-- Base icon based on variant -->
     <div class="base-toast__icon" v-if="$slots.icon">
       <slot name="icon" />
     </div>
@@ -121,7 +116,6 @@ onUnmounted(() => {
       <span :class="`icon-${variant}`" />
     </div>
 
-    <!-- Content -->
     <div class="base-toast__content">
       <div v-if="title" class="base-toast__title">{{ title }}</div>
       <div class="base-toast__message">
@@ -129,14 +123,12 @@ onUnmounted(() => {
       </div>
     </div>
 
-    <!-- Close button -->
     <button v-if="closable" class="base-toast__close" @click="close">
       <slot name="close-icon">
         <span>&times;</span>
       </slot>
     </button>
 
-    <!-- Progress bar -->
     <div
       v-if="duration > 0"
       ref="progressBarRef"
@@ -160,9 +152,9 @@ onUnmounted(() => {
   min-width: 300px;
   max-width: 400px;
   transition: all 0.3s ease;
-  overflow: hidden; // Para conter a barra de progresso
+  overflow: hidden;
 
-  // Variantes
+  // Variants
   &--default {
     background-color: var(--toast-default-bg, #fff);
     border: 1px solid var(--toast-border-color, #e5e7eb);

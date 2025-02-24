@@ -28,7 +28,6 @@ const toggleItem = (id) => {
   }
 }
 
-// Provide for items
 provide('accordion', {
   activeItems,
   toggleItem,

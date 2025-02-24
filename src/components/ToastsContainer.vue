@@ -5,7 +5,6 @@ import { BaseToast } from '@/components'
 
 const { toasts, removeToast } = useToast()
 
-// Group toasts by position
 const groupedToasts = computed(() => {
   const groups = {
     'top-right': [],
@@ -25,7 +24,6 @@ const groupedToasts = computed(() => {
 </script>
 
 <template>
-  <!-- Container for each position -->
   <template v-for="(group, position) in groupedToasts" :key="position">
     <div v-if="group.length" class="toasts-container" :class="`toasts-container--${position}`">
       <TransitionGroup name="toast">
@@ -46,11 +44,10 @@ const groupedToasts = computed(() => {
   z-index: 9999;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem; // Space between toasts
+  gap: 0.75rem;
   padding: 1rem;
-  pointer-events: none; // Allows clicking through the container
+  pointer-events: none;
 
-  // Each toast must have pointer-events: auto
   > * {
     pointer-events: auto;
   }

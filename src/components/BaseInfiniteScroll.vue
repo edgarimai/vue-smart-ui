@@ -75,12 +75,9 @@ onUnmounted(() => {
 
 <template>
   <div class="infinite-scroll">
-    <!-- Main content -->
     <slot />
 
-    <!-- Observed element to trigger -->
     <div ref="bottomElement" class="infinite-scroll__trigger">
-      <!-- Loading slot -->
       <slot name="loading" v-if="loading">
         <div class="infinite-scroll__loader">
           <div class="spinner"></div>
@@ -88,7 +85,6 @@ onUnmounted(() => {
         </div>
       </slot>
 
-      <!-- No more items slot -->
       <slot name="disabled" v-else-if="disabled">
         <div class="infinite-scroll__end">There are no more items to load</div>
       </slot>

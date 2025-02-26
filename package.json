@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/edgarimai/vue-components.git"
+    "url": "git+https://github.com/edgarimai/vue-smart-ui.git"
   },
   "keywords": [
     "vue",
@@ -30,6 +30,18 @@
   ],
   "license": "MIT",
   "type": "module",
+  "main": "./dist/vue-smart-ui.umd.js",
+  "module": "./dist/vue-smart-ui.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/vue-smart-ui.es.js",
+      "require": "./dist/vue-smart-ui.umd.js"
+    },
+    "./style.css": "./dist/style.css"
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -37,7 +49,7 @@
     "lint": "eslint . --fix",
     "format": "prettier --write src/"
   },
-  "dependencies": {
+  "peerDependencies": {
     "vue": "^3.5.13"
   },
   "devDependencies": {
@@ -49,6 +61,6 @@
     "prettier": "^3.4.2",
     "sass-embedded": "^1.83.4",
     "vite": "^6.0.11",
-    "vite-plugin-vue-devtools": "^7.7.1"
+    "vue": "^3.5.13"
   }
 }

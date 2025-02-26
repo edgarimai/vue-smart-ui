@@ -7,7 +7,7 @@ import BaseInput from './components/BaseInput.vue';
 import BasePopup from './components/BasePopup.vue';
 import BaseSkeleton from './components/BaseSkeleton.vue';
 import BaseToast from './components/BaseToast.vue';
-import BaseToastContainer from './components/BaseToastContainer.vue';
+import ToastsContainer from './components/ToastsContainer.vue';
 
 export default {
   install(app) {
@@ -20,7 +20,7 @@ export default {
     app.component('BasePopup', BasePopup);
     app.component('BaseSkeleton', BaseSkeleton);
     app.component('BaseToast', BaseToast);
-    app.component('BaseToastContainer', BaseToastContainer);
+    app.component('ToastsContainer', ToastsContainer);
   },
 };
 
@@ -34,5 +34,5 @@ export {
   BasePopup,
   BaseSkeleton,
   BaseToast,
-  BaseToastContainer,
+  ToastsContainer,
 };

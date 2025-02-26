@@ -26,7 +26,7 @@ defineProps({
 
 <template>
   <div
-    class="base-skeleton"
+    class="vsui base-skeleton"
     :class="[
       `base-skeleton--${variant}`,
       {

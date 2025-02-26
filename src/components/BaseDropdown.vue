@@ -112,7 +112,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div ref="dropdownRef" class="base-dropdown">
+  <div ref="dropdownRef" class="vsui base-dropdown">
     <div class="base-dropdown__trigger" @click="emit('update:modelValue', !modelValue)">
       <slot name="trigger" />
     </div>

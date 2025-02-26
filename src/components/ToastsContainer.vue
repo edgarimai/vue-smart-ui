@@ -25,7 +25,7 @@ const groupedToasts = computed(() => {
 
 <template>
   <template v-for="(group, position) in groupedToasts" :key="position">
-    <div v-if="group.length" class="toasts-container" :class="`toasts-container--${position}`">
+    <div v-if="group.length" class="vsui toasts-container" :class="`toasts-container--${position}`">
       <TransitionGroup name="toast">
         <BaseToast
           v-for="toast in group"

@@ -1,7 +1,7 @@
 // Variables with default values that can be overridden
 :root {
   --font-family-base: 'Roboto', sans-serif;
-  --font-size-base: 62.5%;
+  // --font-size-base: 62.5%;
 
   // Buttons variables
   --button-primary-bg: #3b82f6;
@@ -109,16 +109,6 @@
   --input-helper-font-size: 0.75rem;
 }
 
-.base-accordion,
-.base-accordion-item,
-.base-button,
-.base-dropdown,
-.base-infinite-scroll,
-.base-input,
-.base-popup,
-.base-skeleton,
-.base-toast,
-.toasts-container {
+.vsui {
   font-family: var(--font-family-base);
-  font-size: var(--font-size-base);
 }

@@ -64,7 +64,7 @@ onUnmounted(() => {
   <Teleport to="body">
     <div
       v-if="modelValue"
-      class="base-popup-overlay"
+      class="vsui base-popup-overlay"
       :class="[
         `base-popup-overlay--${position}`,
         $attrs.class, // Allows Tailwind classes to be added

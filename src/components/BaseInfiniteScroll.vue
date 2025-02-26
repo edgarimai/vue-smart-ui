@@ -74,7 +74,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="infinite-scroll">
+  <div class="vsui infinite-scroll">
     <slot />
 
     <div ref="bottomElement" class="infinite-scroll__trigger">

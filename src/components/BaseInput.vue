@@ -90,7 +90,7 @@ const isFocused = ref(false)
 const error = ref('')
 
 const inputClasses = computed(() => ({
-  'base-input': true,
+  'vsui base-input': true,
   [`base-input--${props.variant}`]: true,
   [`base-input--${inputState.value}`]: inputState.value,
   'base-input--disabled': props.disabled,

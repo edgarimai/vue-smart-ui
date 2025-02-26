@@ -100,7 +100,7 @@ onUnmounted(() => {
 <template>
   <div
     :data-toast-id="id"
-    class="base-toast"
+    class="vsui base-toast"
     :class="[
       `base-toast--${variant}`,
       `base-toast--${position}`,

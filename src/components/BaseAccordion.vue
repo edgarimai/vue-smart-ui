@@ -40,7 +40,7 @@ provide('accordion', {
 </script>
 
 <template>
-  <div class="base-accordion" :class="`base-accordion--${variant}`" :id="id">
+  <div class="vsui base-accordion" :class="`base-accordion--${variant}`" :id="id">
     <slot />
   </div>
 </template>

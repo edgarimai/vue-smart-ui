@@ -34,7 +34,7 @@ defineEmits(['click'])
 <template>
   <button
     :id="id"
-    class="base-button"
+    class="vsui base-button"
     :class="[
       `base-button--${variant}`,
       `base-button--${size}`,

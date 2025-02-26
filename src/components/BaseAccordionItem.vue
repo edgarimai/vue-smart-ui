@@ -52,7 +52,7 @@ watch(isActive, updateHeight)
 
 <template>
   <div
-    class="base-accordion-item"
+    class="vsui base-accordion-item"
     :class="[
       `base-accordion-item--${variant}`,
       {

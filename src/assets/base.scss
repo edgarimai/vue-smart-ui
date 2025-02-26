@@ -109,7 +109,16 @@
   --input-helper-font-size: 0.75rem;
 }
 
-body {
+.base-accordion,
+.base-accordion-item,
+.base-button,
+.base-dropdown,
+.base-infinite-scroll,
+.base-input,
+.base-popup,
+.base-skeleton,
+.base-toast,
+.toasts-container {
   font-family: var(--font-family-base);
   font-size: var(--font-size-base);
 }

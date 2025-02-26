@@ -4,19 +4,29 @@ A library of reusable and highly customizable Vue components.
 
 ## 🚀 How to Use
 
-1. Import the required components:
+1. Install the package
 
-```javascript
-import { BaseButton, BaseInput /* ... */ } from './components'
+```bash
+npm install vue-smart-ui
+# or
+yarn add vue-smart-ui
+# or
+pnpm add vue-smart-ui
 ```
 
-2. Register the components in your Vue application:
+2. Import the styles on main.js
 
 ```javascript
-app.component('BaseButton', BaseButton)
+import 'vue-smart-ui/style.css'
 ```
 
-3. Use the components in your templates:
+3. Import the required components
+
+```javascript
+import { BaseButton, BaseInput /* ... */ } from 'vue-smart-ui'
+```
+
+4. Use the components in your templates
 
 ```vue
 <template>

@@ -1,3 +1,5 @@
+import './assets/base.scss';
+
 import BaseAccordion from './components/BaseAccordion.vue';
 import BaseAccordionItem from './components/BaseAccordionItem.vue';
 import BaseButton from './components/BaseButton.vue';

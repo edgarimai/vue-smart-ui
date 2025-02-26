@@ -463,7 +463,9 @@ The cpomponents can be customized in multiple ways:
 
 ```css
 :root {
-    // Buttons variables
+  --font-family-base: 'Roboto', sans-serif;
+
+  // Buttons variables
   --button-primary-bg: #3b82f6;
   --button-primary-hover: #2563eb;
   --button-primary-text: #ffffff;
@@ -483,6 +485,10 @@ The cpomponents can be customized in multiple ways:
   --button-ghost-text: #374151;
 
   --button-focus-outline: #3b82f6;
+
+  --button-small-font-size: 0.875rem;
+  --button-medium-font-size: 1rem;
+  --button-large-font-size: 1.125rem;
 
   // Popups variables
   --popup-default-color: #64748b;
@@ -512,6 +518,9 @@ The cpomponents can be customized in multiple ways:
   --toast-error-bg: #fee2e2;
   --toast-error-color: #ef4444;
   --toast-error-text: #991b1b;
+
+  --toast-title-font-size: 1rem;
+  --toast-message-font-size: 0.75rem;
 
   // Dropdowns variables
   --dropdown-bg: #ffffff;
@@ -556,5 +565,9 @@ The cpomponents can be customized in multiple ways:
   --input-success-color: #22c55e;
   --input-error-color: #ef4444;
   --input-warning-color: #f59e0b;
+
+  --input-label-font-size: 0.875rem;
+  --input-field-font-size: 0.875rem;
+  --input-helper-font-size: 0.75rem;
 }
 ```

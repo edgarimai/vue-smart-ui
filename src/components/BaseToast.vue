@@ -199,10 +199,11 @@ onUnmounted(() => {
   &__title {
     font-weight: 600;
     margin-bottom: 0.25rem;
+    font-size: var(--toast-title-font-size);
   }
 
   &__message {
-    font-size: 0.875rem;
+    font-size: var(--toast-message-font-size);
   }
 
   &__close {

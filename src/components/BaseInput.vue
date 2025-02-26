@@ -415,7 +415,7 @@ onMounted(() => {
 
   // Label styles
   &__label {
-    font-size: 0.875rem;
+    font-size: var(--input-label-font-size);
     font-weight: 500;
     color: var(--input-label-color, #374151);
   }
@@ -436,7 +436,7 @@ onMounted(() => {
   &__field {
     width: 100%;
     padding: 0.625rem 0.75rem;
-    font-size: 0.875rem;
+    font-size: var(--input-field-font-size);
     border-radius: 0.375rem;
     border: 1px solid var(--input-border-color, #d1d5db);
     background-color: var(--input-bg, white);
@@ -481,7 +481,7 @@ onMounted(() => {
 
   // Helper text styles
   &__helper {
-    font-size: 0.75rem;
+    font-size: var(--input-helper-font-size);
     color: var(--input-helper-color, #6b7280);
   }
 

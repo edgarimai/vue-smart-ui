@@ -464,6 +464,7 @@ The cpomponents can be customized in multiple ways:
 ```css
 :root {
   --font-family-base: 'Roboto', sans-serif;
+  --font-size-base: 62.5%;
 
   // Buttons variables
   --button-primary-bg: #3b82f6;

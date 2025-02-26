@@ -1,6 +1,7 @@
 // Variables with default values that can be overridden
 :root {
   --font-family-base: 'Roboto', sans-serif;
+  --font-size-base: 62.5%;
 
   // Buttons variables
   --button-primary-bg: #3b82f6;
@@ -110,4 +111,5 @@
 
 body {
   font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
 }

@@ -10,18 +10,14 @@ export default defineConfig({
   plugins: [vue()],
   build: {
     lib: {
-      entry: resolve(__dirname, 'src/components/index.js'),
+      entry: resolve(__dirname, 'src/index.js'),
       name: 'VueSmartUI',
+      formats: ['es', 'umd'],
       fileName: (format) => `vue-smart-ui.${format}.js`,
     },
     rollupOptions: {
       external: ['vue'],
       output: {
-        assetFileNames: (assetInfo) => {
-          if (assetInfo.name === 'style.css') return 'vue-smart-ui.css'
-          return assetInfo.name
-        },
-        exports: 'named',
         globals: {
           vue: 'Vue',
         },

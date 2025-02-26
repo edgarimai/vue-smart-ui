@@ -17,6 +17,11 @@ export default defineConfig({
     rollupOptions: {
       external: ['vue'],
       output: {
+        assetFileNames: (assetInfo) => {
+          if (assetInfo.name === 'style.css') return 'vue-smart-ui.css'
+          return assetInfo.name
+        },
+        exports: 'named',
         globals: {
           vue: 'Vue',
         },

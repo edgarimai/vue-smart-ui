@@ -6,10 +6,6 @@ const props = defineProps({
     type: String,
     required: true,
   },
-  icon: {
-    type: String,
-    default: null,
-  },
   disabled: {
     type: Boolean,
     default: false,
@@ -71,9 +67,7 @@ watch(isActive, updateHeight)
       :disabled="disabled"
       :aria-expanded="isActive"
     >
-      <slot name="icon" v-if="$slots.icon">
-        <i v-if="icon" :class="icon"></i>
-      </slot>
+      <slot name="icon" v-if="$slots.icon"> </slot>
 
       <slot name="title">
         {{ title }}

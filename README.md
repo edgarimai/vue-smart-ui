@@ -466,108 +466,108 @@ The cpomponents can be customized in multiple ways:
   --font-family-base: 'Roboto', sans-serif;
 
   // Buttons variables
-  --button-primary-bg: #3b82f6;
-  --button-primary-hover: #2563eb;
-  --button-primary-text: #ffffff;
+  --button-primary-bg: #3b82f6 !important;
+  --button-primary-hover: #2563eb !important;
+  --button-primary-text: #ffffff !important;
 
-  --button-secondary-bg: #9333ea;
-  --button-secondary-hover: #7e22ce;
-  --button-secondary-text: #ffffff;
+  --button-secondary-bg: #9333ea !important;
+  --button-secondary-hover: #7e22ce !important;
+  --button-secondary-text: #ffffff !important;
 
-  --button-gray-bg: #f3f4f6;
-  --button-gray-hover: #e5e7eb;
-  --button-gray-text: #374151;
+  --button-gray-bg: #f3f4f6 !important;
+  --button-gray-hover: #e5e7eb !important;
+  --button-gray-text: #374151 !important;
 
-  --button-outline-border: #d1d5db;
-  --button-outline-hover: #f3f4f6;
-  --button-outline-text: #374151;
+  --button-outline-border: #d1d5db !important;
+  --button-outline-hover: #f3f4f6 !important;
+  --button-outline-text: #374151 !important;
 
-  --button-ghost-text: #374151;
+  --button-ghost-text: #374151 !important;
 
-  --button-focus-outline: #3b82f6;
+  --button-focus-outline: #3b82f6 !important;
 
-  --button-small-font-size: 0.875rem;
-  --button-medium-font-size: 1rem;
-  --button-large-font-size: 1.125rem;
+  --button-small-font-size: 0.875rem !important;
+  --button-medium-font-size: 1rem !important;
+  --button-large-font-size: 1.125rem !important;
 
   // Popups variables
-  --popup-default-color: #64748b;
-  --popup-info-color: #3b82f6;
-  --popup-success-color: #22c55e;
-  --popup-warning-color: #f59e0b;
-  --popup-error-color: #ef4444;
-  --popup-border-color: #d1d5db;
+  --popup-default-color: #64748b !important;
+  --popup-info-color: #3b82f6 !important;
+  --popup-success-color: #22c55e !important;
+  --popup-warning-color: #f59e0b !important;
+  --popup-error-color: #ef4444 !important;
+  --popup-border-color: #d1d5db !important;
 
   // Toasts variables
-  --toast-default-bg: #9ca3af;
-  --toast-border-color: #e5e7eb;
-  --toast-text-color: #1f2937;
+  --toast-default-bg: #9ca3af !important;
+  --toast-border-color: #e5e7eb !important;
+  --toast-text-color: #1f2937 !important;
 
-  --toast-info-bg: #eff6ff;
-  --toast-info-color: #3b82f6;
-  --toast-info-text: #1e40af;
+  --toast-info-bg: #eff6ff !important;
+  --toast-info-color: #3b82f6 !important;
+  --toast-info-text: #1e40af !important;
 
-  --toast-success-bg: #f0fdf4;
-  --toast-success-color: #22c55e;
-  --toast-success-text: #15803d;
+  --toast-success-bg: #f0fdf4 !important;
+  --toast-success-color: #22c55e !important;
+  --toast-success-text: #15803d !important;
 
-  --toast-warning-bg: #fefce8;
-  --toast-warning-color: #f59e0b;
-  --toast-warning-text: #92400e;
+  --toast-warning-bg: #fefce8 !important;
+  --toast-warning-color: #f59e0b !important;
+  --toast-warning-text: #92400e !important;
 
-  --toast-error-bg: #fee2e2;
-  --toast-error-color: #ef4444;
-  --toast-error-text: #991b1b;
+  --toast-error-bg: #fee2e2 !important;
+  --toast-error-color: #ef4444 !important;
+  --toast-error-text: #991b1b !important;
 
-  --toast-title-font-size: 1rem;
-  --toast-message-font-size: 0.75rem;
+  --toast-title-font-size: 1rem !important;
+  --toast-message-font-size: 0.75rem !important;
 
   // Dropdowns variables
-  --dropdown-bg: #ffffff;
-  --dropdown-border-color: #e5e7eb;
-  --dropdown-item-hover-bg: #f3f4f6;
+  --dropdown-bg: #ffffff !important;
+  --dropdown-border-color: #e5e7eb !important;
+  --dropdown-item-hover-bg: #f3f4f6 !important;
 
-  --dropdown-dark-bg: #374151;
-  --dropdown-dark-border-color: #4b5563;
-  --dropdown-dark-item-hover-bg: #4b5563;
+  --dropdown-dark-bg: #374151 !important;
+  --dropdown-dark-border-color: #4b5563 !important;
+  --dropdown-dark-item-hover-bg: #4b5563 !important;
 
   // Skeletons variables
-  --skeleton-bg: #e5e7eb;
-  --skeleton-rectangle-height: 1.5rem;
-  --skeleton-circle-size: 3rem;
-  --skeleton-heading-height: 2rem;
-  --skeleton-button-height: 2.5rem;
-  --skeleton-button-width: 8rem;
-  --skeleton-text-height: 1rem;
-  --skeleton-rounded-radius: 0.375rem;
-  --skeleton-shine: rgba(255, 255, 255, 0.3);
+  --skeleton-bg: #e5e7eb !important;
+  --skeleton-rectangle-height: 1.5rem !important;
+  --skeleton-circle-size: 3rem !important;
+  --skeleton-heading-height: 2rem !important;
+  --skeleton-button-height: 2.5rem !important;
+  --skeleton-button-width: 8rem !important;
+  --skeleton-text-height: 1rem !important;
+  --skeleton-rounded-radius: 0.375rem !important;
+  --skeleton-shine: rgba(255, 255, 255, 0.3) !important;
 
   // Accordions variables
-  --accordion-border-color: #e5e7eb;
-  --accordion-header-color: #111827;
-  --accordion-hover-bg: #f9fafb;
-  --accordion-focus-ring: #3b82f6;
+  --accordion-border-color: #e5e7eb !important;
+  --accordion-header-color: #111827 !important;
+  --accordion-hover-bg: #f9fafb !important;
+  --accordion-focus-ring: #3b82f6 !important;
 
   // Input variables
-  --input-label-color: #374151;
-  --input-required-color: #ef4444;
-  --input-helper-color: #6b7280;
-  --input-border-color: #d1d5db;
-  --input-bg: #ffffff;
-  --input-focus-border-color: #3b82f6;
-  --input-focus-ring-color: rgba(59, 130, 246, 0.1);
-  --input-placeholder-color: #9ca3af;
-  --input-disabled-bg: #f3f4f6;
-  --input-disabled-text: #6b7280;
-  --input-icon-color: #6b7280;
-  --input-filled-bg: #f3f4f6;
-  --input-filled-focus-bg: #f9fafb;
-  --input-success-color: #22c55e;
-  --input-error-color: #ef4444;
-  --input-warning-color: #f59e0b;
+  --input-label-color: #374151 !important;
+  --input-required-color: #ef4444 !important;
+  --input-helper-color: #6b7280 !important;
+  --input-border-color: #d1d5db !important;
+  --input-bg: #ffffff !important;
+  --input-focus-border-color: #3b82f6 !important;
+  --input-focus-ring-color: rgba(59, 130, 246, 0.1) !important;
+  --input-placeholder-color: #9ca3af !important;
+  --input-disabled-bg: #f3f4f6 !important;
+  --input-disabled-text: #6b7280 !important;
+  --input-icon-color: #6b7280 !important;
+  --input-filled-bg: #f3f4f6 !important;
+  --input-filled-focus-bg: #f9fafb !important;
+  --input-success-color: #22c55e !important;
+  --input-error-color: #ef4444 !important;
+  --input-warning-color: #f59e0b !important;
 
-  --input-label-font-size: 0.875rem;
-  --input-field-font-size: 0.875rem;
-  --input-helper-font-size: 0.75rem;
+  --input-label-font-size: 0.875rem !important;
+  --input-field-font-size: 0.875rem !important;
+  --input-helper-font-size: 0.75rem !important;
 }
 ```

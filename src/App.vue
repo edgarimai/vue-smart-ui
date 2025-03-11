@@ -211,6 +211,8 @@ const handleSelectAll = (checked) => {
           :loading="pageState.isLoading && pageState.isLoadingEnabled"
           >Large button</BaseButton
         >
+        <!-- Auto button -->
+        <BaseButton variant="ghost" size="auto">Auto button</BaseButton>
       </div>
       <h3>Button variants</h3>
       <div class="container">

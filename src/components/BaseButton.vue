@@ -12,7 +12,7 @@ defineProps({
   size: {
     type: String,
     default: 'medium',
-    validator: (value) => ['small', 'medium', 'large'].includes(value),
+    validator: (value) => ['small', 'medium', 'large', 'auto'].includes(value),
   },
   block: {
     type: Boolean,
@@ -135,6 +135,12 @@ defineEmits(['click'])
   &--large {
     padding: 1rem 2rem;
     font-size: var(--button-large-font-size);
+  }
+
+  &--auto {
+    padding: 0;
+    margin: 0;
+    width: auto;
   }
 
   // Modifiers

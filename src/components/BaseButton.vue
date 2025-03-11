@@ -42,7 +42,6 @@ defineEmits(['click'])
         'base-button--block': block,
         'base-button--disabled': disabled || loading,
       },
-      $attrs.class, // Allows Tailwind classes to be added
     ]"
     :disabled="disabled || loading"
     @click="$emit('click', $event)"

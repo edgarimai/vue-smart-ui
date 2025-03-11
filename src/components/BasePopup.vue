@@ -65,20 +65,12 @@ onUnmounted(() => {
     <div
       v-if="modelValue"
       class="vsui base-popup-overlay"
-      :class="[
-        `base-popup-overlay--${position}`,
-        $attrs.class, // Allows Tailwind classes to be added
-      ]"
+      :class="[`base-popup-overlay--${position}`]"
     >
       <div
         ref="popupRef"
         class="base-popup"
-        :class="[
-          `base-popup--${variant}`,
-          `base-popup--${size}`,
-          `base-popup--${position}`,
-          $attrs.class,
-        ]"
+        :class="[`base-popup--${variant}`, `base-popup--${size}`, `base-popup--${position}`]"
       >
         <div class="base-popup__header" v-if="$slots.header">
           <slot name="header" />

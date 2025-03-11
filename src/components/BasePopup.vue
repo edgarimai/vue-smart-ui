@@ -37,8 +37,11 @@ const popupRef = ref(null)
 
 const handleClickOutside = (event) => {
   if (props.closeOnClickOutside && popupRef.value && !popupRef.value.contains(event.target)) {
-    emit('update:modelValue', false)
-    emit('close')
+    const clickedInAnyPopup = event.target.closest('.base-popup')
+    if (!clickedInAnyPopup) {
+      emit('update:modelValue', false)
+      emit('close')
+    }
   }
 }
 

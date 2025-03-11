@@ -430,22 +430,30 @@ onMounted(() => {
     position: relative;
     display: flex;
     align-items: center;
-  }
-
-  // Input field styles
-  &__field {
     width: 100%;
-    padding: 0.625rem 0.75rem;
-    font-size: var(--input-field-font-size);
     border-radius: 0.375rem;
     border: 1px solid var(--input-border-color, #d1d5db);
     background-color: var(--input-bg, white);
     transition: all 0.2s;
 
-    &:focus {
+    &:focus-within {
       outline: none;
       border-color: var(--input-focus-border-color, #3b82f6);
       box-shadow: 0 0 0 3px var(--input-focus-ring-color, rgba(59, 130, 246, 0.1));
+    }
+  }
+
+  // Input field styles
+  &__field {
+    flex: 1;
+    width: 100%;
+    padding: 0.625rem 0.75rem;
+    font-size: var(--input-field-font-size);
+    border: none;
+    background-color: transparent;
+
+    &:focus {
+      outline: none;
     }
 
     &::placeholder {
@@ -456,27 +464,19 @@ onMounted(() => {
   // Prefix/Suffix styles
   &__prefix,
   &__suffix {
-    position: absolute;
     display: flex;
     align-items: center;
     padding: 0 0.75rem;
     color: var(--input-icon-color, #6b7280);
+    z-index: 1;
   }
 
   &__prefix {
-    left: 0;
+    padding-right: 0;
   }
 
   &__suffix {
-    right: 0;
-  }
-
-  &--with-prefix &__field {
-    padding-left: 2.5rem;
-  }
-
-  &--with-suffix &__field {
-    padding-right: 2.5rem;
+    padding-left: 0;
   }
 
   // Helper text styles
@@ -552,6 +552,15 @@ onMounted(() => {
     cursor: not-allowed;
 
     .base-input__field {
+      cursor: not-allowed;
+    }
+
+    .base-input__prefix button,
+    .base-input__prefix [role='button'],
+    .base-input__suffix button,
+    .base-input__suffix [role='button'] {
+      pointer-events: none;
+      opacity: 0.6;
       cursor: not-allowed;
     }
   }

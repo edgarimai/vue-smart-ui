@@ -11,6 +11,7 @@ export function useToast() {
     position = 'top-right',
     duration = 3000,
     closable = true,
+    simple = false,
   }) => {
     const id = ++toastId
 
@@ -22,6 +23,7 @@ export function useToast() {
       position,
       duration,
       closable,
+      simple,
     })
 
     return id

@@ -28,6 +28,7 @@ const pageState = reactive({
     position: 'top-right',
     duration: 3000,
     message: 'This is a toast message',
+    simple: false,
   },
   dropdown: {
     show: false,
@@ -82,6 +83,7 @@ const showToast = () => {
     title: 'Toast title',
     duration: pageState.toast.duration,
     position: pageState.toast.position,
+    simple: pageState.toast.simple,
   })
 }
 
@@ -182,10 +184,7 @@ const handleSelectAll = (checked) => {
       <h2>Buttons</h2>
       <h3>Loading on button</h3>
       <div class="container">
-        <label class="checkbox-label">
-          <input type="checkbox" v-model="pageState.isLoadingEnabled" class="checkbox-input" />
-          Enable loading state
-        </label>
+        <BaseCheckbox v-model="pageState.isLoadingEnabled" label="Enable loading state" />
       </div>
       <h3>Buttons sizes</h3>
       <div class="container">
@@ -410,6 +409,9 @@ const handleSelectAll = (checked) => {
         <div class="select-group">
           <label>Duration:</label>
           <input type="number" v-model="pageState.toast.duration" />
+        </div>
+        <div class="select-group">
+          <BaseCheckbox v-model="pageState.toast.simple" label="Simple toast" />
         </div>
         <BaseButton variant="primary" @click="showToast">Show Toast</BaseButton>
       </div>

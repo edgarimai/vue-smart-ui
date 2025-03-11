@@ -40,6 +40,10 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  simple: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const emit = defineEmits(['close'])
@@ -105,19 +109,19 @@ onUnmounted(() => {
       `base-toast--${variant}`,
       `base-toast--${position}`,
       { 'base-toast--visible': isVisible },
+      { 'base-toast--simple': simple },
     ]"
     @mouseenter="handleMouseEnter"
     @mouseleave="handleMouseLeave"
   >
-    <div class="base-toast__icon" v-if="$slots.icon">
-      <slot name="icon" />
-    </div>
-    <div v-else class="base-toast__icon">
-      <span :class="`icon-${variant}`" />
+    <div class="base-toast__icon" v-if="!simple && ($slots.icon || true)">
+      <slot name="icon">
+        <span :class="`icon-${variant}`" />
+      </slot>
     </div>
 
     <div class="base-toast__content">
-      <div v-if="title" class="base-toast__title">{{ title }}</div>
+      <div v-if="!simple && title" class="base-toast__title">{{ title }}</div>
       <div class="base-toast__message">
         <slot>{{ message }}</slot>
       </div>
@@ -130,7 +134,7 @@ onUnmounted(() => {
     </button>
 
     <div
-      v-if="duration > 0"
+      v-if="!simple && duration > 0"
       ref="progressBarRef"
       class="progress-bar"
       :class="`progress-bar--${variant}`"
@@ -247,6 +251,19 @@ onUnmounted(() => {
 
     &--error {
       background-color: var(--toast-error-color, #ef4444);
+    }
+  }
+
+  &--simple {
+    padding: 0.75rem 1rem;
+    min-width: 200px;
+
+    .base-toast__message {
+      margin: 0;
+    }
+
+    .base-toast__close {
+      margin-left: 0.5rem;
     }
   }
 }

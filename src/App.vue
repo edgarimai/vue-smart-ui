@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, ref } from 'vue'
+import { reactive, ref, computed } from 'vue'
 import {
   BaseButton,
   BasePopup,
@@ -10,6 +10,7 @@ import {
   BaseAccordion,
   BaseAccordionItem,
   BaseInput,
+  BaseCheckbox,
 } from './components'
 import { useToast } from '@/composables/toast'
 
@@ -43,12 +44,36 @@ const pageState = reactive({
     price: '',
     phone: '',
   },
+  checkbox: {
+    checked: false,
+    selectedFruits: [],
+    selectAll: false,
+    someSelected: false,
+  },
   infiniteScroll: {
     items: [],
     page: 1,
     loading: false,
     hasMore: true,
   },
+  fruits: [
+    {
+      name: 'Apple',
+      value: 'apple',
+    },
+    {
+      name: 'Banana',
+      value: 'banana',
+    },
+    {
+      name: 'Orange',
+      value: 'orange',
+    },
+    {
+      name: 'Pineapple',
+      value: 'pineapple',
+    },
+  ],
 })
 
 const toast = useToast()
@@ -130,6 +155,24 @@ const registerInput = (name, ref) => {
   if (ref) {
     formRefs.value[name] = ref
   }
+}
+
+const allSelected = computed(() => {
+  return pageState.checkbox.selectedFruits.length === pageState.fruits.length
+})
+
+const someSelected = computed(() => {
+  return pageState.checkbox.selectedFruits.length > 0 && !allSelected.value
+})
+
+const handleSelectAll = (checked) => {
+  if (!checked) return (pageState.checkbox.selectedFruits = [])
+
+  pageState.fruits.forEach((fruit) => {
+    if (!pageState.checkbox.selectedFruits.includes(fruit.value)) {
+      pageState.checkbox.selectedFruits.push(fruit.value)
+    }
+  })
 }
 </script>
 
@@ -272,7 +315,7 @@ const registerInput = (name, ref) => {
     <div class="popup-container">
       <h2>Popups</h2>
       <h3>Popup configuration</h3>
-      <div class="container">
+      <div class="container vertical">
         <!-- Variant selector -->
         <div class="select-group">
           <label>Variant:</label>
@@ -340,7 +383,7 @@ const registerInput = (name, ref) => {
 
     <div class="toast-container">
       <h2>Toasts</h2>
-      <div class="container">
+      <div class="container vertical">
         <h3>Toast configuration</h3>
         <div class="select-group">
           <label>Variant:</label>
@@ -504,6 +547,52 @@ const registerInput = (name, ref) => {
 
     <hr />
 
+    <div class="checkbox-container">
+      <h2>Checkbox</h2>
+
+      <div class="container">
+        <BaseCheckbox v-model="pageState.checkbox.checked" label="Basic checkbox" />
+        <BaseCheckbox v-model="pageState.checkbox.checked">
+          Checkbox with <span style="color: purple">slots</span>
+        </BaseCheckbox>
+        <BaseCheckbox
+          v-model="pageState.checkbox.checked"
+          error
+          label="Required field with error"
+        />
+        <BaseCheckbox v-model="pageState.checkbox.checked" disabled label="Disabled checkbox" />
+      </div>
+
+      <!-- Different size -->
+      <h3>Checkbox sizes</h3>
+      <div class="container">
+        <BaseCheckbox v-model="pageState.checkbox.checked" size="small" label="Small option" />
+        <BaseCheckbox v-model="pageState.checkbox.checked" size="medium" label="Medium option" />
+        <BaseCheckbox v-model="pageState.checkbox.checked" size="large" label="Large option" />
+      </div>
+
+      <!-- Multiple selection -->
+      <h3>Checkbox multiple selection</h3>
+      {{ pageState.selectedFruits }}
+      <div class="container">
+        <BaseCheckbox
+          v-for="fruit in pageState.fruits"
+          :key="fruit.value"
+          v-model="pageState.checkbox.selectedFruits"
+          :value="fruit.value"
+          :label="fruit.name"
+        />
+        <BaseCheckbox
+          v-model="allSelected"
+          :indeterminate="someSelected"
+          label="Select all"
+          @update:model-value="handleSelectAll"
+        />
+      </div>
+    </div>
+
+    <hr />
+
     <div class="infinite-scroll-container">
       <h2>Infinite Scroll</h2>
       <BaseInfiniteScroll
@@ -541,7 +630,14 @@ const registerInput = (name, ref) => {
     margin-bottom: 1rem;
   }
   .container {
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    &.vertical {
+      flex-direction: column;
+    }
 
     button {
       margin-inline: 1rem;

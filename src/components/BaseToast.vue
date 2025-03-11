@@ -88,7 +88,8 @@ onMounted(() => {
   }, 100)
 
   if (props.duration > 0) {
-    progressBarRef.value?.addEventListener('animationend', close, { once: true })
+    if (props.simple) setTimeout(close, props.duration)
+    else progressBarRef.value?.addEventListener('animationend', close, { once: true })
   }
 
   startProgress()

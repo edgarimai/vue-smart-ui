@@ -56,7 +56,7 @@ A versatile and customizable button that supports different variants, sizes, and
 | -------- | ------- | --------- | ------------------------------------------------------------------------- |
 | id       | String  | -         | Optional button ID                                                        |
 | variant  | String  | 'primary' | Button style. Options: 'primary', 'secondary', 'gray', 'outline', 'ghost' |
-| size     | String  | 'medium'  | Button size. Options: 'small', 'medium', 'large'                          |
+| size     | String  | 'medium'  | Button size. Options: 'small', 'medium', 'large', 'auto'                  |
 | block    | Boolean | false     | If true, button will take 100% of available width                         |
 | disabled | Boolean | false     | Disables the button                                                       |
 | loading  | Boolean | false     | Shows a loading indicator                                                 |
@@ -264,6 +264,109 @@ const registerInput = (name, ref) => {
 <BaseInput v-model="price" label="Price" mask="currency" placeholder="R$ 0,00" />
 ```
 
+### BaseCheckbox
+
+Checkbox component with customizable size, state and styling. Supports single checkbox or group functionality.
+
+Features:
+
+- Three sizes (small, medium, large)
+- Disabled state
+- Indeterminate state
+- Custom colors and styling
+- Group functionality for multiple checkboxes
+
+#### Props
+
+| Prop          | Type                             | Default     | Description                       |
+| ------------- | -------------------------------- | ----------- | --------------------------------- |
+| modelValue    | `boolean \| Array`               | `false`     | v-model binding value             |
+| label         | `string`                         | `''`        | Label text for the checkbox       |
+| size          | `'small' \| 'medium' \| 'large'` | `'medium'`  | Size of the checkbox              |
+| disabled      | `boolean`                        | `false`     | Whether checkbox is disabled      |
+| indeterminate | `boolean`                        | `false`     | Show indeterminate state          |
+| value         | `any`                            | `undefined` | Value when used in checkbox group |
+| name          | `string`                         | `''`        | Input name attribute              |
+
+#### Basic examples
+
+```vue
+<BaseCheckbox v-model="checked" label="Basic checkbox" />
+<BaseCheckbox v-model="checked">
+  Checkbox with <span style="color: purple">slots</span>
+</BaseCheckbox>
+<BaseCheckbox v-model="checked" error label="Required field with error" />
+<BaseCheckbox v-model="checked" disabled label="Disabled checkbox" />
+<BaseCheckbox v-model="checked" size="small" label="Small option" />
+<BaseCheckbox v-model="checked" size="medium" label="Medium option" />
+<BaseCheckbox v-model="checked" size="large" label="Large option" />
+```
+
+#### Example with multiple options
+
+```js
+const pageState = reactive({
+  checkbox: {
+    checked: false,
+    selectedFruits: [],
+    selectAll: false,
+    someSelected: false,
+  },
+  fruits: [
+    {
+      name: 'Apple',
+      value: 'apple',
+    },
+    {
+      name: 'Banana',
+      value: 'banana',
+    },
+    {
+      name: 'Orange',
+      value: 'orange',
+    },
+    {
+      name: 'Pineapple',
+      value: 'pineapple',
+    },
+  ],
+})
+
+const allSelected = computed(() => {
+  return pageState.checkbox.selectedFruits.length === pageState.fruits.length
+})
+
+const someSelected = computed(() => {
+  return pageState.checkbox.selectedFruits.length > 0 && !allSelected.value
+})
+
+const handleSelectAll = (checked) => {
+  if (!checked) return (pageState.checkbox.selectedFruits = [])
+
+  pageState.fruits.forEach((fruit) => {
+    if (!pageState.checkbox.selectedFruits.includes(fruit.value)) {
+      pageState.checkbox.selectedFruits.push(fruit.value)
+    }
+  })
+}
+```
+
+```vue
+<BaseCheckbox
+  v-for="fruit in pageState.fruits"
+  :key="fruit.value"
+  v-model="pageState.checkbox.selectedFruits"
+  :value="fruit.value"
+  :label="fruit.name"
+/>
+<BaseCheckbox
+  v-model="allSelected"
+  :indeterminate="someSelected"
+  label="Select all"
+  @update:model-value="handleSelectAll"
+/>
+```
+
 ### BaseToast and ToastsContainer
 
 Toast notification system for user feedback. Provides a flexible way to show notifications with different variants (success, error, warning, info), positions, and durations.
@@ -289,6 +392,7 @@ Features:
 | position     | `'top-right' \| 'top-center' \| 'top-left' \| 'bottom-right' \| 'bottom-center' \| 'bottom-left'` | `'top-right'` | Position where toast appears                              |
 | closable     | `boolean`                                                                                         | `true`        | Whether to show close button                              |
 | pauseOnHover | `boolean`                                                                                         | `true`        | Pause dismiss timer when hovering                         |
+| simple       | `boolean`                                                                                         | `false`       | Simple toast option                                       |
 
 #### Basic example
 
@@ -569,5 +673,17 @@ The cpomponents can be customized in multiple ways:
   --input-label-font-size: 0.875rem !important;
   --input-field-font-size: 0.875rem !important;
   --input-helper-font-size: 0.75rem !important;
+
+  // Checkbox variables
+  --checkbox-border: 1px solid var(--checkbox-border-color);
+  --checkbox-border-color: #d1d5db;
+  --checkbox-hover-border-color: #e5e7eb;
+  --checkbox-border-radius: 0.25rem;
+  --checkbox-bg: #ffffff;
+  --checkbox-check: #374151;
+  --checkbox-text: #374151;
+  --checkbox-small-font-size: 0.875rem;
+  --checkbox-medium-font-size: 1rem;
+  --checkbox-large-font-size: 1.125rem;
 }
 ```

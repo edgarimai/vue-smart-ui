@@ -402,12 +402,14 @@ Component for implementing infinite scroll functionality.
 
 #### Props
 
-| Prop      | Type      | Default | Description                                                |
-| --------- | --------- | ------- | ---------------------------------------------------------- |
-| loading   | `boolean` | `false` | Whether more content is currently being loaded             |
-| hasMore   | `boolean` | `true`  | Whether there is more content available to load            |
-| threshold | `number`  | `100`   | Distance in pixels from bottom before triggering load more |
-| disabled  | `boolean` | `false` | Disable infinite scroll functionality                      |
+| Prop        | Type      | Default                   | Description                                                |
+| ----------- | --------- | ------------------------- | ---------------------------------------------------------- |
+| loading     | `boolean` | `false`                   | Whether more content is currently being loaded             |
+| disabled    | `boolean` | `false`                   | Disable infinite scroll functionality                      |
+| threshold   | `number`  | `20`                      | Distance in pixels from bottom before triggering load more |
+| container   | `string`  | `null`                    | CSS selector for scroll container. If null, uses window    |
+| loadingText | `string`  | `'Loading more items...'` | Text shown during loading. If empty, no text is shown      |
+| endText     | `string`  | `'No more items to load'` | Text shown when disabled. If empty, no text is shown       |
 
 #### Slots
 

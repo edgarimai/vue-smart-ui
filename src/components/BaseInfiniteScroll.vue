@@ -18,6 +18,14 @@ const props = defineProps({
     type: String,
     default: null, // If null, uses window
   },
+  loadingText: {
+    type: String,
+    default: 'Loading more items...',
+  },
+  endText: {
+    type: String,
+    default: 'There are no more items to load',
+  },
 })
 
 const emit = defineEmits(['load-more'])
@@ -81,12 +89,12 @@ onUnmounted(() => {
       <slot name="loading" v-if="loading">
         <div class="infinite-scroll__loader">
           <div class="spinner"></div>
-          <span>Loading more items...</span>
+          <span v-if="loadingText">{{ loadingText }}</span>
         </div>
       </slot>
 
       <slot name="disabled" v-else-if="disabled">
-        <div class="infinite-scroll__end">There are no more items to load</div>
+        <div class="infinite-scroll__end" v-if="endText">{{ endText }}</div>
       </slot>
     </div>
   </div>
@@ -101,6 +109,17 @@ onUnmounted(() => {
     padding: 1rem;
     gap: 0.5rem;
     color: #6b7280;
+
+    // Spinner
+    .spinner {
+      width: 1em;
+      height: 1em;
+      border: 2px solid currentColor;
+      border-bottom-color: transparent;
+      border-radius: 50%;
+      display: inline-block;
+      animation: rotation 1s linear infinite;
+    }
   }
 
   &__end {
@@ -109,19 +128,13 @@ onUnmounted(() => {
     color: #6b7280;
   }
 
-  .spinner {
-    width: 1.5rem;
-    height: 1.5rem;
-    border: 2px solid #e5e7eb;
-    border-top-color: #3b82f6;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-  }
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
+  @keyframes rotation {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
 }
 </style>

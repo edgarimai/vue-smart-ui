@@ -211,7 +211,13 @@ const handleSelectAll = (checked) => {
           >Large button</BaseButton
         >
         <!-- Auto button -->
-        <BaseButton variant="ghost" size="auto">Auto button</BaseButton>
+        <BaseButton
+          variant="ghost"
+          size="auto"
+          @click="handleSaveWithLoading"
+          :loading="pageState.isLoading && pageState.isLoadingEnabled"
+          >Auto button</BaseButton
+        >
       </div>
       <h3>Button variants</h3>
       <div class="container">
@@ -441,7 +447,7 @@ const handleSelectAll = (checked) => {
 
     <div class="skeleton-container">
       <h2>Skeleton</h2>
-      <div class="container">
+      <div class="container vertical">
         <!-- Avatar -->
         <BaseSkeleton variant="circle" width="5rem" height="5rem" />
 
@@ -611,15 +617,15 @@ const handleSelectAll = (checked) => {
           </div>
         </div>
 
-        <!-- Loading custom -->
-        <template #loading>
+        <!-- Custom loading -->
+        <!-- <template #loading>
           <div class="custom-loader">Loading more items...</div>
-        </template>
+        </template> -->
 
-        <!-- End message -->
-        <template #disabled>
+        <!-- Custom end message -->
+        <!-- <template #disabled>
           <div class="end-message">There are no more items to load</div>
-        </template>
+        </template> -->
       </BaseInfiniteScroll>
     </div>
   </div>

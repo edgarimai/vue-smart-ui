@@ -435,12 +435,6 @@ onMounted(() => {
     border: 1px solid var(--input-border-color, #d1d5db);
     background-color: var(--input-bg, white);
     transition: all 0.2s;
-
-    &:focus-within {
-      outline: none;
-      border-color: var(--input-focus-border-color, #3b82f6);
-      box-shadow: 0 0 0 3px var(--input-focus-ring-color, rgba(59, 130, 246, 0.1));
-    }
   }
 
   // Input field styles
@@ -485,33 +479,12 @@ onMounted(() => {
     color: var(--input-helper-color, #6b7280);
   }
 
-  // Variants
-  &--filled {
-    .base-input__field {
-      border: 1px solid transparent;
-      background-color: var(--input-filled-bg, #f3f4f6);
-
-      &:hover {
-        background-color: var(--input-filled-hover-bg, #e5e7eb);
-      }
-
-      &:focus {
-        background-color: var(--input-filled-focus-bg, #f9fafb);
-        box-shadow: 0 0 0 3px var(--input-focus-ring-color, rgba(59, 130, 246, 0.1));
-      }
-    }
-  }
-
-  &--outlined &__field {
-    border-width: 2px;
-  }
-
   // States
   &--success {
-    .base-input__field {
+    .base-input__wrapper {
       border-color: var(--input-success-color, #22c55e) !important;
 
-      &:focus {
+      &:focus-within {
         box-shadow: 0 0 0 3px var(--input-success-ring-color, rgba(34, 197, 94, 0.1));
       }
     }
@@ -521,10 +494,10 @@ onMounted(() => {
   }
 
   &--error {
-    .base-input__field {
+    .base-input__wrapper {
       border-color: var(--input-error-color, #ef4444) !important;
 
-      &:focus {
+      &:focus-within {
         box-shadow: 0 0 0 3px var(--input-error-ring-color, rgba(239, 68, 68, 0.1));
       }
     }
@@ -534,16 +507,41 @@ onMounted(() => {
   }
 
   &--warning {
-    .base-input__field {
+    .base-input__wrapper {
       border-color: var(--input-warning-color, #f59e0b) !important;
 
-      &:focus {
+      &:focus-within {
         box-shadow: 0 0 0 3px var(--input-warning-ring-color, rgba(245, 158, 11, 0.1));
       }
     }
     .base-input__helper {
       color: var(--input-warning-color, #f59e0b);
     }
+  }
+
+  &__wrapper:focus-within {
+    border-color: var(--input-focus-border-color, #3b82f6);
+    box-shadow: 0 0 0 3px var(--input-focus-ring-color, rgba(59, 130, 246, 0.1));
+  }
+
+  // Variants
+  &--filled {
+    .base-input__wrapper {
+      background-color: var(--input-filled-bg, #f3f4f6);
+      border-color: transparent;
+
+      &:hover {
+        background-color: var(--input-filled-hover-bg, #e5e7eb);
+      }
+
+      &:focus-within {
+        background-color: var(--input-filled-focus-bg, #f9fafb);
+      }
+    }
+  }
+
+  &--outlined &__wrapper {
+    border-width: 2px;
   }
 
   // Disabled state

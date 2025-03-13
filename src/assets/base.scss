@@ -119,6 +119,29 @@
   --checkbox-small-font-size: 0.875rem;
   --checkbox-medium-font-size: 1rem;
   --checkbox-large-font-size: 1.125rem;
+
+  // Textarea variables
+  --textarea-font-size: 1rem;
+  --textarea-font-family: var(--font-family-base);
+  --textarea-line-height: 1.6;
+  --textarea-padding: 0.75rem 1rem;
+  --textarea-border-radius: 0.5rem;
+
+  --textarea-bg: #ffffff;
+  --textarea-text-color: #1f2937;
+  --textarea-border-color: #e5e7eb;
+  --textarea-focus-border-color: #3b82f6;
+
+  --textarea-success-color: #22c55e;
+  --textarea-error-color: #ef4444;
+  --textarea-warning-color: #f59e0b;
+
+  --textarea-filled-bg: #f3f4f6;
+  --textarea-filled-hover-bg: #e5e7eb;
+  --textarea-filled-focus-bg: #f9fafb;
+
+  --textarea-helper-font-size: 0.75rem;
+  --textarea-label-font-size: 0.875rem;
 }
 
 .vsui {

@@ -11,6 +11,7 @@ import {
   BaseAccordionItem,
   BaseInput,
   BaseCheckbox,
+  BaseTextarea,
 } from './components'
 import { useToast } from '@/composables/toast'
 
@@ -44,6 +45,13 @@ const pageState = reactive({
     email: '',
     price: '',
     phone: '',
+  },
+  textarea: {
+    content1: '',
+    content2: '',
+    content3: '',
+    content4: '',
+    content5: '',
   },
   checkbox: {
     checked: false,
@@ -532,6 +540,10 @@ const handleSelectAll = (checked) => {
             validator: (value) => /^[a-z0-9]+$/.test(value),
             message: 'Username can only contain lowercase letters and numbers',
           },
+          {
+            validator: (value) => value.length >= 3,
+            message: 'Username must be at least 3 characters long',
+          },
         ]"
       />
 
@@ -553,6 +565,49 @@ const handleSelectAll = (checked) => {
         placeholder="R$ 0,00"
       />
       <BaseButton variant="primary" @click="handleSubmit">Submit</BaseButton>
+    </div>
+
+    <hr />
+
+    <div class="textarea-container">
+      <h2>Textarea</h2>
+
+      <BaseTextarea
+        v-model="pageState.textarea.content1"
+        label="Simple textarea"
+        placeholder="Enter your description"
+      />
+
+      <BaseTextarea
+        v-model="pageState.textarea.content2"
+        label="With validation and helper text"
+        :rules="['required', { min: 10, message: 'Comment must be at least 10 characters' }]"
+        validate-on-input
+        helper-text="Please provide detailed feedback"
+      />
+
+      <BaseTextarea
+        v-model="pageState.textarea.content3"
+        label="Auto-resizing textarea full width"
+        :rows="3"
+        :max-rows="10"
+        auto-resize
+        block
+      />
+
+      <BaseTextarea
+        v-model="pageState.textarea.content4"
+        label="Filled variant"
+        variant="filled"
+        placeholder="Add your notes here"
+      />
+
+      <BaseTextarea
+        v-model="pageState.textarea.content5"
+        label="Resizable"
+        resize="both"
+        :rows="4"
+      />
     </div>
 
     <hr />

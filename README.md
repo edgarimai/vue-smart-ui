@@ -264,6 +264,123 @@ const registerInput = (name, ref) => {
 <BaseInput v-model="price" label="Price" mask="currency" placeholder="R$ 0,00" />
 ```
 
+### BaseTextarea
+
+Highly customizable textarea component that matches the BaseInput styling and functionality. Perfect for multi-line text input with support for validation, different variants, and auto-resize capability.
+
+Features:
+
+- Consistent styling with BaseInput
+- Auto-resize capability
+- Built-in validation
+- Different variants (default, filled, outlined)
+- Support for helper text and error states
+- Customizable through CSS variables
+- Flexible width control (block/inline)
+
+#### Props
+
+| Prop            | Type      | Default      | Description                                                        |
+| --------------- | --------- | ------------ | ------------------------------------------------------------------ |
+| modelValue      | `String`  | `''`         | The v-model value                                                  |
+| variant         | `String`  | `'default'`  | Textarea style. Options: 'default', 'filled', 'outlined'           |
+| label           | `String`  | `null`       | Label text                                                         |
+| placeholder     | `String`  | `''`         | Placeholder text                                                   |
+| rows            | `Number`  | `3`          | Initial number of rows                                             |
+| maxRows         | `Number`  | `null`       | Maximum number of rows when using autoResize                       |
+| disabled        | `Boolean` | `false`      | Disables the textarea                                              |
+| readonly        | `Boolean` | `false`      | Makes textarea readonly                                            |
+| required        | `Boolean` | `false`      | Makes the field required                                           |
+| helperText      | `String`  | `null`       | Helper text displayed below the textarea                           |
+| errorMessage    | `String`  | `null`       | Error message to display                                           |
+| rules           | `Array`   | `[]`         | Validation rules array                                             |
+| validateOnBlur  | `Boolean` | `true`       | Trigger validation on blur                                         |
+| validateOnInput | `Boolean` | `false`      | Trigger validation on input                                        |
+| block           | `Boolean` | `false`      | Makes the textarea full width                                      |
+| resize          | `String`  | `'vertical'` | Resize behavior. Options: 'none', 'both', 'horizontal', 'vertical' |
+| autoResize      | `Boolean` | `false`      | Automatically adjust height based on content                       |
+
+#### Events
+
+- `@update:modelValue`: Emitted when textarea value changes
+- `@focus`: Emitted on textarea focus
+- `@blur`: Emitted on textarea blur
+- `@input`: Emitted on input
+- `@validation`: Emitted when validation occurs, includes validation status
+- `@mounted`: Emitted when component is mounted, passes textarea ref
+
+#### Basic Examples
+
+```vue
+<!-- Simple textarea -->
+<BaseTextarea v-model="description" label="Description" placeholder="Enter your description" />
+
+<!-- With validation -->
+<BaseTextarea
+  v-model="comment"
+  label="Comment"
+  :rules="['required', { min: 10, message: 'Comment must be at least 10 characters' }]"
+  helper-text="Please provide detailed feedback"
+/>
+
+<!-- Auto-resizing textarea -->
+<BaseTextarea v-model="content" label="Content" :rows="3" :max-rows="10" auto-resize block />
+
+<!-- Filled variant -->
+<BaseTextarea v-model="notes" label="Notes" variant="filled" placeholder="Add your notes here" />
+
+<!-- With custom resize behavior -->
+<BaseTextarea v-model="text" label="Resizable" resize="both" :rows="4" />
+```
+
+#### Form Validation Example
+
+```vue
+<template>
+  <form @submit.prevent="handleSubmit">
+    <BaseTextarea
+      v-model="feedback"
+      label="Feedback"
+      :rules="[
+        'required',
+        { min: 20, message: 'Feedback must be at least 20 characters long' },
+        { max: 500, message: 'Feedback cannot exceed 500 characters' },
+      ]"
+      block
+      @mounted="(ref) => registerTextarea('feedback', ref)"
+    />
+
+    <BaseButton type="submit">Submit Feedback</BaseButton>
+  </form>
+</template>
+
+<script setup>
+const formRefs = ref({})
+
+const registerTextarea = (name, ref) => {
+  if (ref) {
+    formRefs.value[name] = ref
+  }
+}
+
+const validateForm = () => {
+  let isValid = true
+  Object.values(formRefs.value).forEach((textarea) => {
+    if (textarea?.validate && !textarea.validate()) {
+      isValid = false
+    }
+  })
+  return isValid
+}
+
+const handleSubmit = () => {
+  if (validateForm()) {
+    console.log('Form is valid, submitting...')
+  }
+}
+</script>
+```
+
 ### BaseCheckbox
 
 Checkbox component with customizable size, state and styling. Supports single checkbox or group functionality.

@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed, useSlots, onMounted } from 'vue'
+import { useAutoId } from '../composables/autoId'
 
 const slots = useSlots()
 const props = defineProps({
@@ -82,6 +83,7 @@ const props = defineProps({
     default: null,
   },
 })
+const { autoId } = useAutoId('input', props)
 
 const emit = defineEmits(['update:modelValue', 'focus', 'blur', 'input', 'validation', 'mounted'])
 
@@ -374,7 +376,7 @@ onMounted(() => {
       </div>
 
       <input
-        :id="id"
+        :id="autoId"
         ref="inputRef"
         :type="type"
         :value="inputValue"

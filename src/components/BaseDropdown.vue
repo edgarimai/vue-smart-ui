@@ -1,7 +1,12 @@
 <script setup>
 import { ref, onMounted, onUnmounted, watch, nextTick } from 'vue'
+import { useAutoId } from '../composables/autoId'
 
 const props = defineProps({
+  id: {
+    type: String,
+    default: '',
+  },
   modelValue: {
     type: Boolean,
     default: false,
@@ -24,6 +29,7 @@ const props = defineProps({
     default: true,
   },
 })
+const { autoId } = useAutoId('dropdown', props)
 
 const emit = defineEmits(['update:modelValue'])
 
@@ -112,7 +118,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div ref="dropdownRef" class="vsui base-dropdown">
+  <div ref="dropdownRef" class="vsui base-dropdown" :id="autoId">
     <div class="base-dropdown__trigger" @click="emit('update:modelValue', !modelValue)">
       <slot name="trigger" />
     </div>

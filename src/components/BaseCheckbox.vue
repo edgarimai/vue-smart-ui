@@ -1,5 +1,6 @@
 <script setup>
 import { computed } from 'vue'
+import { useAutoId } from '../composables/autoId'
 
 const props = defineProps({
   id: {
@@ -36,6 +37,7 @@ const props = defineProps({
     default: false,
   },
 })
+const { autoId } = useAutoId('checkbox', props)
 
 const emit = defineEmits(['update:modelValue'])
 
@@ -74,7 +76,7 @@ const handleChange = (event) => {
     ]"
   >
     <input
-      :id="id"
+      :id="autoId"
       type="checkbox"
       :checked="isChecked"
       :disabled="disabled"

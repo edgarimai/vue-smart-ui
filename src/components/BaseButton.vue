@@ -1,5 +1,7 @@
 <script setup>
-defineProps({
+import { useAutoId } from '../composables/autoId'
+
+const props = defineProps({
   id: {
     type: String,
     default: '',
@@ -28,12 +30,14 @@ defineProps({
   },
 })
 
+const { autoId } = useAutoId('button', props)
+
 defineEmits(['click'])
 </script>
 
 <template>
   <button
-    :id="id"
+    :id="autoId"
     class="vsui base-button"
     :class="[
       `base-button--${variant}`,

@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { useAutoId } from '../composables/autoId'
 
 const props = defineProps({
   id: {
@@ -86,6 +87,7 @@ const props = defineProps({
     default: false,
   },
 })
+const { autoId } = useAutoId('textarea', props)
 
 const emit = defineEmits(['update:modelValue', 'focus', 'blur', 'input', 'validation', 'mounted'])
 
@@ -255,7 +257,7 @@ onMounted(() => {
 
     <div class="base-textarea__wrapper">
       <textarea
-        :id="id"
+        :id="autoId"
         ref="textareaRef"
         :value="modelValue"
         :rows="rows"

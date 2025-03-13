@@ -1,5 +1,6 @@
 <script setup>
 import { provide, ref } from 'vue'
+import { useAutoId } from '../composables/autoId'
 
 const props = defineProps({
   id: {
@@ -16,6 +17,7 @@ const props = defineProps({
     validator: (value) => ['default', 'bordered', 'minimal'].includes(value),
   },
 })
+const { autoId } = useAutoId('accordion', props)
 
 const activeItems = ref([])
 
@@ -40,7 +42,7 @@ provide('accordion', {
 </script>
 
 <template>
-  <div class="vsui base-accordion" :class="`base-accordion--${variant}`" :id="id">
+  <div class="vsui base-accordion" :class="`base-accordion--${variant}`" :id="autoId">
     <slot />
   </div>
 </template>

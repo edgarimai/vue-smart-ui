@@ -1,5 +1,9 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
+import SuccessIcon from './icons/IconSuccess.vue'
+import ErrorIcon from './icons/IconError.vue'
+import WarningIcon from './icons/IconWarning.vue'
+import InfoIcon from './icons/IconInfo.vue'
 
 const props = defineProps({
   id: {
@@ -82,6 +86,16 @@ const handleMouseLeave = () => {
   }
 }
 
+const icons = {
+  success: SuccessIcon,
+  error: ErrorIcon,
+  warning: WarningIcon,
+  info: InfoIcon,
+  default: InfoIcon,
+}
+
+const iconComponent = computed(() => icons[props.variant] || icons.default)
+
 onMounted(() => {
   setTimeout(() => {
     isVisible.value = true
@@ -115,23 +129,19 @@ onUnmounted(() => {
     @mouseenter="handleMouseEnter"
     @mouseleave="handleMouseLeave"
   >
-    <div class="base-toast__icon" v-if="!simple && ($slots.icon || true)">
-      <slot name="icon">
-        <span :class="`icon-${variant}`" />
-      </slot>
+    <div class="base-toast__icon" v-if="!simple">
+      <component :is="iconComponent" class="icon" />
     </div>
 
     <div class="base-toast__content">
       <div v-if="!simple && title" class="base-toast__title">{{ title }}</div>
       <div class="base-toast__message">
-        <slot>{{ message }}</slot>
+        {{ message }}
       </div>
     </div>
 
     <button v-if="closable" class="base-toast__close" @click="close">
-      <slot name="close-icon">
-        <span>&times;</span>
-      </slot>
+      <span>&times;</span>
     </button>
 
     <div
@@ -150,7 +160,8 @@ onUnmounted(() => {
 .base-toast {
   position: relative;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
+
   padding: 1rem;
   border-radius: 0.5rem;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
@@ -219,6 +230,7 @@ onUnmounted(() => {
     cursor: pointer;
     color: currentColor;
     opacity: 0.6;
+    font-size: 1.5rem;
 
     &:hover {
       opacity: 1;

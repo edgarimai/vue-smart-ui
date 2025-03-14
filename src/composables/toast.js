@@ -1,9 +1,23 @@
-import { ref } from 'vue'
+import { ref, createApp, h } from 'vue'
+import ToastsContainer from '@/components/ToastsContainer.vue'
 
 const toasts = ref([])
 let toastId = 0
+let toastContainer = null
 
 export function useToast() {
+  const createContainer = () => {
+    if (toastContainer) return
+
+    const containerDiv = document.createElement('div')
+    containerDiv.id = 'toast-container'
+    document.body.appendChild(containerDiv)
+
+    toastContainer = createApp({
+      render: () => h(ToastsContainer),
+    }).mount(containerDiv)
+  }
+
   const addToast = ({
     message,
     title = '',
@@ -13,6 +27,8 @@ export function useToast() {
     closable = true,
     simple = false,
   }) => {
+    createContainer()
+
     const id = ++toastId
 
     toasts.value.push({

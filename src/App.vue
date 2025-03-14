@@ -3,7 +3,6 @@ import { reactive, ref, computed } from 'vue'
 import {
   BaseButton,
   BasePopup,
-  ToastsContainer,
   BaseDropdown,
   BaseSkeleton,
   BaseInfiniteScroll,
@@ -429,7 +428,6 @@ const handleSelectAll = (checked) => {
         </div>
         <BaseButton variant="primary" @click="showToast">Show Toast</BaseButton>
       </div>
-      <ToastsContainer />
     </div>
 
     <hr />

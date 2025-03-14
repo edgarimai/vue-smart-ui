@@ -484,7 +484,7 @@ const handleSelectAll = (checked) => {
 />
 ```
 
-### BaseToast and ToastsContainer
+### BaseToast
 
 Toast notification system for user feedback. Provides a flexible way to show notifications with different variants (success, error, warning, info), positions, and durations.
 
@@ -512,6 +512,33 @@ Features:
 | simple       | `boolean`                                                                                         | `false`       | Simple toast option                                       |
 
 #### Basic example
+
+```vue
+<script setup>
+import { useToast } from '@/composables/toast'
+
+const toast = useToast()
+const showToast = () => {
+  toast.success('Basic toast')
+}
+
+const showCustom = () => {
+  toast.warning('Custom toast', {
+    title: 'Title',
+    position: 'bottom-center',
+    duration: 5000,
+  })
+}
+
+const showSimple = () => {
+  toast.error('Simple toast', {
+    position: 'bottom-center',
+    duration: 5000,
+    simple: true,
+  })
+}
+</script>
+```
 
 ### BaseInfiniteScroll
 

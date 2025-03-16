@@ -67,7 +67,7 @@ const handleChange = (event) => {
 <template>
   <label
     :class="[
-      'base-checkbox',
+      'vsui base-checkbox',
       `base-checkbox--${size}`,
       {
         'base-checkbox--disabled': disabled,

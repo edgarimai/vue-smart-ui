@@ -256,7 +256,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="base-slider" :class="sliderClasses">
+  <div class="vsui base-slider" :class="sliderClasses">
     <label v-if="label" :for="autoId" class="base-slider__label">
       {{ label }}
       <span v-if="required" class="base-slider__required">*</span>

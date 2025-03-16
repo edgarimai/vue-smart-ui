@@ -584,6 +584,149 @@ Component for implementing infinite scroll functionality.
 </BaseInfiniteScroll>
 ```
 
+### BaseSlider
+
+A highly customizable slider component that supports single values or ranges, with custom marks, value formatting, and different visual states.
+
+Features:
+
+- Support for single values or ranges
+- Customizable marks for specific points
+- Custom value formatting
+- Different visual states (success, error, warning)
+- Configurable minimum and maximum values
+- Adjustable steps
+- Fully accessible with keyboard support
+- Display of values at extremities and above controls
+
+#### Props
+
+| Prop         | Type              | Default     | Description                                      |
+| ------------ | ----------------- | ----------- | ------------------------------------------------ |
+| modelValue   | `Number \| Array` | `0`         | Current slider value (single or array for range) |
+| min          | `Number`          | `0`         | Minimum value of the slider                      |
+| max          | `Number`          | `100`       | Maximum value of the slider                      |
+| step         | `Number`          | `1`         | Increment between values                         |
+| label        | `String`          | `null`      | Label text for the slider                        |
+| disabled     | `Boolean`         | `false`     | Disables the slider                              |
+| required     | `Boolean`         | `false`     | Marks the field as required                      |
+| helperText   | `String`          | `null`      | Helper text displayed below the slider           |
+| errorMessage | `String`          | `null`      | Error message to display                         |
+| state        | `String`          | `null`      | Visual state: 'success', 'error', 'warning'      |
+| showValue    | `Boolean`         | `true`      | Displays the current value above the control     |
+| range        | `Boolean`         | `false`     | Enables range mode with two controls             |
+| variant      | `String`          | `'default'` | Visual variant: 'default', 'filled'              |
+| marks        | `Array`           | `[]`        | Marks for specific values                        |
+| formatValue  | `Function`        | `null`      | Function to format the display of values         |
+
+#### Events
+
+- `@update:modelValue`: Emitted when the slider value changes
+- `@change`: Emitted when the user changes the value
+- `@mounted`: Emitted when the component is mounted, passes the slider reference
+
+#### Basic Examples
+
+```vue
+<!-- Simple slider -->
+<BaseSlider v-model="volume" label="Volume" />
+
+<!-- Slider with value formatting -->
+<BaseSlider
+  v-model="price"
+  :min="0"
+  :max="1000"
+  :format-value="(val) => `$${val.toFixed(2)}`"
+  label="Price"
+/>
+
+<!-- Slider with marks -->
+<BaseSlider
+  v-model="rating"
+  :min="0"
+  :max="5"
+  :step="0.5"
+  :marks="[
+    { value: 0, label: 'Poor' },
+    { value: 2.5, label: 'Average' },
+    { value: 5, label: 'Excellent' },
+  ]"
+  label="Rating"
+/>
+
+<!-- Range slider -->
+<BaseSlider
+  v-model="priceRange"
+  :min="0"
+  :max="1000"
+  range
+  :format-value="(val) => `$${val}`"
+  label="Price Range"
+/>
+
+<!-- Slider with error state -->
+<BaseSlider
+  v-model="value"
+  state="error"
+  error-message="Please select a higher value"
+  label="Value"
+/>
+```
+
+#### Validation Example
+
+```vue
+<template>
+  <form @submit.prevent="handleSubmit">
+    <BaseSlider
+      v-model="formData.budget"
+      label="Budget"
+      :min="100"
+      :max="10000"
+      :step="100"
+      :format-value="(val) => `$${val.toLocaleString()}`"
+      :marks="[
+        { value: 1000, label: 'Basic' },
+        { value: 5000, label: 'Intermediate' },
+        { value: 10000, label: 'Premium' },
+      ]"
+      @mounted="(ref) => registerSlider('budget', ref)"
+    />
+
+    <BaseButton type="submit">Submit</BaseButton>
+  </form>
+</template>
+
+<script setup>
+const formRefs = ref({})
+
+const registerSlider = (name, ref) => {
+  if (ref) {
+    formRefs.value[name] = ref
+  }
+}
+
+const validateForm = () => {
+  let isValid = true
+
+  // Validate if budget is at least 1000
+  const budgetRef = formRefs.value.budget
+  if (budgetRef && budgetRef.getValue() < 1000) {
+    budgetRef.setError('Minimum budget is $1,000')
+    isValid = false
+  }
+
+  return isValid
+}
+
+const handleSubmit = () => {
+  if (validateForm()) {
+    console.log('Form is valid, submitting...')
+  }
+}
+</script>
+```
+
 ### BaseDropdown
 
 Customizable dropdown menu component that provides a toggleable menu with positioning and click handling.

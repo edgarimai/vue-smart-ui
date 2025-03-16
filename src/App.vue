@@ -11,6 +11,7 @@ import {
   BaseInput,
   BaseCheckbox,
   BaseTextarea,
+  BaseSlider,
 } from './components'
 import { useToast } from '@/composables/toast'
 
@@ -57,6 +58,10 @@ const pageState = reactive({
     selectedFruits: [],
     selectAll: false,
     someSelected: false,
+  },
+  slider: {
+    value: 0,
+    range: [0, 1000],
   },
   infiniteScroll: {
     items: [],
@@ -137,7 +142,6 @@ const formRefs = ref({})
 
 const validateForm = () => {
   let isValid = true
-  console.log(formRefs.value)
   // Validate all registered inputs
   Object.values(formRefs.value).forEach((input) => {
     console.log(input)
@@ -650,6 +654,38 @@ const handleSelectAll = (checked) => {
           :indeterminate="someSelected"
           label="Select all"
           @update:model-value="handleSelectAll"
+        />
+      </div>
+    </div>
+
+    <hr />
+
+    <div class="slider-container">
+      <h2>Slider</h2>
+      <div class="container">
+        <BaseSlider
+          v-model="pageState.slider.value"
+          label="Volume"
+          :min="0"
+          :max="100"
+          :step="5"
+          :marks="[
+            { value: 0, label: 'Min' },
+            { value: 50, label: '50%' },
+            { value: 100, label: 'Max' },
+          ]"
+          :format-value="(val) => `${val}%`"
+        />
+
+        <BaseSlider
+          v-model="pageState.slider.range"
+          label="Price range"
+          :min="0"
+          :max="1000"
+          range
+          :format-value="(val) => `U$ ${val}`"
+          helper-text="Please provide a valid price"
+          error-message="Price must be between 0 and 1000"
         />
       </div>
     </div>

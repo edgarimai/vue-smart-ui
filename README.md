@@ -55,6 +55,7 @@ A versatile and customizable button that supports different variants, sizes, and
 | Prop     | Type    | Default   | Description                                                               |
 | -------- | ------- | --------- | ------------------------------------------------------------------------- |
 | id       | String  | -         | Optional button ID                                                        |
+| type     | String  | 'button'  | Button style. Options: 'button', 'submit', 'reset'                        |
 | variant  | String  | 'primary' | Button style. Options: 'primary', 'secondary', 'gray', 'outline', 'ghost' |
 | size     | String  | 'medium'  | Button size. Options: 'small', 'medium', 'large', 'auto'                  |
 | block    | Boolean | false     | If true, button will take 100% of available width                         |
@@ -515,7 +516,7 @@ Features:
 
 ```vue
 <script setup>
-import { useToast } from '@/composables/toast'
+import { useToast } from 'vue-smart-ui'
 
 const toast = useToast()
 const showToast = () => {

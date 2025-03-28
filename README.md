@@ -2,6 +2,16 @@
 
 A library of reusable and highly customizable Vue components.
 
+## 📱 Examples
+
+Visit our website to see examples for all components:
+
+[https://vuesmartui.edgarimai.com/](https://vuesmartui.edgarimai.com/)
+
+Here you will find:
+- Interactive demonstrations of each component
+- Available customization options
+
 ## 🚀 How to Use
 
 1. Install the package

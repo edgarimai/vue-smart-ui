@@ -406,6 +406,7 @@ const handleSelectAll = (checked) => {
         <div class="select-group">
           <label>Variant:</label>
           <select v-model="pageState.toast.variant">
+            <option value="default">Default</option>
             <option value="success">Success</option>
             <option value="error">Error</option>
             <option value="warning">Warning</option>

@@ -314,12 +314,12 @@ onMounted(() => {
     width: 100%;
     padding: var(--textarea-padding, 0.625rem 0.75rem);
     font-size: var(--textarea-font-size, 0.875rem);
-    font-family: var(--textarea-font-family, inherit);
     line-height: var(--textarea-line-height, 1.5);
     color: var(--textarea-text-color, #111827);
     border: none;
     background-color: transparent;
     box-sizing: border-box;
+    font-family: var(--font-family-base, inherit);
 
     &:focus {
       outline: none;

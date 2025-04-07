@@ -9,6 +9,7 @@ Visit our website to see examples for all components:
 [https://vuesmartui.edgarimai.com/](https://vuesmartui.edgarimai.com/)
 
 Here you will find:
+
 - Interactive demonstrations of each component
 - Available customization options
 
@@ -71,6 +72,7 @@ A versatile and customizable button that supports different variants, sizes, and
 | block    | Boolean | false     | If true, button will take 100% of available width                         |
 | disabled | Boolean | false     | Disables the button                                                       |
 | loading  | Boolean | false     | Shows a loading indicator                                                 |
+| iconOnly | Boolean | false     | If true, button will be square with no padding                            |
 
 #### Slots
 

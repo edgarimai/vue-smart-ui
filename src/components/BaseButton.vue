@@ -33,6 +33,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  iconOnly: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const { autoId } = useAutoId('button', props)
@@ -50,6 +54,7 @@ defineEmits(['click'])
       {
         'base-button--block': block,
         'base-button--disabled': disabled || loading,
+        'base-button--icon-only': iconOnly,
       },
     ]"
     :disabled="disabled || loading"
@@ -127,6 +132,28 @@ defineEmits(['click'])
 
     &:hover:not(:disabled) {
       opacity: 0.8;
+    }
+  }
+
+  &--icon-only {
+    aspect-ratio: 1/1;
+
+    &.base-button--small {
+      width: 2rem;
+      height: 2rem;
+      padding: 0;
+    }
+
+    &.base-button--medium {
+      width: 2.5rem;
+      height: 2.5rem;
+      padding: 0;
+    }
+
+    &.base-button--large {
+      width: 3rem;
+      height: 3rem;
+      padding: 0;
     }
   }
 

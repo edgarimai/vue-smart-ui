@@ -148,7 +148,7 @@ onUnmounted(() => {
 
   // Variants
   &--default {
-    background-color: white;
+    background-color: var(--popup-default-bg, white);
     border: 1px solid var(--popup-border-color, #e5e7eb);
   }
 

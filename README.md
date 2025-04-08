@@ -819,7 +819,7 @@ Customizable modal/popup component with support for different variants, animatio
 | variant             | `string`  | `default` | Popup style variant - 'default', 'info', 'success', 'warning', 'error' |
 | size                | `string`  | `medium`  | Size of the popup - 'small', 'medium', 'large'                         |
 | position            | `string`  | `center`  | Position of the popup - 'center', 'top', 'bottom', 'left', 'right'     |
-| closeOnClickOutside | `boolean` | `true`    | Whether clicking outside closes the popup                              |
+| disableClickOutside | `boolean` | `false`   | Whether clicking outside closes the popup                              |
 | closeOnEsc          | `boolean` | `true`    | Whether pressing Escape key closes the popup                           |
 
 #### Slots

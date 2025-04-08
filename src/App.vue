@@ -23,6 +23,7 @@ const pageState = reactive({
     size: 'medium',
     position: 'center',
     show: false,
+    disableClickOutside: false,
   },
   toast: {
     variant: 'success',
@@ -389,6 +390,8 @@ const handleSelectAll = (checked) => {
             <option value="right">Right</option>
           </select>
         </div>
+
+        <BaseCheckbox v-model="pageState.popup.disableClickOutside" label="Disable click outside" />
         <BaseButton variant="primary" @click="pageState.popup.show = true"> Open Popup </BaseButton>
       </div>
       <BasePopup
@@ -396,6 +399,7 @@ const handleSelectAll = (checked) => {
         :variant="pageState.popup.variant"
         :size="pageState.popup.size"
         :position="pageState.popup.position"
+        :disable-click-outside="pageState.popup.disableClickOutside"
       >
         <template #header>
           <p style="font-size: 1.2rem; font-weight: bold; text-align: center; margin-block: 0.5rem">

@@ -65,7 +65,7 @@ defineEmits(['click'])
       <slot v-else name="prefix" />
     </template>
 
-    <slot />
+    <slot v-if="!iconOnly" />
 
     <template v-if="$slots.suffix">
       <div v-if="loading" class="spinner"></div>

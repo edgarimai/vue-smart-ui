@@ -173,8 +173,8 @@ onUnmounted(() => {
   // Variants
   &--default {
     background-color: var(--toast-default-bg, #fff);
-    border: 1px solid var(--toast-border-color, #e5e7eb);
-    color: var(--toast-text-color, #1f2937);
+    border: 1px solid var(--toast-default-color, #e5e7eb);
+    color: var(--toast-default-text, #1f2937);
   }
 
   &--info {
@@ -247,7 +247,7 @@ onUnmounted(() => {
     animation: progress linear forwards;
 
     &--default {
-      background-color: var(--toast-default-bg, #9ca3af);
+      background-color: var(--toast-default-color, #9ca3af);
     }
 
     &--info {

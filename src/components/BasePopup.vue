@@ -21,9 +21,9 @@ const props = defineProps({
     default: 'center',
     validator: (value) => ['center', 'top', 'bottom', 'left', 'right'].includes(value),
   },
-  closeOnClickOutside: {
+  disableClickOutside: {
     type: Boolean,
-    default: true,
+    default: false,
   },
   closeOnEsc: {
     type: Boolean,
@@ -36,7 +36,7 @@ const emit = defineEmits(['update:modelValue', 'close'])
 const popupRef = ref(null)
 
 const handleClickOutside = (event) => {
-  if (props.closeOnClickOutside && popupRef.value && !popupRef.value.contains(event.target)) {
+  if (!props.disableClickOutside && popupRef.value && !popupRef.value.contains(event.target)) {
     const clickedInAnyPopup = event.target.closest('.base-popup')
     if (!clickedInAnyPopup) {
       emit('update:modelValue', false)
@@ -148,7 +148,7 @@ onUnmounted(() => {
 
   // Variants
   &--default {
-    background-color: white;
+    background-color: var(--popup-default-bg, white);
     border: 1px solid var(--popup-border-color, #e5e7eb);
   }
 

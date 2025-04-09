@@ -106,7 +106,7 @@ onUnmounted(() => {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 1rem;
+    padding: 2rem 1rem;
     gap: 0.5rem;
     color: #6b7280;
 
@@ -124,7 +124,7 @@ onUnmounted(() => {
 
   &__end {
     text-align: center;
-    padding: 1rem;
+    padding: 2rem 1rem;
     color: #6b7280;
   }
 

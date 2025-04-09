@@ -2,6 +2,17 @@
 
 A library of reusable and highly customizable Vue components.
 
+## 📱 Examples
+
+Visit our website to see examples for all components:
+
+[https://vuesmartui.edgarimai.com/](https://vuesmartui.edgarimai.com/)
+
+Here you will find:
+
+- Interactive demonstrations of each component
+- Available customization options
+
 ## 🚀 How to Use
 
 1. Install the package
@@ -55,11 +66,13 @@ A versatile and customizable button that supports different variants, sizes, and
 | Prop     | Type    | Default   | Description                                                               |
 | -------- | ------- | --------- | ------------------------------------------------------------------------- |
 | id       | String  | -         | Optional button ID                                                        |
+| type     | String  | 'button'  | Button style. Options: 'button', 'submit', 'reset'                        |
 | variant  | String  | 'primary' | Button style. Options: 'primary', 'secondary', 'gray', 'outline', 'ghost' |
 | size     | String  | 'medium'  | Button size. Options: 'small', 'medium', 'large', 'auto'                  |
 | block    | Boolean | false     | If true, button will take 100% of available width                         |
 | disabled | Boolean | false     | Disables the button                                                       |
 | loading  | Boolean | false     | Shows a loading indicator                                                 |
+| iconOnly | Boolean | false     | If true, button will be square with no padding                            |
 
 #### Slots
 
@@ -515,7 +528,7 @@ Features:
 
 ```vue
 <script setup>
-import { useToast } from '@/composables/toast'
+import { useToast } from 'vue-smart-ui'
 
 const toast = useToast()
 const showToast = () => {
@@ -806,7 +819,7 @@ Customizable modal/popup component with support for different variants, animatio
 | variant             | `string`  | `default` | Popup style variant - 'default', 'info', 'success', 'warning', 'error' |
 | size                | `string`  | `medium`  | Size of the popup - 'small', 'medium', 'large'                         |
 | position            | `string`  | `center`  | Position of the popup - 'center', 'top', 'bottom', 'left', 'right'     |
-| closeOnClickOutside | `boolean` | `true`    | Whether clicking outside closes the popup                              |
+| disableClickOutside | `boolean` | `false`   | Whether clicking outside closes the popup                              |
 | closeOnEsc          | `boolean` | `true`    | Whether pressing Escape key closes the popup                           |
 
 #### Slots

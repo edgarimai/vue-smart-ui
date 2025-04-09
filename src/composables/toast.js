@@ -57,6 +57,7 @@ export function useToast() {
     addToast,
     removeToast,
     // Convenience methods
+    default: (message, options = {}) => addToast({ ...options, message, variant: 'default' }),
     success: (message, options = {}) => addToast({ ...options, message, variant: 'success' }),
     error: (message, options = {}) => addToast({ ...options, message, variant: 'error' }),
     info: (message, options = {}) => addToast({ ...options, message, variant: 'info' }),

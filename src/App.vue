@@ -23,6 +23,7 @@ const pageState = reactive({
     size: 'medium',
     position: 'center',
     show: false,
+    disableClickOutside: false,
   },
   toast: {
     variant: 'success',
@@ -270,6 +271,30 @@ const handleSelectAll = (checked) => {
       </div>
       <h3>Button with icons</h3>
       <div class="container">
+        <!-- Button icon only-->
+        <BaseButton
+          variant="primary"
+          icon-only
+          @click="handleSaveWithLoading"
+          :loading="pageState.isLoading && pageState.isLoadingEnabled"
+        >
+          <template #prefix>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="22"
+              height="22"
+              viewBox="0 0 22 22"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M17 12h-14" />
+              <path d="m10 5-7 7 7 7" />
+            </svg>
+          </template>
+        </BaseButton>
         <!-- Button with icon left-->
         <BaseButton
           variant="primary"
@@ -294,7 +319,7 @@ const handleSelectAll = (checked) => {
             </svg>
           </template>
         </BaseButton>
-        <!-- Button with icon -->
+        <!-- Button with icon right-->
         <BaseButton
           variant="primary"
           @click="handleSaveWithLoading"
@@ -365,6 +390,8 @@ const handleSelectAll = (checked) => {
             <option value="right">Right</option>
           </select>
         </div>
+
+        <BaseCheckbox v-model="pageState.popup.disableClickOutside" label="Disable click outside" />
         <BaseButton variant="primary" @click="pageState.popup.show = true"> Open Popup </BaseButton>
       </div>
       <BasePopup
@@ -372,6 +399,7 @@ const handleSelectAll = (checked) => {
         :variant="pageState.popup.variant"
         :size="pageState.popup.size"
         :position="pageState.popup.position"
+        :disable-click-outside="pageState.popup.disableClickOutside"
       >
         <template #header>
           <p style="font-size: 1.2rem; font-weight: bold; text-align: center; margin-block: 0.5rem">
@@ -406,6 +434,7 @@ const handleSelectAll = (checked) => {
         <div class="select-group">
           <label>Variant:</label>
           <select v-model="pageState.toast.variant">
+            <option value="default">Default</option>
             <option value="success">Success</option>
             <option value="error">Error</option>
             <option value="warning">Warning</option>

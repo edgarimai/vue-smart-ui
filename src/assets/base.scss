@@ -1,5 +1,6 @@
-// Variables with default values that can be overridden
-:root {
+.vsui {
+  // Variables with default values that can be overridden
+
   // Base colors
   --color-primary: #3b82f6;
   --color-primary-dark: #2563eb;
@@ -254,8 +255,6 @@
   --slider-warning-ring-color: rgba(245, 158, 11, 0.1);
 
   --slider-filled-bg: var(--bg-muted);
-}
 
-.vsui {
   font-family: var(--font-family-base);
 }

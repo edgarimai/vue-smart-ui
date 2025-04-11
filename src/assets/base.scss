@@ -78,20 +78,20 @@
     --color-info-light: #1e3a8a;
 
     --color-success: #4ade80;
-    --color-success-dark: #22c55e;
+    --color-success-dark: var(--text-default);
     --color-success-light: #14532d;
 
     --color-warning: #fbbf24;
-    --color-warning-dark: #f59e0b;
+    --color-warning-dark: var(--text-default);
     --color-warning-light: #78350f;
 
     --color-error: #f87171;
-    --color-error-dark: #ef4444;
+    --color-error-dark: var(--text-default);
     --color-error-light: #7f1d1d;
 
     // Dark mode background colors
-    --bg-default: #1f2937;
-    --bg-subtle: #111827;
+    --bg-default: #111827;
+    --bg-subtle: #1f2937;
     --bg-muted: #374151;
     --bg-emphasized: #4b5563;
     --bg-disabled: #374151;
@@ -213,7 +213,8 @@
   --input-required-color: var(--color-error);
   --input-helper-color: var(--text-subtle);
   --input-border-color: var(--border-strong);
-  --input-bg: var(--color-white);
+  --input-bg: var(--bg-subtle);
+  --input-text-color: var(--text-default);
   --input-focus-border-color: var(--color-primary);
   --input-focus-ring-color: rgba(59, 130, 246, 0.1);
   --input-placeholder-color: var(--text-disabled);
@@ -235,7 +236,7 @@
   --checkbox-border-color: var(--border-strong);
   --checkbox-hover-border-color: var(--bg-emphasized);
   --checkbox-border-radius: 0.25rem;
-  --checkbox-bg: var(--color-white);
+  --checkbox-bg: var(--bg-subtle);
   --checkbox-check: var(--text-muted);
   --checkbox-text: var(--text-muted);
   --checkbox-small-font-size: 0.875rem;
@@ -249,7 +250,7 @@
   --textarea-padding: 0.75rem 1rem;
   --textarea-border-radius: 0.5rem;
 
-  --textarea-bg: var(--color-white);
+  --textarea-bg: var(--bg-subtle);
   --textarea-text-color: var(--text-default);
   --textarea-border-color: var(--border-strong);
   --textarea-focus-border-color: var(--color-primary);
@@ -316,13 +317,4 @@
   --slider-filled-bg: var(--bg-muted);
 
   font-family: var(--font-family-base);
-
-  // Adjust input and textarea background in dark mode
-  &[data-theme='dark'],
-  &.dark,
-  [data-theme='dark'] & {
-    --input-bg: var(--bg-default);
-    --checkbox-bg: var(--bg-default);
-    --textarea-bg: var(--bg-default);
-  }
 }

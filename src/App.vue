@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, ref, computed } from 'vue'
+import { reactive, ref, computed, onMounted } from 'vue'
 import {
   BaseButton,
   BasePopup,
@@ -16,6 +16,7 @@ import {
 import { useToast } from '@/composables/toast'
 
 const pageState = reactive({
+  isDarkMode: false,
   isLoading: false,
   isLoadingEnabled: false,
   popup: {
@@ -188,10 +189,38 @@ const handleSelectAll = (checked) => {
     }
   })
 }
+
+const toggleDarkMode = (value) => {
+  document.documentElement.classList.toggle('dark', value)
+  const vsuiRoot = document.querySelector('.vsui')
+  if (vsuiRoot) {
+    vsuiRoot.classList.toggle('dark', value)
+  }
+}
+
+onMounted(() => {
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+  pageState.isDarkMode = prefersDark
+  document.documentElement.classList.toggle('dark', prefersDark)
+  const vsuiRoot = document.querySelector('.vsui')
+  if (vsuiRoot) {
+    vsuiRoot.classList.toggle('dark', prefersDark)
+  }
+})
 </script>
 
 <template>
-  <div class="examples">
+  <div class="examples vsui">
+    <div>
+      <h2 style="margin-top: 0">Dark mode</h2>
+      <div class="container">
+        <BaseCheckbox
+          v-model="pageState.isDarkMode"
+          label="Dark Mode"
+          @update:model-value="toggleDarkMode"
+        />
+      </div>
+    </div>
     <div class="button-container">
       <h2>Buttons</h2>
       <h3>Loading on button</h3>
@@ -402,13 +431,21 @@ const handleSelectAll = (checked) => {
         :disable-click-outside="pageState.popup.disableClickOutside"
       >
         <template #header>
-          <p style="font-size: 1.2rem; font-weight: bold; text-align: center; margin-block: 0.5rem">
+          <p
+            style="
+              font-size: 1.2rem;
+              font-weight: bold;
+              text-align: center;
+              margin-block: 0.5rem;
+              color: var(--text-default);
+            "
+          >
             Configured Popup
           </p>
         </template>
         <div class="popup-content">
-          <p>Current configuration:</p>
-          <ul>
+          <p style="color: var(--text-default)">Current configuration:</p>
+          <ul style="color: var(--text-default)">
             <li>Variant: {{ pageState.popup.variant }}</li>
             <li>Size: {{ pageState.popup.size }}</li>
             <li>Position: {{ pageState.popup.position }}</li>
@@ -420,7 +457,7 @@ const handleSelectAll = (checked) => {
           </div>
         </template>
         <template #close>
-          <span>&times;</span>
+          <span style="color: var(--text-default)">&times;</span>
         </template>
       </BasePopup>
     </div>
@@ -501,13 +538,15 @@ const handleSelectAll = (checked) => {
         <!-- Button -->
         <BaseSkeleton variant="button" rounded />
       </div>
-      <table>
-        <tr v-for="n in 5" :key="n">
-          <td><BaseSkeleton variant="text" width="100px" /></td>
-          <td><BaseSkeleton variant="text" width="200px" /></td>
-          <td><BaseSkeleton variant="text" width="150px" /></td>
-        </tr>
-      </table>
+      <div class="container">
+        <table>
+          <tr v-for="n in 5" :key="n">
+            <td><BaseSkeleton variant="text" width="100px" /></td>
+            <td><BaseSkeleton variant="text" width="200px" /></td>
+            <td><BaseSkeleton variant="text" width="150px" /></td>
+          </tr>
+        </table>
+      </div>
     </div>
 
     <hr />
@@ -535,67 +574,64 @@ const handleSelectAll = (checked) => {
     <div class="input-container">
       <h2>Inputs</h2>
       <!-- Basic required validation -->
-      <BaseInput
-        v-model="pageState.input.name"
-        label="Name"
-        :rules="['required']"
-        @mounted="(ref) => registerInput('name', ref)"
-      />
-
-      <!-- Email validation -->
-      <BaseInput
-        v-model="pageState.input.email"
-        label="Email"
-        :rules="['required', 'email']"
-        @mounted="(ref) => registerInput('email', ref)"
-      />
-
-      <!-- Multiple rules with custom messages -->
-      <BaseInput
-        v-model="pageState.input.password"
-        type="password"
-        label="Password"
-        :rules="[
-          { required: true, message: 'Password is required' },
-          { min: 8, message: 'Password must be at least 8 characters' },
-        ]"
-        @mounted="(ref) => registerInput('password', ref)"
-      />
-
-      <!-- Custom validator -->
-      <BaseInput
-        v-model="pageState.input.username"
-        label="Username"
-        :rules="[
-          {
-            validator: (value) => /^[a-z0-9]+$/.test(value),
-            message: 'Username can only contain lowercase letters and numbers',
-          },
-          {
-            validator: (value) => value.length >= 3,
-            message: 'Username must be at least 3 characters long',
-          },
-        ]"
-      />
-
-      <!-- Phone mask -->
-      <BaseInput
-        v-model="pageState.input.phone"
-        label="Phone"
-        :rules="['required', 'pattern: ^\\d{10}$']"
-        @mounted="(ref) => registerInput('phone', ref)"
-        mask="phone"
-        placeholder="(00) 00000-0000"
-      />
-
-      <!-- Currency mask -->
-      <BaseInput
-        v-model="pageState.input.price"
-        label="Price"
-        mask="currency"
-        placeholder="R$ 0,00"
-      />
-      <BaseButton variant="primary" @click="handleSubmit">Submit</BaseButton>
+      <div style="padding-inline: 20px">
+        <BaseInput
+          v-model="pageState.input.name"
+          label="Name"
+          :rules="['required']"
+          @mounted="(ref) => registerInput('name', ref)"
+        />
+        <!-- Email validation -->
+        <BaseInput
+          v-model="pageState.input.email"
+          label="Email"
+          :rules="['required', 'email']"
+          @mounted="(ref) => registerInput('email', ref)"
+        />
+        <!-- Multiple rules with custom messages -->
+        <BaseInput
+          v-model="pageState.input.password"
+          type="password"
+          label="Password"
+          :rules="[
+            { required: true, message: 'Password is required' },
+            { min: 8, message: 'Password must be at least 8 characters' },
+          ]"
+          @mounted="(ref) => registerInput('password', ref)"
+        />
+        <!-- Custom validator -->
+        <BaseInput
+          v-model="pageState.input.username"
+          label="Username"
+          :rules="[
+            {
+              validator: (value) => /^[a-z0-9]+$/.test(value),
+              message: 'Username can only contain lowercase letters and numbers',
+            },
+            {
+              validator: (value) => value.length >= 3,
+              message: 'Username must be at least 3 characters long',
+            },
+          ]"
+        />
+        <!-- Phone mask -->
+        <BaseInput
+          v-model="pageState.input.phone"
+          label="Phone"
+          :rules="['required', 'pattern: ^\d{10}$']"
+          @mounted="(ref) => registerInput('phone', ref)"
+          mask="phone"
+          placeholder="(00) 00000-0000"
+        />
+        <!-- Currency mask -->
+        <BaseInput
+          v-model="pageState.input.price"
+          label="Price"
+          mask="currency"
+          placeholder="R$ 0,00"
+        />
+        <BaseButton variant="primary" @click="handleSubmit">Submit</BaseButton>
+      </div>
     </div>
 
     <hr />
@@ -603,42 +639,40 @@ const handleSelectAll = (checked) => {
     <div class="textarea-container">
       <h2>Textarea</h2>
 
-      <BaseTextarea
-        v-model="pageState.textarea.content1"
-        label="Simple textarea"
-        placeholder="Enter your description"
-      />
-
-      <BaseTextarea
-        v-model="pageState.textarea.content2"
-        label="With validation and helper text"
-        :rules="['required', { min: 10, message: 'Comment must be at least 10 characters' }]"
-        validate-on-input
-        helper-text="Please provide detailed feedback"
-      />
-
-      <BaseTextarea
-        v-model="pageState.textarea.content3"
-        label="Auto-resizing textarea full width"
-        :rows="3"
-        :max-rows="10"
-        auto-resize
-        block
-      />
-
-      <BaseTextarea
-        v-model="pageState.textarea.content4"
-        label="Filled variant"
-        variant="filled"
-        placeholder="Add your notes here"
-      />
-
-      <BaseTextarea
-        v-model="pageState.textarea.content5"
-        label="Resizable"
-        resize="both"
-        :rows="4"
-      />
+      <div style="padding-inline: 20px">
+        <BaseTextarea
+          v-model="pageState.textarea.content1"
+          label="Simple textarea"
+          placeholder="Enter your description"
+        />
+        <BaseTextarea
+          v-model="pageState.textarea.content2"
+          label="With validation and helper text"
+          :rules="['required', { min: 10, message: 'Comment must be at least 10 characters' }]"
+          validate-on-input
+          helper-text="Please provide detailed feedback"
+        />
+        <BaseTextarea
+          v-model="pageState.textarea.content3"
+          label="Auto-resizing textarea full width"
+          :rows="3"
+          :max-rows="10"
+          auto-resize
+          block
+        />
+        <BaseTextarea
+          v-model="pageState.textarea.content4"
+          label="Filled variant"
+          variant="filled"
+          placeholder="Add your notes here"
+        />
+        <BaseTextarea
+          v-model="pageState.textarea.content5"
+          label="Resizable"
+          resize="both"
+          :rows="4"
+        />
+      </div>
     </div>
 
     <hr />
@@ -723,52 +757,60 @@ const handleSelectAll = (checked) => {
 
     <div class="infinite-scroll-container">
       <h2>Infinite Scroll</h2>
-      <BaseInfiniteScroll
-        :loading="pageState.infiniteScroll.loading"
-        :disabled="!pageState.infiniteScroll.hasMore"
-        @load-more="loadMore"
-      >
-        <!-- Items list -->
-        <div class="items-grid">
-          <div v-for="item in pageState.infiniteScroll.items" :key="item.id" class="item">
-            {{ item.title }}
+      <div style="padding-inline: 20px">
+        <BaseInfiniteScroll
+          :loading="pageState.infiniteScroll.loading"
+          :disabled="!pageState.infiniteScroll.hasMore"
+          @load-more="loadMore"
+        >
+          <!-- Items list -->
+          <div class="items-grid">
+            <div v-for="item in pageState.infiniteScroll.items" :key="item.id" class="item">
+              {{ item.title }}
+            </div>
           </div>
-        </div>
-
-        <!-- Custom loading -->
-        <!-- <template #loading>
-          <div class="custom-loader">Loading more items...</div>
-        </template> -->
-
-        <!-- Custom end message -->
-        <!-- <template #disabled>
-          <div class="end-message">There are no more items to load</div>
-        </template> -->
-      </BaseInfiniteScroll>
+          <!-- Custom loading -->
+          <!-- <template #loading>
+            <div class="custom-loader">Loading more items...</div>
+          </template> -->
+          <!-- Custom end message -->
+          <!-- <template #disabled>
+            <div class="end-message">There are no more items to load</div>
+          </template> -->
+        </BaseInfiniteScroll>
+      </div>
     </div>
   </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
+body {
+  margin-top: 0;
+}
 .examples {
+  background-color: var(--bg-default);
   padding-bottom: 10rem;
+
   h2,
   h3 {
     text-align: center;
     margin-bottom: 1rem;
+    color: var(--text-default);
   }
+
+  label {
+    color: var(--text-default);
+  }
+
   .container {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 25px;
+    padding-inline: 20px;
 
     &.vertical {
       flex-direction: column;
-    }
-
-    button {
-      margin-inline: 1rem;
     }
 
     .select-group {
@@ -778,6 +820,28 @@ const handleSelectAll = (checked) => {
 
   hr {
     margin-block: 2rem;
+  }
+
+  .popup-container {
+    p,
+    ul,
+    li {
+      color: var(--text-default);
+    }
+  }
+
+  .dropdown-container {
+    .base-dropdown-item {
+      color: var(--text-default);
+    }
+  }
+
+  .infinite-scroll-container {
+    .items-grid {
+      .item {
+        color: var(--text-default);
+      }
+    }
   }
 }
 </style>

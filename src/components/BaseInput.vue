@@ -447,6 +447,7 @@ onMounted(() => {
     font-size: var(--input-field-font-size);
     border: none;
     background-color: transparent;
+    color: var(--input-text-color, #374151);
     font-family: var(--font-family-base, inherit);
 
     &:focus {

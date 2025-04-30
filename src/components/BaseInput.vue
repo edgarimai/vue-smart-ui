@@ -289,6 +289,11 @@ const handleInput = (event) => {
   }
 }
 
+const handleEnter = (event) => {
+  isFocused.value = true
+  emit('enter', event)
+}
+
 const handleFocus = (event) => {
   isFocused.value = true
   emit('focus', event)
@@ -390,6 +395,7 @@ onMounted(() => {
         @input="handleInput"
         @focus="handleFocus"
         @blur="handleBlur"
+        @keydown.enter="handleEnter"
       />
 
       <div v-if="$slots.suffix || suffixIcon" class="base-input__suffix">

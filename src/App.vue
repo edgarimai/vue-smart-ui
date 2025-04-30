@@ -635,6 +635,7 @@ onMounted(() => {
           label="Price"
           mask="currency"
           placeholder="R$ 0,00"
+          @enter="handleSubmit"
         />
         <BaseButton variant="primary" @click="handleSubmit">Submit</BaseButton>
       </div>

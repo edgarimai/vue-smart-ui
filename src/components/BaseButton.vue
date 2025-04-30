@@ -61,18 +61,16 @@ defineEmits(['click'])
     @click="$emit('click', $event)"
   >
     <template v-if="$slots.prefix">
-      <div v-if="loading" class="spinner"></div>
-      <slot v-else name="prefix" />
+      <slot name="prefix" v-if="!(loading && iconOnly)" />
     </template>
 
-    <slot v-if="!iconOnly" />
+    <slot v-if="!(loading && iconOnly)" />
 
     <template v-if="$slots.suffix">
-      <div v-if="loading" class="spinner"></div>
-      <slot v-else name="suffix" />
+      <slot name="suffix" v-if="!(loading && iconOnly)" />
     </template>
 
-    <div v-if="loading && !$slots.prefix && !$slots.suffix" class="spinner"></div>
+    <div v-if="loading" class="spinner"></div>
   </button>
 </template>
 
@@ -198,11 +196,12 @@ defineEmits(['click'])
   .spinner {
     width: 1em;
     height: 1em;
-    border: 2px solid currentColor;
+    border: 3px solid currentColor;
     border-bottom-color: transparent;
     border-radius: 50%;
     display: inline-block;
     animation: rotation 1s linear infinite;
+    position: absolute;
   }
 
   @keyframes rotation {

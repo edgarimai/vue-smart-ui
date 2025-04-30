@@ -307,22 +307,20 @@ onMounted(() => {
           @click="handleSaveWithLoading"
           :loading="pageState.isLoading && pageState.isLoadingEnabled"
         >
-          <template #prefix>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="22"
-              height="22"
-              viewBox="0 0 22 22"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path d="M17 12h-14" />
-              <path d="m10 5-7 7 7 7" />
-            </svg>
-          </template>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="22"
+            height="22"
+            viewBox="0 0 22 22"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M17 12h-14" />
+            <path d="m10 5-7 7 7 7" />
+          </svg>
         </BaseButton>
         <!-- Button with icon left-->
         <BaseButton
@@ -376,9 +374,17 @@ onMounted(() => {
       <h3>Others</h3>
       <div class="container">
         <!-- Disabled button -->
-        <BaseButton disabled>Disabled button</BaseButton>
+        <BaseButton disabled :loading="pageState.isLoading && pageState.isLoadingEnabled"
+          >Disabled button</BaseButton
+        >
         <!-- Button that takes full width -->
-        <BaseButton block style="margin: 1rem 0">Block button</BaseButton>
+        <BaseButton
+          block
+          @click="handleSaveWithLoading"
+          :loading="pageState.isLoading && pageState.isLoadingEnabled"
+          style="margin: 1rem 0"
+          >Block button</BaseButton
+        >
       </div>
     </div>
 

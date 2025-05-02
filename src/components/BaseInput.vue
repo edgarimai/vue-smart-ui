@@ -78,6 +78,14 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  min: {
+    type: [Number, String],
+    default: null,
+  },
+  max: {
+    type: [Number, String],
+    default: null,
+  },
   mask: {
     type: [String, Object],
     default: null,
@@ -123,6 +131,14 @@ const validators = {
     valid: !value || new RegExp(pattern).test(value),
     message: 'Invalid format',
   }),
+  minValue: (value, min) => ({
+    valid: !value || Number(value) >= min,
+    message: `Value must be at least ${min}`,
+  }),
+  maxValue: (value, max) => ({
+    valid: !value || Number(value) <= max,
+    message: `Value must be no more than ${max}`,
+  }),
 }
 
 // Validation logic
@@ -144,6 +160,7 @@ const validate = (value) => {
 
     if (typeof rule === 'object') {
       const [validatorName, config] = Object.entries(rule)[0]
+      console.log(validatorName, config)
       const validator = validators[validatorName]
 
       if (validator) {
@@ -391,6 +408,8 @@ onMounted(() => {
         :required="isRequired"
         :aria-required="isRequired"
         :maxlength="maxLength"
+        :min="min"
+        :max="max"
         class="base-input__field"
         @input="handleInput"
         @focus="handleFocus"

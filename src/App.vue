@@ -496,8 +496,17 @@ onMounted(() => {
           </select>
         </div>
         <div class="select-group">
-          <label>Duration:</label>
-          <input type="number" v-model="pageState.toast.duration" />
+          <BaseInput
+            v-model="pageState.toast.duration"
+            label="Duration"
+            type="number"
+            :min="100"
+            :max="10000"
+            :rules="[
+              { minValue: 100, message: 'Minimum value is 100' },
+              { maxValue: 10000, message: 'Maximum value is 10000' },
+            ]"
+          />
         </div>
         <div class="select-group">
           <BaseCheckbox v-model="pageState.toast.simple" label="Simple toast" />

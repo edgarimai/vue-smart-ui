@@ -740,6 +740,91 @@ const handleSubmit = () => {
 </script>
 ```
 
+### BaseSegmentedButtons
+
+A customizable segmented button control that displays a set of options in a connected button group. Perfect for toggling between different options or selecting multiple values from a set of related choices.
+
+Features:
+
+- Single or multiple selection modes
+- Support for string, number, or object options
+- Customizable appearance with different variants and sizes
+- Proper styling for connected buttons with rounded corners at ends
+- Consistent with other form components
+
+#### Props
+
+| Prop       | Type                         | Default     | Description                                                   |
+| ---------- | ---------------------------- | ----------- | ------------------------------------------------------------- |
+| modelValue | `String \| Number \| Array`  | `[]`        | Selected value(s) (v-model binding)                           |
+| options    | `Array`                      | `[]`        | Array of options to display as buttons                        |
+| valueKey   | `String`                     | `'value'`   | Property name to use as value when options are objects        |
+| labelKey   | `String`                     | `'label'`   | Property name to use as display text when options are objects |
+| variant    | `String`                     | `'primary'` | Visual style. Options: 'primary', 'secondary', 'gray'         |
+| size       | `String`                     | `'medium'`  | Button size. Options: 'small', 'medium', 'large'              |
+| disabled   | `Boolean`                    | `false`     | Disables the entire control                                   |
+| block      | `Boolean`                    | `false`     | If true, buttons will expand to fill the container width      |
+| multiple   | `Boolean`                    | `false`     | Enables selection of multiple options                         |
+
+#### Events
+
+- `@update:modelValue`: Emitted when selection changes
+- `@change`: Emitted when selection changes, with the new value
+
+#### Basic Examples
+
+```vue
+<!-- Simple string options -->
+<BaseSegmentedButtons 
+  v-model="selectedFruit" 
+  :options="['apple', 'banana', 'orange']" 
+/>
+
+<!-- Object options -->
+<BaseSegmentedButtons 
+  v-model="selectedColor" 
+  :options="[
+    { value: 'red', label: 'Red' },
+    { value: 'green', label: 'Green' },
+    { value: 'blue', label: 'Blue' }
+  ]" 
+/>
+
+<!-- Multiple selection mode -->
+<BaseSegmentedButtons 
+  v-model="selectedCategories" 
+  :options="['Work', 'Personal', 'Family']" 
+  multiple 
+/>
+
+<!-- Custom variants and sizes -->
+<BaseSegmentedButtons 
+  v-model="alignment" 
+  :options="['Left', 'Center', 'Right']" 
+  variant="secondary" 
+  size="small" 
+/>
+
+<!-- Block display (full width) -->
+<BaseSegmentedButtons 
+  v-model="viewMode" 
+  :options="['List', 'Grid', 'Table']" 
+  block 
+/>
+
+<!-- Custom object keys -->
+<BaseSegmentedButtons 
+  v-model="selectedItem" 
+  :options="[
+    { id: 1, name: 'Option A' },
+    { id: 2, name: 'Option B' },
+    { id: 3, name: 'Option C' }
+  ]"
+  valueKey="id"
+  labelKey="name"
+/>
+```
+
 ### BaseDropdown
 
 Customizable dropdown menu component that provides a toggleable menu with positioning and click handling.

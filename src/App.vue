@@ -12,6 +12,7 @@ import {
   BaseCheckbox,
   BaseTextarea,
   BaseSlider,
+  BaseSegmentedButtons,
 } from './components'
 import { useToast } from '@/composables/toast'
 
@@ -64,6 +65,11 @@ const pageState = reactive({
   slider: {
     value: 0,
     range: [0, 1000],
+  },
+  segmentedButtons: {
+    selectedFruit: null,
+    selectedFruits: [],
+    selectedFruitsObjects: [],
   },
   infiniteScroll: {
     items: [],
@@ -765,6 +771,35 @@ onMounted(() => {
           :format-value="(val) => `U$ ${val}`"
           helper-text="Please provide a valid price"
           error-message="Price must be between 0 and 1000"
+        />
+      </div>
+    </div>
+
+    <hr />
+
+    <div class="segmented-buttons-container">
+      <h2>Segmented Buttons</h2>
+      <div>
+        <BaseSegmentedButtons
+          v-model="pageState.segmentedButtons.selectedFruit"
+          :options="['apple', 'banana', 'orange']"
+          variant="primary"
+          size="large"
+        />
+        <BaseSegmentedButtons
+          v-model="pageState.segmentedButtons.selectedFruits"
+          :options="['apple', 'banana', 'orange']"
+          multiple
+        />
+        <BaseSegmentedButtons
+          v-model="pageState.segmentedButtons.selectedFruitsObjects"
+          :options="[
+            { value: 'apple', label: 'Apple' },
+            { value: 'banana', label: 'Banana' },
+            { value: 'orange', label: 'Orange' },
+            { value: 'pineapple', label: 'Pineapple' },
+          ]"
+          multiple
         />
       </div>
     </div>

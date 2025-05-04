@@ -139,6 +139,22 @@ const validators = {
     valid: !value || Number(value) <= max,
     message: `Value must be no more than ${max}`,
   }),
+  hexColor: (value) => ({
+    valid: !value || /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(value),
+    message: 'Invalid HEX color',
+  }),
+  rgbColor: (value) => ({
+    valid: !value || /^rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)$/.test(value),
+    message: 'Invalid RGB color',
+  }),
+  rgbaColor: (value) => ({
+    valid: !value || /^rgba\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(0|0?\.\d+|1(\.0)?)\s*\)$/.test(value),
+    message: 'Invalid RGBA color',
+  }), 
+  hslColor: (value) => ({
+    valid: !value || /^hsl\(\s*(\d{1,3})\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%\s*\)$/.test(value),
+    message: 'Invalid HSL color',
+  }),
 }
 
 // Validation logic

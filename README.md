@@ -825,6 +825,77 @@ Features:
 />
 ```
 
+### BaseColorPicker
+
+A customizable color picker component that allows users to select colors through an input field, color picker interface, and preset colors.
+
+Features:
+
+- Color preview swatch
+- Text input for direct color code entry
+- Native color picker interface
+- Preset color palette
+- Different variants to match other form components
+- Validation support
+- Dark mode compatible
+
+#### Props
+
+| Prop          | Type      | Default      | Description                                            |
+| ------------- | --------- | ------------ | ------------------------------------------------------ |
+| id            | `String`  | `''`         | Optional color picker ID                               |
+| modelValue    | `String`  | `'#000000'`  | The selected color value (hex, rgb, etc.)              |
+| variant       | `String`  | `'default'`  | Visual style. Options: 'default', 'filled', 'outlined' |
+| state         | `String`  | `null`       | Visual state: 'success', 'error', 'warning'            |
+| label         | `String`  | `null`       | Label text for the color picker                        |
+| disabled      | `Boolean` | `false`      | Disables the color picker                              |
+| readonly      | `Boolean` | `false`      | Makes the control read-only                            |
+| required      | `Boolean` | `false`      | Marks the field as required                            |
+| helperText    | `String`  | `null`       | Helper text displayed below the picker                 |
+| errorMessage  | `String`  | `null`       | Error message to display                               |
+| rules         | `Array`   | `[]`         | Validation rules array                                 |
+| name          | `String`  | `''`         | Input name attribute                                   |
+| format        | `String`  | `'hex'`      | Color format. Options: 'hex', 'rgb', 'rgba', 'hsl'     |
+| showPreview   | `Boolean` | `true`       | Shows color preview swatch                             |
+| presets       | `Array`   | `[]`         | Array of preset colors to display                      |
+
+#### Events
+
+- `@update:modelValue`: Emitted when color value changes
+- `@focus`: Emitted on field focus
+- `@blur`: Emitted on field blur
+- `@input`: Emitted on input
+- `@validation`: Emitted when validation occurs, includes validation status
+- `@mounted`: Emitted when component is mounted, passes component reference
+
+#### Basic Examples
+
+```vue
+<!-- Simple color picker -->
+<BaseColorPicker v-model="color" label="Choose a color" />
+
+<!-- With custom presets -->
+<BaseColorPicker 
+  v-model="themeColor" 
+  label="Theme Color"
+  :presets="['#FF5733', '#33FF57', '#3357FF', '#F3FF33', '#FF33F3']"
+/>
+
+<!-- With validation -->
+<BaseColorPicker
+  v-model="brandColor"
+  label="Brand Color"
+  :rules="['required']"
+  helper-text="Please select a brand color"
+/>
+
+<!-- Without preview -->
+<BaseColorPicker v-model="accentColor" :showPreview="false" label="Accent Color" />
+
+<!-- Filled variant -->
+<BaseColorPicker v-model="backgroundColor" variant="filled" label="Background" />
+```
+
 ### BaseDropdown
 
 Customizable dropdown menu component that provides a toggleable menu with positioning and click handling.

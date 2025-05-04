@@ -13,6 +13,8 @@ import BaseSlider from './components/BaseSlider.vue'
 import BaseTextarea from './components/BaseTextarea.vue'
 import BaseToast from './components/BaseToast.vue'
 import ToastsContainer from './components/ToastsContainer.vue'
+import BaseSegmentedButtons from './components/BaseSegmentedButtons.vue'
+import BaseColorPicker from './components/ColorPicker.vue'
 import { useToast } from './composables/toast'
 
 export default {
@@ -30,6 +32,8 @@ export default {
     app.component('BaseTextarea', BaseTextarea)
     app.component('BaseToast', BaseToast)
     app.component('ToastsContainer', ToastsContainer)
+    app.component('BaseSegmentedButtons', BaseSegmentedButtons)
+    app.component('BaseColorPicker', BaseColorPicker)
   },
 }
 
@@ -47,5 +51,7 @@ export {
   BaseTextarea,
   BaseToast,
   ToastsContainer,
+  BaseSegmentedButtons,
+  BaseColorPicker,
   useToast,
 }

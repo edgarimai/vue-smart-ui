@@ -13,6 +13,7 @@ import {
   BaseTextarea,
   BaseSlider,
   BaseSegmentedButtons,
+  BaseColorPicker,
 } from './components'
 import { useToast } from '@/composables/toast'
 
@@ -70,6 +71,13 @@ const pageState = reactive({
     selectedFruit: null,
     selectedFruits: [],
     selectedFruitsObjects: [],
+  },
+  colorPicker: {
+    color: '#000000',
+    themeColor: '#000000',
+    brandColor: '#000000',
+    accentColor: '#000000',
+    backgroundColor: '#000000',
   },
   infiniteScroll: {
     items: [],
@@ -802,6 +810,50 @@ onMounted(() => {
           multiple
         />
       </div>
+    </div>
+
+    <hr />
+
+    <div class="color-picker-container">
+      <h2>Color Picker</h2>
+
+      <!-- Simple color picker -->
+      <BaseColorPicker v-model="pageState.colorPicker.color" label="Choose a color" />
+
+      <!-- With custom presets -->
+      <BaseColorPicker
+        v-model="pageState.colorPicker.themeColor"
+        label="Theme Color"
+        :presets="['#FF5733', '#33FF57', '#3357FF', '#F3FF33', '#FF33F3']"
+      />
+
+      <!-- With validation -->
+      <BaseColorPicker
+        v-model="pageState.colorPicker.brandColor"
+        label="Brand Color"
+        :rules="['required', 'hexColor']"
+        helper-text="Please select a brand color"
+      />
+
+      <!-- Required with custom message -->
+      <BaseColorPicker
+        v-model="pageState.colorPicker.accentColor"
+        label="Accent Color"
+        :rules="[
+          'required',
+          {
+            hexColor: true,
+            message: 'Please select a valid HEX color',
+          },
+        ]"
+      />
+
+      <!-- Filled variant -->
+      <BaseColorPicker
+        v-model="pageState.colorPicker.backgroundColor"
+        variant="filled"
+        label="Background"
+      />
     </div>
 
     <hr />

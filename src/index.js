@@ -14,7 +14,7 @@ import BaseTextarea from './components/BaseTextarea.vue'
 import BaseToast from './components/BaseToast.vue'
 import ToastsContainer from './components/ToastsContainer.vue'
 import BaseSegmentedButtons from './components/BaseSegmentedButtons.vue'
-import BaseColorPicker from './components/ColorPicker.vue'
+import BaseColorPicker from './components/BaseColorPicker.vue'
 import { useToast } from './composables/toast'
 
 export default {

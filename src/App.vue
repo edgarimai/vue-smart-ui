@@ -798,9 +798,12 @@ onMounted(() => {
           v-model="pageState.segmentedButtons.selectedFruits"
           :options="['apple', 'banana', 'orange']"
           multiple
+          :rules="['required']"
+          helper-text="Select at least one fruit"
         />
         <BaseSegmentedButtons
           v-model="pageState.segmentedButtons.selectedFruitsObjects"
+          label="Select fruits"
           :options="[
             { value: 'apple', label: 'Apple' },
             { value: 'banana', label: 'Banana' },
@@ -808,6 +811,8 @@ onMounted(() => {
             { value: 'pineapple', label: 'Pineapple' },
           ]"
           multiple
+          helper-text="Select at least one fruit"
+          :rules="['required', 'min:2', 'max:3']"
         />
       </div>
     </div>

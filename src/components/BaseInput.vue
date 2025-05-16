@@ -78,6 +78,14 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  min: {
+    type: [Number, String],
+    default: null,
+  },
+  max: {
+    type: [Number, String],
+    default: null,
+  },
   mask: {
     type: [String, Object],
     default: null,
@@ -123,6 +131,30 @@ const validators = {
     valid: !value || new RegExp(pattern).test(value),
     message: 'Invalid format',
   }),
+  minValue: (value, min) => ({
+    valid: !value || Number(value) >= min,
+    message: `Value must be at least ${min}`,
+  }),
+  maxValue: (value, max) => ({
+    valid: !value || Number(value) <= max,
+    message: `Value must be no more than ${max}`,
+  }),
+  hexColor: (value) => ({
+    valid: !value || /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(value),
+    message: 'Invalid HEX color',
+  }),
+  rgbColor: (value) => ({
+    valid: !value || /^rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)$/.test(value),
+    message: 'Invalid RGB color',
+  }),
+  rgbaColor: (value) => ({
+    valid: !value || /^rgba\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(0|0?\.\d+|1(\.0)?)\s*\)$/.test(value),
+    message: 'Invalid RGBA color',
+  }), 
+  hslColor: (value) => ({
+    valid: !value || /^hsl\(\s*(\d{1,3})\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%\s*\)$/.test(value),
+    message: 'Invalid HSL color',
+  }),
 }
 
 // Validation logic
@@ -144,6 +176,7 @@ const validate = (value) => {
 
     if (typeof rule === 'object') {
       const [validatorName, config] = Object.entries(rule)[0]
+      console.log(validatorName, config)
       const validator = validators[validatorName]
 
       if (validator) {
@@ -289,6 +322,11 @@ const handleInput = (event) => {
   }
 }
 
+const handleEnter = (event) => {
+  isFocused.value = true
+  emit('enter', event)
+}
+
 const handleFocus = (event) => {
   isFocused.value = true
   emit('focus', event)
@@ -386,10 +424,13 @@ onMounted(() => {
         :required="isRequired"
         :aria-required="isRequired"
         :maxlength="maxLength"
+        :min="min"
+        :max="max"
         class="base-input__field"
         @input="handleInput"
         @focus="handleFocus"
         @blur="handleBlur"
+        @keydown.enter="handleEnter"
       />
 
       <div v-if="$slots.suffix || suffixIcon" class="base-input__suffix">

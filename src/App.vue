@@ -12,6 +12,8 @@ import {
   BaseCheckbox,
   BaseTextarea,
   BaseSlider,
+  BaseSegmentedButtons,
+  BaseColorPicker,
 } from './components'
 import { useToast } from '@/composables/toast'
 
@@ -64,6 +66,18 @@ const pageState = reactive({
   slider: {
     value: 0,
     range: [0, 1000],
+  },
+  segmentedButtons: {
+    selectedFruit: null,
+    selectedFruits: [],
+    selectedFruitsObjects: [],
+  },
+  colorPicker: {
+    color: '#000000',
+    themeColor: '#000000',
+    brandColor: '#000000',
+    accentColor: '#000000',
+    backgroundColor: '#000000',
   },
   infiniteScroll: {
     items: [],
@@ -307,22 +321,20 @@ onMounted(() => {
           @click="handleSaveWithLoading"
           :loading="pageState.isLoading && pageState.isLoadingEnabled"
         >
-          <template #prefix>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="22"
-              height="22"
-              viewBox="0 0 22 22"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <path d="M17 12h-14" />
-              <path d="m10 5-7 7 7 7" />
-            </svg>
-          </template>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="22"
+            height="22"
+            viewBox="0 0 22 22"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M17 12h-14" />
+            <path d="m10 5-7 7 7 7" />
+          </svg>
         </BaseButton>
         <!-- Button with icon left-->
         <BaseButton
@@ -376,9 +388,17 @@ onMounted(() => {
       <h3>Others</h3>
       <div class="container">
         <!-- Disabled button -->
-        <BaseButton disabled>Disabled button</BaseButton>
+        <BaseButton disabled :loading="pageState.isLoading && pageState.isLoadingEnabled"
+          >Disabled button</BaseButton
+        >
         <!-- Button that takes full width -->
-        <BaseButton block style="margin: 1rem 0">Block button</BaseButton>
+        <BaseButton
+          block
+          @click="handleSaveWithLoading"
+          :loading="pageState.isLoading && pageState.isLoadingEnabled"
+          style="margin: 1rem 0"
+          >Block button</BaseButton
+        >
       </div>
     </div>
 
@@ -490,8 +510,17 @@ onMounted(() => {
           </select>
         </div>
         <div class="select-group">
-          <label>Duration:</label>
-          <input type="number" v-model="pageState.toast.duration" />
+          <BaseInput
+            v-model="pageState.toast.duration"
+            label="Duration"
+            type="number"
+            :min="100"
+            :max="10000"
+            :rules="[
+              { minValue: 100, message: 'Minimum value is 100' },
+              { maxValue: 10000, message: 'Maximum value is 10000' },
+            ]"
+          />
         </div>
         <div class="select-group">
           <BaseCheckbox v-model="pageState.toast.simple" label="Simple toast" />
@@ -629,6 +658,7 @@ onMounted(() => {
           label="Price"
           mask="currency"
           placeholder="R$ 0,00"
+          @enter="handleSubmit"
         />
         <BaseButton variant="primary" @click="handleSubmit">Submit</BaseButton>
       </div>
@@ -751,6 +781,84 @@ onMounted(() => {
           error-message="Price must be between 0 and 1000"
         />
       </div>
+    </div>
+
+    <hr />
+
+    <div class="segmented-buttons-container">
+      <h2>Segmented Buttons</h2>
+      <div>
+        <BaseSegmentedButtons
+          v-model="pageState.segmentedButtons.selectedFruit"
+          :options="['apple', 'banana', 'orange']"
+          variant="primary"
+          size="large"
+        />
+        <BaseSegmentedButtons
+          v-model="pageState.segmentedButtons.selectedFruits"
+          :options="['apple', 'banana', 'orange']"
+          multiple
+          :rules="['required']"
+          helper-text="Select at least one fruit"
+        />
+        <BaseSegmentedButtons
+          v-model="pageState.segmentedButtons.selectedFruitsObjects"
+          label="Select fruits"
+          :options="[
+            { value: 'apple', label: 'Apple' },
+            { value: 'banana', label: 'Banana' },
+            { value: 'orange', label: 'Orange' },
+            { value: 'pineapple', label: 'Pineapple' },
+          ]"
+          multiple
+          helper-text="Select at least one fruit"
+          :rules="['required', 'min:2', 'max:3']"
+        />
+      </div>
+    </div>
+
+    <hr />
+
+    <div class="color-picker-container">
+      <h2>Color Picker</h2>
+
+      <!-- Simple color picker -->
+      <BaseColorPicker v-model="pageState.colorPicker.color" label="Choose a color" />
+
+      <!-- With custom presets -->
+      <BaseColorPicker
+        v-model="pageState.colorPicker.themeColor"
+        label="Theme Color"
+        :presets="['#FF5733', '#33FF57', '#3357FF', '#F3FF33', '#FF33F3']"
+      />
+
+      <!-- With validation -->
+      <BaseColorPicker
+        v-model="pageState.colorPicker.brandColor"
+        label="Brand Color"
+        :rules="['required', 'hexColor']"
+        helper-text="Please select a brand color"
+      />
+
+      <!-- Required with custom message -->
+      <BaseColorPicker
+        v-model="pageState.colorPicker.accentColor"
+        label="Accent Color"
+        :rules="[
+          'required',
+          {
+            hexColor: true,
+            message: 'Please select a valid HEX color',
+          },
+        ]"
+      />
+
+      <!-- Filled variant -->
+      <BaseColorPicker
+        v-model="pageState.colorPicker.backgroundColor"
+        variant="filled"
+        label="Background"
+      />
     </div>
 
     <hr />

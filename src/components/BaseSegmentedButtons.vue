@@ -265,7 +265,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="base-segmented-buttons-wrapper">
+  <div :class="containerClasses">
     <label v-if="label" class="base-segmented-buttons__label">
       {{ label }}
       <span v-if="isRequired" class="base-segmented-buttons__required">*</span>

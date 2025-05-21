@@ -308,7 +308,6 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
-  margin-bottom: 1rem;
 }
 
 .base-segmented-buttons {

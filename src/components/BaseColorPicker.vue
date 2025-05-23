@@ -132,8 +132,57 @@ const toggleColorPicker = () => {
 }
 
 const selectPresetColor = (color) => {
-  colorValue.value = color
-  emit('input', { target: { value: color } })
+  // Convert preset color to the selected format
+  let formattedColor = color
+
+  if (props.format !== 'hex' && color.startsWith('#')) {
+    const hex = color.replace('#', '')
+    const r = parseInt(hex.substring(0, 2), 16)
+    const g = parseInt(hex.substring(2, 4), 16)
+    const b = parseInt(hex.substring(4, 6), 16)
+
+    if (props.format === 'rgb') formattedColor = `rgb(${r}, ${g}, ${b})`
+    else if (props.format === 'rgba') formattedColor = `rgba(${r}, ${g}, ${b}, 1)`
+    else if (props.format === 'hsl') {
+      const r1 = r / 255
+      const g1 = g / 255
+      const b1 = b / 255
+
+      const max = Math.max(r1, g1, b1)
+      const min = Math.min(r1, g1, b1)
+      let h,
+        s,
+        l = (max + min) / 2
+
+      if (max === min) {
+        h = s = 0 // achromatic
+      } else {
+        const d = max - min
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
+
+        switch (max) {
+          case r1:
+            h = (g1 - b1) / d + (g1 < b1 ? 6 : 0)
+            break
+          case g1:
+            h = (b1 - r1) / d + 2
+            break
+          case b1:
+            h = (r1 - g1) / d + 4
+            break
+        }
+
+        h = Math.round(h * 60)
+        s = Math.round(s * 100)
+        l = Math.round(l * 100)
+      }
+
+      formattedColor = `hsl(${h}, ${s}%, ${l}%)`
+    }
+  }
+
+  colorValue.value = formattedColor
+  emit('input', { target: { value: formattedColor } })
 
   nextTick(() => {
     if (inputRef.value?.validate) {

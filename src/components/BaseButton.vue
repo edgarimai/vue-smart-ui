@@ -55,20 +55,23 @@ defineEmits(['click'])
         'base-button--block': block,
         'base-button--disabled': disabled || loading,
         'base-button--icon-only': iconOnly,
+        'base-button--loading': loading,
       },
     ]"
     :disabled="disabled || loading"
     @click="$emit('click', $event)"
   >
-    <template v-if="$slots.prefix">
-      <slot name="prefix" v-if="!(loading && iconOnly)" />
-    </template>
+    <div class="button-content" :class="{ hidden: loading }">
+      <template v-if="$slots.prefix">
+        <slot name="prefix" />
+      </template>
 
-    <slot v-if="!(loading && iconOnly)" />
+      <slot />
 
-    <template v-if="$slots.suffix">
-      <slot name="suffix" v-if="!(loading && iconOnly)" />
-    </template>
+      <template v-if="$slots.suffix">
+        <slot name="suffix" />
+      </template>
+    </div>
 
     <div v-if="loading" class="spinner"></div>
   </button>
@@ -190,6 +193,21 @@ defineEmits(['click'])
   &:focus {
     outline: 2px solid var(--button-focus-outline);
     outline-offset: 2px;
+  }
+
+  &--loading {
+    position: relative;
+  }
+
+  .button-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+
+    &.hidden {
+      visibility: hidden;
+    }
   }
 
   // Spinner

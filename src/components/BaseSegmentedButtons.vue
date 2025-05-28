@@ -337,6 +337,10 @@ onMounted(() => {
 
   &--block {
     width: 100%;
+
+    .base-segmented-buttons__button {
+      flex: 1;
+    }
   }
 
   &--disabled {

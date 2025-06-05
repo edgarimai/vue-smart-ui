@@ -754,17 +754,17 @@ Features:
 
 #### Props
 
-| Prop       | Type                         | Default     | Description                                                   |
-| ---------- | ---------------------------- | ----------- | ------------------------------------------------------------- |
-| modelValue | `String \| Number \| Array`  | `[]`        | Selected value(s) (v-model binding)                           |
-| options    | `Array`                      | `[]`        | Array of options to display as buttons                        |
-| valueKey   | `String`                     | `'value'`   | Property name to use as value when options are objects        |
-| labelKey   | `String`                     | `'label'`   | Property name to use as display text when options are objects |
-| variant    | `String`                     | `'primary'` | Visual style. Options: 'primary', 'secondary', 'gray'         |
-| size       | `String`                     | `'medium'`  | Button size. Options: 'small', 'medium', 'large'              |
-| disabled   | `Boolean`                    | `false`     | Disables the entire control                                   |
-| block      | `Boolean`                    | `false`     | If true, buttons will expand to fill the container width      |
-| multiple   | `Boolean`                    | `false`     | Enables selection of multiple options                         |
+| Prop       | Type                        | Default     | Description                                                   |
+| ---------- | --------------------------- | ----------- | ------------------------------------------------------------- |
+| modelValue | `String \| Number \| Array` | `[]`        | Selected value(s) (v-model binding)                           |
+| options    | `Array`                     | `[]`        | Array of options to display as buttons                        |
+| valueKey   | `String`                    | `'value'`   | Property name to use as value when options are objects        |
+| labelKey   | `String`                    | `'label'`   | Property name to use as display text when options are objects |
+| variant    | `String`                    | `'primary'` | Visual style. Options: 'primary', 'secondary', 'gray'         |
+| size       | `String`                    | `'medium'`  | Button size. Options: 'small', 'medium', 'large'              |
+| disabled   | `Boolean`                   | `false`     | Disables the entire control                                   |
+| block      | `Boolean`                   | `false`     | If true, buttons will expand to fill the container width      |
+| multiple   | `Boolean`                   | `false`     | Enables selection of multiple options                         |
 
 #### Events
 
@@ -775,50 +775,43 @@ Features:
 
 ```vue
 <!-- Simple string options -->
-<BaseSegmentedButtons 
-  v-model="selectedFruit" 
-  :options="['apple', 'banana', 'orange']" 
-/>
+<BaseSegmentedButtons v-model="selectedFruit" :options="['apple', 'banana', 'orange']" />
 
 <!-- Object options -->
-<BaseSegmentedButtons 
-  v-model="selectedColor" 
+<BaseSegmentedButtons
+  v-model="selectedColor"
   :options="[
     { value: 'red', label: 'Red' },
     { value: 'green', label: 'Green' },
-    { value: 'blue', label: 'Blue' }
-  ]" 
+    { value: 'blue', label: 'Blue' },
+  ]"
 />
 
 <!-- Multiple selection mode -->
-<BaseSegmentedButtons 
-  v-model="selectedCategories" 
-  :options="['Work', 'Personal', 'Family']" 
-  multiple 
+<BaseSegmentedButtons
+  v-model="selectedCategories"
+  :options="['Work', 'Personal', 'Family']"
+  multiple
 />
 
 <!-- Custom variants and sizes -->
-<BaseSegmentedButtons 
-  v-model="alignment" 
-  :options="['Left', 'Center', 'Right']" 
-  variant="secondary" 
-  size="small" 
+<BaseSegmentedButtons
+  v-model="alignment"
+  :options="['Left', 'Center', 'Right']"
+  variant="secondary"
+  size="small"
 />
 
 <!-- Block display (full width) -->
-<BaseSegmentedButtons 
-  v-model="viewMode" 
-  :options="['List', 'Grid', 'Table']" 
-  block 
-/>
+<BaseSegmentedButtons v-model="viewMode" :options="['List', 'Grid', 'Table']" block />
 
 <!-- Custom object keys -->
-<BaseSegmentedButtons 
-  v-model="selectedItem" 
+<BaseSegmentedButtons
+  v-model="selectedItem"
   :options="[
     { id: 1, name: 'Option A' },
     { id: 2, name: 'Option B' },
-    { id: 3, name: 'Option C' }
+    { id: 3, name: 'Option C' },
   ]"
   valueKey="id"
   labelKey="name"
@@ -841,23 +834,23 @@ Features:
 
 #### Props
 
-| Prop          | Type      | Default      | Description                                            |
-| ------------- | --------- | ------------ | ------------------------------------------------------ |
-| id            | `String`  | `''`         | Optional color picker ID                               |
-| modelValue    | `String`  | `'#000000'`  | The selected color value (hex, rgb, etc.)              |
-| variant       | `String`  | `'default'`  | Visual style. Options: 'default', 'filled', 'outlined' |
-| state         | `String`  | `null`       | Visual state: 'success', 'error', 'warning'            |
-| label         | `String`  | `null`       | Label text for the color picker                        |
-| disabled      | `Boolean` | `false`      | Disables the color picker                              |
-| readonly      | `Boolean` | `false`      | Makes the control read-only                            |
-| required      | `Boolean` | `false`      | Marks the field as required                            |
-| helperText    | `String`  | `null`       | Helper text displayed below the picker                 |
-| errorMessage  | `String`  | `null`       | Error message to display                               |
-| rules         | `Array`   | `[]`         | Validation rules array                                 |
-| name          | `String`  | `''`         | Input name attribute                                   |
-| format        | `String`  | `'hex'`      | Color format. Options: 'hex', 'rgb', 'rgba', 'hsl'     |
-| showPreview   | `Boolean` | `true`       | Shows color preview swatch                             |
-| presets       | `Array`   | `[]`         | Array of preset colors to display                      |
+| Prop         | Type      | Default     | Description                                            |
+| ------------ | --------- | ----------- | ------------------------------------------------------ |
+| id           | `String`  | `''`        | Optional color picker ID                               |
+| modelValue   | `String`  | `'#000000'` | The selected color value (hex, rgb, etc.)              |
+| variant      | `String`  | `'default'` | Visual style. Options: 'default', 'filled', 'outlined' |
+| state        | `String`  | `null`      | Visual state: 'success', 'error', 'warning'            |
+| label        | `String`  | `null`      | Label text for the color picker                        |
+| disabled     | `Boolean` | `false`     | Disables the color picker                              |
+| readonly     | `Boolean` | `false`     | Makes the control read-only                            |
+| required     | `Boolean` | `false`     | Marks the field as required                            |
+| helperText   | `String`  | `null`      | Helper text displayed below the picker                 |
+| errorMessage | `String`  | `null`      | Error message to display                               |
+| rules        | `Array`   | `[]`        | Validation rules array                                 |
+| name         | `String`  | `''`        | Input name attribute                                   |
+| format       | `String`  | `'hex'`     | Color format. Options: 'hex', 'rgb', 'rgba', 'hsl'     |
+| showPreview  | `Boolean` | `true`      | Shows color preview swatch                             |
+| presets      | `Array`   | `[]`        | Array of preset colors to display                      |
 
 #### Events
 
@@ -875,8 +868,8 @@ Features:
 <BaseColorPicker v-model="color" label="Choose a color" />
 
 <!-- With custom presets -->
-<BaseColorPicker 
-  v-model="themeColor" 
+<BaseColorPicker
+  v-model="themeColor"
   label="Theme Color"
   :presets="['#FF5733', '#33FF57', '#3357FF', '#F3FF33', '#FF33F3']"
 />
@@ -1009,6 +1002,143 @@ Customizable modal/popup component with support for different variants, animatio
     <span>&times;</span>
   </template>
 </BasePopup>
+```
+
+### BaseOTP
+
+A customizable One-Time Password (OTP) input component for secure authentication flows. Provides individual input fields for each digit with automatic focus management and validation.
+
+Features:
+
+- Configurable number of input fields (default 6)
+- Automatic focus progression between fields
+- Support for different input types (text, number, password)
+- Paste support for complete codes
+- Keyboard navigation (arrow keys, backspace, delete)
+- Built-in validation for complete/incomplete codes
+- Clear all functionality with Shift+Backspace or Shift+Delete
+- Different visual variants and states
+- Auto-focus capability
+
+#### Props
+
+| Prop         | Type      | Default                                       | Description                                       |
+| ------------ | --------- | --------------------------------------------- | ------------------------------------------------- |
+| id           | `String`  | `''`                                          | Optional OTP input ID                             |
+| modelValue   | `String`  | `''`                                          | The OTP value (v-model binding)                   |
+| length       | `Number`  | `6`                                           | Number of OTP input fields                        |
+| variant      | `String`  | `'default'`                                   | Visual style. Options: 'default', 'filled'        |
+| state        | `String`  | `null`                                        | Visual state: 'success', 'error', 'warning'       |
+| label        | `String`  | `null`                                        | Label text for the OTP input                      |
+| disabled     | `Boolean` | `false`                                       | Disables all input fields                         |
+| readonly     | `Boolean` | `false`                                       | Makes all input fields read-only                  |
+| required     | `Boolean` | `false`                                       | Marks the field as required                       |
+| helperText   | `String`  | `null`                                        | Helper text displayed below the inputs            |
+| errorMessage | `String`  | `null`                                        | Error message to display                          |
+| autoFocus    | `Boolean` | `false`                                       | Automatically focus the first input on mount      |
+| type         | `String`  | `'text'`                                      | Input type. Options: 'text', 'number', 'password' |
+| instructions | `String`  | `'Press Shift+Backspace to clear all fields'` | Instructions text displayed below the inputs      |
+
+#### Events
+
+- `@update:modelValue`: Emitted when OTP value changes
+- `@complete`: Emitted when all fields are filled, passes the complete OTP value
+- `@validation`: Emitted when validation occurs, includes validation status
+- `@mounted`: Emitted when component is mounted, passes component reference with methods
+
+#### Basic Examples
+
+```vue
+<!-- Simple 6-digit OTP -->
+<BaseOTP v-model="otpCode" label="Simple 6-digit OTP" required />
+
+<!-- Required with helper text -->
+<BaseOTP
+  v-model="otpCode"
+  label="Required with helper text"
+  helperText="Enter the code sent to your phone"
+  required
+/>
+
+<!-- Variant filled -->
+<BaseOTP
+  v-model="otpCode"
+  label="Variant filled"
+  helperText="Enter the code sent to your phone"
+  required
+  variant="filled"
+/>
+
+<!-- Auto focus with 4 digits -->
+<BaseOTP
+  v-model="otpCode"
+  :length="4"
+  label="Auto focus with 4 digits"
+  helper-text="Enter the 4-digit code"
+  required
+  auto-focus
+/>
+
+<!-- No required -->
+<BaseOTP v-model="otpCode" label="No required" helper-text="Enter the 6-digit code" />
+```
+
+#### Form Validation Example
+
+```vue
+<template>
+  <form @submit.prevent="handleSubmit">
+    <BaseOTP
+      v-model="formData.otpCode"
+      label="Verification Code"
+      required
+      auto-focus
+      helper-text="Enter the 6-digit code sent to your email"
+      @complete="handleOTPComplete"
+      @mounted="(ref) => registerOTP('otp', ref)"
+    />
+
+    <BaseButton type="submit" :disabled="!isFormValid"> Verify Code </BaseButton>
+  </form>
+</template>
+
+<script setup>
+const formRefs = ref({})
+const formData = reactive({
+  otpCode: '',
+})
+
+const registerOTP = (name, ref) => {
+  if (ref) {
+    formRefs.value[name] = ref
+  }
+}
+
+const handleOTPComplete = (code) => {
+  console.log('OTP completed:', code)
+  // Auto-submit or validate when complete
+}
+
+const validateForm = () => {
+  let isValid = true
+  Object.values(formRefs.value).forEach((field) => {
+    if (field?.validate && !field.validate()) {
+      isValid = false
+    }
+  })
+  return isValid
+}
+
+const handleSubmit = () => {
+  if (validateForm()) {
+    console.log('Form is valid, submitting OTP:', formData.otpCode)
+  }
+}
+
+const isFormValid = computed(() => {
+  return formData.otpCode.length === 6
+})
+</script>
 ```
 
 ## 🎨 Customization

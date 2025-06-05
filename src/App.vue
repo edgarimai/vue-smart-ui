@@ -82,6 +82,7 @@ const pageState = reactive({
   },
   otp: {
     value: '',
+    value4: '',
   },
   infiniteScroll: {
     items: [],
@@ -871,11 +872,9 @@ onMounted(() => {
       <h2>OTP</h2>
       <BaseOTP
         v-model="pageState.otp.value"
-        :length="6"
         label="Variant default"
         helperText="Enter the code sent to your phone"
         required
-        @complete="handleOTPComplete"
       />
       <BaseOTP
         v-model="pageState.otp.value"
@@ -883,8 +882,20 @@ onMounted(() => {
         label="Variant filled"
         helperText="Enter the code sent to your phone"
         required
-        @complete="handleOTPComplete"
         variant="filled"
+      />
+      <BaseOTP
+        v-model="pageState.otp.value4"
+        :length="4"
+        label="Auto focus with 4 digits"
+        helper-text="Enter the 4-digit code"
+        required
+        auto-focus
+      />
+      <BaseOTP
+        v-model="pageState.otp.value"
+        label="No required"
+        helper-text="Enter the 6-digit code"
       />
     </div>
 

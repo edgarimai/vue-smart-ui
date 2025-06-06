@@ -14,6 +14,7 @@ import {
   BaseSlider,
   BaseSegmentedButtons,
   BaseColorPicker,
+  BaseOTP,
 } from './components'
 import { useToast } from '@/composables/toast'
 
@@ -78,6 +79,10 @@ const pageState = reactive({
     brandColor: '#000000',
     accentColor: '#000000',
     backgroundColor: '#000000',
+  },
+  otp: {
+    value: '',
+    value4: '',
   },
   infiniteScroll: {
     items: [],
@@ -858,6 +863,39 @@ onMounted(() => {
         v-model="pageState.colorPicker.backgroundColor"
         variant="filled"
         label="Background"
+      />
+    </div>
+
+    <hr />
+
+    <div class="otp-container">
+      <h2>OTP</h2>
+      <BaseOTP
+        v-model="pageState.otp.value"
+        label="Variant default"
+        helperText="Enter the code sent to your phone"
+        required
+      />
+      <BaseOTP
+        v-model="pageState.otp.value"
+        :length="6"
+        label="Variant filled"
+        helperText="Enter the code sent to your phone"
+        required
+        variant="filled"
+      />
+      <BaseOTP
+        v-model="pageState.otp.value4"
+        :length="4"
+        label="Auto focus with 4 digits"
+        helper-text="Enter the 4-digit code"
+        required
+        auto-focus
+      />
+      <BaseOTP
+        v-model="pageState.otp.value"
+        label="No required"
+        helper-text="Enter the 6-digit code"
       />
     </div>
 

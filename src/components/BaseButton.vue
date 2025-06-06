@@ -1,6 +1,10 @@
 <script setup>
 import { useAutoId } from '../composables/autoId'
 
+defineOptions({
+  inheritAttrs: false,
+})
+
 const props = defineProps({
   id: {
     type: String,
@@ -57,11 +61,12 @@ defineEmits(['click'])
         'base-button--icon-only': iconOnly,
         'base-button--loading': loading,
       },
+      $attrs.class,
     ]"
     :disabled="disabled || loading"
     @click="$emit('click', $event)"
   >
-    <div class="button-content" :class="{ hidden: loading }">
+    <div class="button-content" :class="[{ hidden: loading }, $attrs.class]">
       <template v-if="$slots.prefix">
         <slot name="prefix" />
       </template>

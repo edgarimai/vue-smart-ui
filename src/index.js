@@ -15,6 +15,7 @@ import BaseToast from './components/BaseToast.vue'
 import ToastsContainer from './components/ToastsContainer.vue'
 import BaseSegmentedButtons from './components/BaseSegmentedButtons.vue'
 import BaseColorPicker from './components/BaseColorPicker.vue'
+import BaseOTP from './components/BaseOTP.vue'
 import { useToast } from './composables/toast'
 
 export default {
@@ -34,6 +35,7 @@ export default {
     app.component('ToastsContainer', ToastsContainer)
     app.component('BaseSegmentedButtons', BaseSegmentedButtons)
     app.component('BaseColorPicker', BaseColorPicker)
+    app.component('BaseOTP', BaseOTP)
   },
 }
 
@@ -53,5 +55,6 @@ export {
   ToastsContainer,
   BaseSegmentedButtons,
   BaseColorPicker,
+  BaseOTP,
   useToast,
 }

@@ -15,6 +15,7 @@ import {
   BaseSegmentedButtons,
   BaseColorPicker,
   BaseOTP,
+  BaseTable,
 } from './components'
 import { useToast } from '@/composables/toast'
 
@@ -89,6 +90,115 @@ const pageState = reactive({
     page: 1,
     loading: false,
     hasMore: true,
+  },
+  table: {
+    loading: false,
+    selectedRows: [],
+    data: [
+      {
+        id: 1,
+        name: 'John Smith',
+        email: 'john@email.com',
+        age: 28,
+        status: 'Active',
+        role: 'Developer',
+      },
+      {
+        id: 2,
+        name: 'Mary Johnson',
+        email: 'mary@email.com',
+        age: 32,
+        status: 'Active',
+        role: 'Designer',
+      },
+      {
+        id: 3,
+        name: 'Peter Brown',
+        email: 'peter@email.com',
+        age: 25,
+        status: 'Inactive',
+        role: 'Manager',
+      },
+      {
+        id: 4,
+        name: 'Anna Wilson',
+        email: 'anna@email.com',
+        age: 29,
+        status: 'Active',
+        role: 'Developer',
+      },
+      {
+        id: 5,
+        name: 'Charles Davis',
+        email: 'charles@email.com',
+        age: 35,
+        status: 'Active',
+        role: 'Analyst',
+      },
+      {
+        id: 6,
+        name: 'Lucy Miller',
+        email: 'lucy@email.com',
+        age: 27,
+        status: 'Inactive',
+        role: 'Designer',
+      },
+      {
+        id: 7,
+        name: 'Robert Garcia',
+        email: 'robert@email.com',
+        age: 31,
+        status: 'Active',
+        role: 'Developer',
+      },
+      {
+        id: 8,
+        name: 'Sarah Rodriguez',
+        email: 'sarah@email.com',
+        age: 26,
+        status: 'Active',
+        role: 'Manager',
+      },
+      {
+        id: 9,
+        name: 'Michael Martinez',
+        email: 'michael@email.com',
+        age: 30,
+        status: 'Inactive',
+        role: 'Analyst',
+      },
+      {
+        id: 10,
+        name: 'Jennifer Lopez',
+        email: 'jennifer@email.com',
+        age: 24,
+        status: 'Active',
+        role: 'Designer',
+      },
+      {
+        id: 11,
+        name: 'David Anderson',
+        email: 'david@email.com',
+        age: 33,
+        status: 'Active',
+        role: 'Developer',
+      },
+      {
+        id: 12,
+        name: 'Lisa Taylor',
+        email: 'lisa@email.com',
+        age: 28,
+        status: 'Inactive',
+        role: 'Manager',
+      },
+    ],
+    columns: [
+      { key: 'name', label: 'Name' },
+      { key: 'email', label: 'Email' },
+      { key: 'age', label: 'Age' },
+      { key: 'status', label: 'Status' },
+      { key: 'role', label: 'Role' },
+    ],
   },
   fruits: [
     {
@@ -198,6 +308,62 @@ const allSelected = computed(() => {
 const someSelected = computed(() => {
   return pageState.checkbox.selectedFruits.length > 0 && !allSelected.value
 })
+
+// Table functions
+const handleTableSort = (event) => {
+  console.log('Table sorted:', event)
+}
+
+const handleTableFilter = (event) => {
+  console.log('Table filtered:', event)
+}
+
+const handleTableSelect = (event) => {
+  console.log('Row selected:', event)
+  pageState.table.selectedRows = event.selectedRows
+}
+
+const handleTableSelectAll = (event) => {
+  console.log('Select all:', event)
+  pageState.table.selectedRows = event.selectedRows
+}
+
+const handleTableRowClick = (event) => {
+  console.log('Row clicked:', event)
+}
+
+const handleTableAction = (event) => {
+  console.log('Action clicked:', event)
+  const { action, row } = event
+
+  if (action === 'edit') {
+    alert(`Editing user: ${row.name}`)
+  } else if (action === 'delete') {
+    const confirmed = confirm(`Do you want to delete user ${row.name}?`)
+    if (confirmed) {
+      const index = pageState.table.data.findIndex((item) => item.id === row.id)
+      if (index > -1) {
+        pageState.table.data.splice(index, 1)
+      }
+    }
+  } else if (action === 'view') {
+    alert(`Viewing user: ${row.name}`)
+  }
+}
+
+const toggleTableLoading = () => {
+  pageState.table.loading = !pageState.table.loading
+
+  if (pageState.table.loading) {
+    setTimeout(() => {
+      pageState.table.loading = false
+    }, 3000)
+  }
+}
+
+const formatStatus = (status) => {
+  return status === 'Active' ? '✅ Active' : '❌ Inactive'
+}
 
 const handleSelectAll = (checked) => {
   if (!checked) return (pageState.checkbox.selectedFruits = [])
@@ -901,6 +1067,108 @@ onMounted(() => {
 
     <hr />
 
+    <div class="table-container">
+      <h2>Dynamic Table</h2>
+
+      <div
+        class="table-controls"
+        style="margin-bottom: 1rem; display: flex; gap: 1rem; justify-content: center"
+      >
+        <BaseButton @click="toggleTableLoading" :loading="pageState.table.loading">
+          {{ pageState.table.loading ? 'Loading...' : 'Simulate Loading' }}
+        </BaseButton>
+        <BaseButton
+          variant="secondary"
+          :disabled="pageState.table.selectedRows.length === 0"
+          @click="() => alert(`${pageState.table.selectedRows.length} row(s) selected`)"
+        >
+          Bulk Action ({{ pageState.table.selectedRows.length }})
+        </BaseButton>
+      </div>
+
+      <!-- Tabela básica -->
+      <BaseTable
+        :columns="pageState.table.columns"
+        :data="pageState.table.data"
+        :loading="pageState.table.loading"
+        selectable
+        filterable
+        @sort="handleTableSort"
+        @filter="handleTableFilter"
+        @select="handleTableSelect"
+        @select-all="handleTableSelectAll"
+        @row-click="handleTableRowClick"
+        @action-click="handleTableAction"
+      >
+        <!-- Custom slot for status -->
+        <template #cell-status="{ value }">
+          <span :style="{ color: value === 'Active' ? 'green' : 'red' }">
+            {{ formatStatus(value) }}
+          </span>
+        </template>
+
+        <!-- Custom slot for actions -->
+        <template #actions="{ row, handleAction }">
+          <BaseButton size="small" variant="ghost" @click="handleAction('view')" title="View">
+            👁️
+          </BaseButton>
+          <BaseButton size="small" variant="ghost" @click="handleAction('edit')" title="Edit">
+            ✏️
+          </BaseButton>
+          <BaseButton
+            size="small"
+            variant="ghost"
+            @click="handleAction('delete')"
+            title="Delete"
+            style="color: red"
+          >
+            🗑️
+          </BaseButton>
+        </template>
+      </BaseTable>
+
+      <!-- Style variants example -->
+      <h3 style="margin-top: 2rem">Style Variants</h3>
+
+      <div style="display: grid; gap: 2rem; margin-top: 1rem">
+        <!-- Striped table -->
+        <div>
+          <h4>Striped Table</h4>
+          <BaseTable
+            :columns="[
+              { key: 'name', label: 'Name' },
+              { key: 'email', label: 'Email' },
+              { key: 'role', label: 'Role' },
+            ]"
+            :data="pageState.table.data.slice(0, 5)"
+            variant="striped"
+            size="small"
+            :pagination="{ enabled: false }"
+          />
+        </div>
+
+        <!-- Bordered table -->
+        <div>
+          <h4>Bordered Table</h4>
+          <BaseTable
+            :columns="[
+              { key: 'name', label: 'Name' },
+              { key: 'age', label: 'Age' },
+              { key: 'status', label: 'Status' },
+            ]"
+            :data="pageState.table.data.slice(0, 5)"
+            variant="bordered"
+            size="large"
+            :pagination="{ enabled: false }"
+            :sortable="false"
+            :filterable="false"
+          />
+        </div>
+      </div>
+    </div>
+
+    <hr />
+
     <div class="infinite-scroll-container">
       <h2>Infinite Scroll</h2>
       <div style="padding-inline: 20px">
@@ -987,6 +1255,23 @@ body {
       .item {
         color: var(--text-default);
       }
+    }
+  }
+
+  .table-container {
+    padding-inline: 20px;
+
+    h3,
+    h4 {
+      text-align: center;
+      color: var(--text-default);
+    }
+
+    .table-controls {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
     }
   }
 }

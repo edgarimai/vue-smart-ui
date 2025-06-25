@@ -316,5 +316,53 @@
 
   --slider-filled-bg: var(--bg-muted);
 
+  // Table variables
+  --table-border-color: var(--border-default);
+  --table-border-radius: 0.5rem;
+  --table-header-bg: var(--surface-default);
+  --table-header-text-color: var(--text-muted);
+  --table-header-font-weight: 600;
+  --table-header-padding: 0.75rem;
+
+  --table-body-bg: var(--bg-default);
+  --table-row-hover-bg: var(--surface-hover);
+  --table-row-selected-bg: var(--surface-selected);
+  --table-stripe-bg: var(--bg-subtle);
+  --table-cell-padding: 0.75rem;
+  --table-cell-text-color: var(--text-muted);
+  --table-cell-border-color: var(--border-default);
+
+  --table-sort-icon-opacity: 0.5;
+  --table-sort-icon-size: 0.75rem;
+  --table-sort-active-color: var(--color-primary);
+
+  --table-filter-margin-top: 0.5rem;
+
+  --table-skeleton-bg: var(--bg-muted);
+  --table-skeleton-animation-duration: 1.5s;
+
+  --table-empty-text-color: var(--text-subtle);
+  --table-empty-padding: 2rem;
+
+  --table-pagination-bg: var(--surface-default);
+  --table-pagination-border-color: var(--border-default);
+  --table-pagination-padding: 1rem;
+  --table-pagination-gap: 1rem;
+  --table-pagination-info-color: var(--text-subtle);
+  --table-pagination-info-font-size: 0.875rem;
+  --table-pagination-pages-color: var(--text-muted);
+  --table-pagination-pages-font-size: 0.875rem;
+
+  --table-actions-gap: 0.5rem;
+  --table-actions-justify-content: center;
+
+  --table-checkbox-width: 2.5rem;
+  --table-checkbox-padding: 0.75rem 0.5rem;
+
+  --table-small-padding: 0.5rem;
+  --table-small-font-size: 0.875rem;
+  --table-large-padding: 1rem;
+  --table-large-font-size: 1.125rem;
+
   font-family: var(--font-family-base);
 }

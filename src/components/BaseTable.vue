@@ -71,6 +71,10 @@ const props = defineProps({
     type: Number,
     default: 5,
   },
+  scrollOnPageChange: {
+    type: Boolean,
+    default: true,
+  },
 })
 
 const { autoId } = useAutoId('table', props)
@@ -93,6 +97,7 @@ const selectedRows = ref(new Set())
 const currentPage = ref(1)
 const pageSize = ref(props.pagination.pageSize)
 const searchQuery = ref('')
+const tableRef = ref(null)
 
 // filtered data
 const filteredData = computed(() => {
@@ -173,6 +178,23 @@ const getNestedValue = (obj, path) => {
 
 const getRowId = (row, index) => row.id ?? index
 
+const scrollToTable = () => {
+  if (props.scrollOnPageChange && tableRef.value) {
+    tableRef.value.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    })
+  }
+}
+
+const scrollToTableWithDelay = () => {
+  if (props.scrollOnPageChange) {
+    setTimeout(() => {
+      scrollToTable()
+    }, 100)
+  }
+}
+
 const handleSort = (column) => {
   if (!props.sortable || column.sortable === false) return
 
@@ -228,14 +250,18 @@ const handleSelectAll = () => {
 const handlePageChange = (page) => {
   currentPage.value = page
   emit('page-change', page)
-}
 
+  // Scroll to table top after page change
+  scrollToTableWithDelay()
+}
 const handlePageSizeChange = (size) => {
   pageSize.value = size
   currentPage.value = 1
   emit('page-size-change', size)
-}
 
+  // Scroll to table top after page size change
+  scrollToTableWithDelay()
+}
 const handleRowClick = (row, index) => {
   emit('row-click', { row, index })
 }
@@ -271,6 +297,7 @@ watch(
 <template>
   <div
     :id="autoId"
+    ref="tableRef"
     class="vsui base-table"
     :class="[
       `base-table--${variant}`,

@@ -4,6 +4,7 @@ import { useAutoId } from '../composables/autoId'
 import BaseButton from './BaseButton.vue'
 import BaseCheckbox from './BaseCheckbox.vue'
 import BaseInput from './BaseInput.vue'
+import BaseSkeleton from './BaseSkeleton.vue'
 
 defineOptions({
   inheritAttrs: false,
@@ -381,10 +382,10 @@ watch(
                 <BaseCheckbox disabled />
               </td>
               <td v-for="column in columns" :key="column.key" class="base-table__td">
-                <div class="base-table__skeleton"></div>
+                <BaseSkeleton variant="text" rounded />
               </td>
               <td v-if="$slots.actions" class="base-table__td">
-                <div class="base-table__skeleton base-table__skeleton--actions"></div>
+                <BaseSkeleton variant="button" rounded />
               </td>
             </tr>
           </template>
@@ -648,17 +649,6 @@ watch(
     justify-content: var(--table-actions-justify-content);
   }
 
-  &__skeleton {
-    height: 1rem;
-    background: var(--table-skeleton-bg);
-    border-radius: 0.25rem;
-    animation: pulse var(--table-skeleton-animation-duration) infinite;
-
-    &--actions {
-      width: 4rem;
-    }
-  }
-
   &__empty {
     display: flex;
     flex-direction: column;
@@ -773,16 +763,6 @@ watch(
         }
       }
     }
-  }
-}
-
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
   }
 }
 </style>

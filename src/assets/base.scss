@@ -243,6 +243,16 @@
   --checkbox-medium-font-size: 1rem;
   --checkbox-large-font-size: 1.125rem;
 
+  // Combobox variables
+  --combobox-tag-bg: var(--bg-emphasized);
+  --combobox-tag-text: var(--text-default);
+  --combobox-tag-remove: var(--text-muted);
+  --combobox-tag-remove-hover: var(--bg-muted);
+  --combobox-clear-hover: var(--bg-subtle);
+  --combobox-option-selected-bg: var(--color-primary-light);
+  --combobox-option-selected-text: var(--color-primary);
+  --combobox-option-text-color: var(--text-muted);
+
   // Textarea variables
   --textarea-font-size: 1rem;
   --textarea-font-family: var(--font-family-base);

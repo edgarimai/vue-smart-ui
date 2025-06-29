@@ -17,6 +17,7 @@ import BaseSegmentedButtons from './components/BaseSegmentedButtons.vue'
 import BaseColorPicker from './components/BaseColorPicker.vue'
 import BaseCombobox from './components/BaseCombobox.vue'
 import BaseOTP from './components/BaseOTP.vue'
+import BaseTable from './components/BaseTable.vue'
 import { useToast } from './composables/toast'
 
 export default {
@@ -38,6 +39,7 @@ export default {
     app.component('BaseColorPicker', BaseColorPicker)
     app.component('BaseCombobox', BaseCombobox)
     app.component('BaseOTP', BaseOTP)
+    app.component('BaseTable', BaseTable)
   },
 }
 
@@ -60,4 +62,5 @@ export {
   BaseCombobox,
   BaseOTP,
   useToast,
+  BaseTable,
 }

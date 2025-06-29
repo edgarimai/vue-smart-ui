@@ -59,6 +59,7 @@ const props = defineProps({
       pageSizeOptions: [5, 10, 25, 50, 100],
       showTotal: true,
       showPageSizeSelector: true,
+      showFirstLastButtons: true,
     }),
   },
   responsive: {
@@ -488,26 +489,100 @@ watch(
 
       <!-- Page navigation -->
       <div class="base-table__pagination-nav">
+        <!-- First page -->
+        <BaseButton
+          v-if="pagination.showFirstLastButtons && totalPages > 2"
+          variant="outline"
+          size="small"
+          :disabled="currentPage === 1"
+          @click="handlePageChange(1)"
+          title="First page"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="11,17 6,12 11,7"></polyline>
+            <polyline points="18,17 13,12 18,7"></polyline>
+          </svg>
+        </BaseButton>
+
+        <!-- Previous page -->
         <BaseButton
           variant="outline"
           size="small"
           :disabled="currentPage === 1"
           @click="handlePageChange(currentPage - 1)"
+          title="Previous page"
         >
-          Previous
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="15,18 9,12 15,6"></polyline>
+          </svg>
         </BaseButton>
 
         <span class="base-table__pagination-pages">
           Page {{ currentPage }} of {{ totalPages }}
         </span>
 
+        <!-- Next page -->
         <BaseButton
           variant="outline"
           size="small"
           :disabled="currentPage === totalPages"
           @click="handlePageChange(currentPage + 1)"
+          title="Next page"
         >
-          Next
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="9,18 15,12 9,6"></polyline>
+          </svg>
+        </BaseButton>
+
+        <!-- Last page -->
+        <BaseButton
+          v-if="pagination.showFirstLastButtons && totalPages > 2"
+          variant="outline"
+          size="small"
+          :disabled="currentPage === totalPages"
+          @click="handlePageChange(totalPages)"
+          title="Last page"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="13,17 18,12 13,7"></polyline>
+            <polyline points="6,17 11,12 6,7"></polyline>
+          </svg>
         </BaseButton>
       </div>
     </div>
@@ -693,6 +768,19 @@ watch(
     display: flex;
     align-items: center;
     gap: var(--table-pagination-gap);
+
+    // Icon buttons styling
+    .base-button {
+      min-width: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      svg {
+        display: block;
+        flex-shrink: 0;
+      }
+    }
   }
 
   &__pagination-pages {

@@ -122,6 +122,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  showTags: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const { autoId } = useAutoId('combobox', props)
@@ -259,6 +263,11 @@ const displayText = computed(() => {
   }
 
   if (props.multiple) {
+    if (!props.showTags && selectedOptions.value.length > 0) {
+      return selectedOptions.value.length === 1
+        ? '1 item selected'
+        : `${selectedOptions.value.length} items selected`
+    }
     return ''
   } else {
     return getLabel(selectedOptions.value[0])
@@ -606,7 +615,7 @@ onUnmounted(() => {
       </div>
 
       <!-- Multiple selection tags -->
-      <div v-if="multiple && selectedOptions.length > 0" class="base-combobox__tags">
+      <div v-if="multiple && selectedOptions.length > 0 && showTags" class="base-combobox__tags">
         <span v-for="option in selectedOptions" :key="getValue(option)" class="base-combobox__tag">
           {{ getLabel(option) }}
           <button
@@ -621,7 +630,7 @@ onUnmounted(() => {
 
       <!-- Input field -->
       <input
-        v-if="searchable && (!(multiple && selectedOptions.length > 0) || isOpen)"
+        v-if="searchable && (!(multiple && selectedOptions.length > 0 && showTags) || isOpen)"
         :id="autoId"
         ref="inputRef"
         :value="displayText"
@@ -636,7 +645,7 @@ onUnmounted(() => {
 
       <!-- Display field for non-searchable -->
       <div
-        v-else-if="!searchable && !(multiple && selectedOptions.length > 0)"
+        v-else-if="!searchable && !(multiple && selectedOptions.length > 0 && showTags)"
         :id="autoId"
         class="base-combobox__field base-combobox__field--display"
         :class="{ 'base-combobox__field--placeholder': !displayText }"

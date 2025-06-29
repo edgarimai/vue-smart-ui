@@ -89,6 +89,7 @@ const pageState = reactive({
   combobox: {
     selectedCountry: null,
     selectedCountries: [],
+    selectedCountriesNoTags: [],
     selectedUser: null,
     selectedUsers: [],
     searchableValue: null,
@@ -1132,16 +1133,32 @@ onMounted(() => {
           helperText="Choose your country of origin"
         />
 
-        <!-- Multiple selection -->
+        <!-- Multiple selection with tags -->
         <BaseCombobox
           v-model="pageState.combobox.selectedCountries"
           :options="countryOptions"
-          label="Countries (Multiple selection)"
+          label="Countries (Multiple with tags)"
           placeholder="Select countries"
           multiple
           clearable
           :close-on-select="false"
-          helperText="You can select multiple countries"
+          :show-tags="true"
+          searchable
+          helperText="Shows selected items as tags"
+          style="width: 500px"
+        />
+
+        <!-- Multiple selection without tags (default) -->
+        <BaseCombobox
+          v-model="pageState.combobox.selectedCountriesNoTags"
+          :options="countryOptions"
+          label="Countries (Multiple without tags)"
+          placeholder="Select countries"
+          multiple
+          clearable
+          :close-on-select="false"
+          searchable
+          helperText="Shows only checkmarks in dropdown"
           style="width: 500px"
         />
 
@@ -1345,7 +1362,7 @@ onMounted(() => {
         </template>
 
         <!-- Custom slot for actions -->
-        <template #actions="{ row, handleAction }">
+        <template #actions="{ handleAction }">
           <BaseButton size="small" variant="ghost" @click="handleAction('view')" title="View">
             👁️
           </BaseButton>

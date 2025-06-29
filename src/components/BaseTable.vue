@@ -5,6 +5,7 @@ import BaseButton from './BaseButton.vue'
 import BaseCheckbox from './BaseCheckbox.vue'
 import BaseInput from './BaseInput.vue'
 import BaseSkeleton from './BaseSkeleton.vue'
+import BaseCombobox from './BaseCombobox.vue'
 
 defineOptions({
   inheritAttrs: false,
@@ -476,17 +477,13 @@ watch(
 
       <!-- Page size selector -->
       <div v-if="pagination.showPageSizeSelector" class="base-table__page-size">
-        <label for="page-size">Items per page:</label>
-        <select
-          id="page-size"
-          :value="pageSize"
-          @change="handlePageSizeChange(Number($event.target.value))"
+        <label>Items per page:</label>
+        <BaseCombobox
+          :model-value="pageSize"
+          :options="pagination.pageSizeOptions"
+          @update:model-value="handlePageSizeChange"
           class="base-table__page-size-select"
-        >
-          <option v-for="size in pagination.pageSizeOptions" :key="size" :value="size">
-            {{ size }}
-          </option>
-        </select>
+        />
       </div>
 
       <!-- Page navigation -->
@@ -521,7 +518,7 @@ watch(
 .base-table {
   width: 100%;
   border-radius: var(--table-border-radius);
-  overflow: hidden;
+  // overflow: hidden;
   border: 1px solid var(--table-border-color);
 
   &__header {
@@ -689,14 +686,7 @@ watch(
   }
 
   &__page-size-select {
-    padding: 0.25rem 0.5rem;
-    border: 1px solid var(--table-border-color);
-    border-radius: 0.25rem;
-    background: var(--bg-default);
-
-    &:focus {
-      outline: 1px solid var(--color-primary);
-    }
+    min-width: 80px;
   }
 
   &__pagination-nav {

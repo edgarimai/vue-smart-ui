@@ -259,10 +259,7 @@ const displayText = computed(() => {
   }
 
   if (props.multiple) {
-    if (selectedOptions.value.length === 1) {
-      return getLabel(selectedOptions.value[0])
-    }
-    return `${selectedOptions.value.length} items selected`
+    return ''
   } else {
     return getLabel(selectedOptions.value[0])
   }
@@ -624,11 +621,11 @@ onUnmounted(() => {
 
       <!-- Input field -->
       <input
-        v-if="searchable"
+        v-if="searchable && (!(multiple && selectedOptions.length > 0) || isOpen)"
         :id="autoId"
         ref="inputRef"
         :value="displayText"
-        :placeholder="selectedOptions.length > 0 ? '' : placeholder"
+        :placeholder="placeholder"
         :disabled="disabled"
         :readonly="readonly || (!isOpen && !searchable)"
         class="base-combobox__field"
@@ -639,7 +636,7 @@ onUnmounted(() => {
 
       <!-- Display field for non-searchable -->
       <div
-        v-else
+        v-else-if="!searchable && !(multiple && selectedOptions.length > 0)"
         :id="autoId"
         class="base-combobox__field base-combobox__field--display"
         :class="{ 'base-combobox__field--placeholder': !displayText }"

@@ -387,7 +387,7 @@ watch(
                 <BaseSkeleton variant="text" rounded />
               </td>
               <td v-if="$slots.actions" class="base-table__td">
-                <BaseSkeleton variant="button" rounded />
+                <BaseSkeleton variant="text" rounded />
               </td>
             </tr>
           </template>

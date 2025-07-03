@@ -318,6 +318,7 @@ onMounted(() => {
     font-size: var(--input-label-font-size);
     font-weight: 500;
     color: var(--input-label-color, #374151);
+    text-align: center;
   }
 
   &__required {

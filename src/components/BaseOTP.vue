@@ -55,7 +55,7 @@ const props = defineProps({
   },
   type: {
     type: String,
-    default: 'text',
+    default: 'number',
     validator: (value) => ['text', 'number', 'password'].includes(value),
   },
   instructions: {
@@ -318,6 +318,7 @@ onMounted(() => {
     font-size: var(--input-label-font-size);
     font-weight: 500;
     color: var(--input-label-color, #374151);
+    text-align: center;
   }
 
   &__required {

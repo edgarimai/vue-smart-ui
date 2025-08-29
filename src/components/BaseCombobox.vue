@@ -460,12 +460,12 @@ const selectOption = (option) => {
     if (existingIndex >= 0) {
       currentValues.splice(existingIndex, 1)
     } else {
-      currentValues.push(typeof option === 'object' ? option : value)
+      currentValues.push(value)
     }
 
     newModelValue = currentValues
   } else {
-    newModelValue = typeof option === 'object' ? option : value
+    newModelValue = value
   }
 
   emit('update:modelValue', newModelValue)

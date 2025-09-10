@@ -239,7 +239,6 @@ const filteredOptions = computed(() => {
   if (!props.searchable || !searchQuery.value.trim()) {
     return props.options
   }
-  console.log(props.removeSpecialChars)
   const query = props.removeSpecialChars
     ? stripSpecialChars(searchQuery.value)
     : searchQuery.value.toLowerCase().trim()

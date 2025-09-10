@@ -126,6 +126,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  removeSpecialChars: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const { autoId } = useAutoId('combobox', props)
@@ -223,15 +227,26 @@ const getLabel = (option) => {
   return String(option)
 }
 
+const stripSpecialChars = (text) => {
+  return text
+    .replace(/[^\w\s]/g, '')
+    .toLowerCase()
+    .trim()
+}
+
 // Computed properties
 const filteredOptions = computed(() => {
   if (!props.searchable || !searchQuery.value.trim()) {
     return props.options
   }
-
-  const query = searchQuery.value.toLowerCase().trim()
+  console.log(props.removeSpecialChars)
+  const query = props.removeSpecialChars
+    ? stripSpecialChars(searchQuery.value)
+    : searchQuery.value.toLowerCase().trim()
   return props.options.filter((option) => {
-    const label = getLabel(option).toLowerCase()
+    const label = props.removeSpecialChars
+      ? stripSpecialChars(getLabel(option))
+      : getLabel(option).toLowerCase()
     return label.includes(query)
   })
 })

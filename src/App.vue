@@ -17,6 +17,7 @@ import {
   BaseCombobox,
   BaseOTP,
   BaseTable,
+  BaseAvatar,
 } from './components'
 import { useToast } from '@/composables/toast'
 
@@ -232,7 +233,7 @@ const pageState = reactive({
 
 // Combobox options data
 const countryOptions = [
-  'Brazil',
+  'Brazil 42.15',
   'United States',
   'Canada',
   'United Kingdom',
@@ -1423,6 +1424,89 @@ onMounted(() => {
 
     <hr />
 
+    <div class="avatar-container">
+      <h2>Avatar</h2>
+      <div class="container">
+        <div>
+          <h3>Sizes</h3>
+          <div style="display: flex; gap: 1rem; align-items: center">
+            <BaseAvatar name="John Doe" size="small" />
+            <BaseAvatar name="John Doe" size="medium" />
+            <BaseAvatar name="John Doe" size="large" />
+            <BaseAvatar name="John Doe" size="xlarge" />
+          </div>
+        </div>
+
+        <div>
+          <h3>Variants</h3>
+          <div style="display: flex; gap: 1rem; align-items: center">
+            <BaseAvatar name="John Doe" variant="default" />
+            <BaseAvatar name="John Doe" variant="filled" />
+            <BaseAvatar name="John Doe" variant="outlined" />
+          </div>
+        </div>
+
+        <div>
+          <h3>Shapes</h3>
+          <div style="display: flex; gap: 1rem; align-items: center">
+            <BaseAvatar name="John Doe" shape="circle" />
+            <BaseAvatar name="John Doe" shape="square" />
+            <BaseAvatar name="John Doe" shape="rounded" />
+          </div>
+        </div>
+
+        <div>
+          <h3>With Image</h3>
+          <div style="display: flex; gap: 1rem; align-items: center">
+            <BaseAvatar
+              src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"
+              alt="John Doe"
+              name="John Doe"
+            />
+            <BaseAvatar
+              src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"
+              alt="Jane Smith"
+              name="Jane Smith"
+            />
+            <BaseAvatar
+              src="https://invalid-image-url.jpg"
+              alt="Broken Image"
+              name="Broken Image"
+            />
+          </div>
+        </div>
+
+        <div>
+          <h3>Status Indicators</h3>
+          <div style="display: flex; gap: 1rem; align-items: center">
+            <BaseAvatar name="Online User" status="online" />
+            <BaseAvatar name="Offline User" status="offline" />
+            <BaseAvatar name="Away User" status="away" />
+            <BaseAvatar name="Busy User" status="busy" />
+          </div>
+        </div>
+
+        <div>
+          <h3>States</h3>
+          <div style="display: flex; gap: 1rem; align-items: center">
+            <BaseAvatar name="Normal" />
+            <BaseAvatar name="Disabled" disabled />
+          </div>
+        </div>
+
+        <div>
+          <h3>Custom Initials</h3>
+          <div style="display: flex; gap: 1rem; align-items: center">
+            <BaseAvatar fallback="JD" />
+            <BaseAvatar name="João Silva Santos" />
+            <BaseAvatar name="M" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr />
+
     <div class="infinite-scroll-container">
       <h2>Infinite Scroll</h2>
       <div style="padding-inline: 20px">
@@ -1526,6 +1610,31 @@ body {
       gap: 1rem;
       justify-content: center;
       flex-wrap: wrap;
+    }
+  }
+
+  .avatar-container {
+    padding-inline: 20px;
+
+    h2,
+    h3 {
+      text-align: center;
+      color: var(--text-default);
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      align-items: center;
+
+      > div {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        min-width: 200px;
+      }
     }
   }
 }

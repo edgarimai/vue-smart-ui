@@ -326,6 +326,26 @@
 
   --slider-filled-bg: var(--bg-muted);
 
+  // Avatar variables
+  --avatar-default-bg: var(--bg-muted);
+  --avatar-default-text: var(--text-muted);
+  --avatar-default-border: var(--border-default);
+
+  --avatar-filled-bg: var(--color-primary);
+  --avatar-filled-text: var(--color-white);
+  --avatar-filled-border: var(--color-primary);
+
+  --avatar-outlined-bg: var(--bg-default);
+  --avatar-outlined-text: var(--text-muted);
+  --avatar-outlined-border: var(--border-strong);
+
+  --avatar-status-online: var(--color-success);
+  --avatar-status-offline: var(--text-disabled);
+  --avatar-status-away: var(--color-warning);
+  --avatar-status-busy: var(--color-error);
+
+  --avatar-disabled-opacity: 0.6;
+
   // Table variables
   --table-border-color: var(--border-default);
   --table-border-radius: 0.5rem;

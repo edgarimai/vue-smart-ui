@@ -126,6 +126,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  removeSpecialChars: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const { autoId } = useAutoId('combobox', props)
@@ -151,7 +155,6 @@ const error = ref('')
 const searchQuery = ref('')
 const highlightedIndex = ref(-1)
 
-// Built-in validators
 const validators = {
   required: (value) => ({
     valid: !!value || (Array.isArray(value) && value.length > 0),
@@ -167,7 +170,6 @@ const validators = {
   }),
 }
 
-// Validation logic
 const validate = (value) => {
   if (!props.rules.length) return true
 
@@ -225,15 +227,26 @@ const getLabel = (option) => {
   return String(option)
 }
 
+const stripSpecialChars = (text) => {
+  return text
+    .replace(/[^\w\s]/g, '')
+    .toLowerCase()
+    .trim()
+}
+
 // Computed properties
 const filteredOptions = computed(() => {
-  if (!props.searchable || !searchQuery.value) {
+  if (!props.searchable || !searchQuery.value.trim()) {
     return props.options
   }
-
+  const query = props.removeSpecialChars
+    ? stripSpecialChars(searchQuery.value)
+    : searchQuery.value.toLowerCase().trim()
   return props.options.filter((option) => {
-    const label = getLabel(option).toLowerCase()
-    return label.includes(searchQuery.value.toLowerCase())
+    const label = props.removeSpecialChars
+      ? stripSpecialChars(getLabel(option))
+      : getLabel(option).toLowerCase()
+    return label.includes(query)
   })
 })
 
@@ -316,41 +329,61 @@ const showClearButton = computed(() => {
   )
 })
 
+let cachedViewport = null
+let positionUpdateTimeout = null
+
+const throttledUpdatePosition = () => {
+  if (positionUpdateTimeout) return
+
+  positionUpdateTimeout = setTimeout(() => {
+    updatePosition()
+    positionUpdateTimeout = null
+  }, 16) // ~60fps
+}
+
 const updatePosition = () => {
   if (!menuRef.value || !comboboxRef.value) return
 
-  const menuRect = menuRef.value.getBoundingClientRect()
   const comboboxRect = comboboxRef.value.getBoundingClientRect()
   const viewport = {
     width: window.innerWidth,
     height: window.innerHeight,
   }
 
-  // Calculate the ideal dropdown width
+  if (
+    !cachedViewport ||
+    cachedViewport.width !== viewport.width ||
+    cachedViewport.height !== viewport.height
+  ) {
+    cachedViewport = viewport
+  }
+
   const minDropdownWidth =
     typeof props.minDropdownWidth === 'string'
       ? parseInt(props.minDropdownWidth)
       : props.minDropdownWidth
   const dropdownWidth = Math.max(comboboxRect.width, minDropdownWidth)
 
-  // Set the dropdown width (minimum 200px or combobox width, whichever is larger)
   menuRef.value.style.width = `${dropdownWidth}px`
 
   menuRef.value.style.top = '100%'
   menuRef.value.style.bottom = 'auto'
   menuRef.value.style.left = '0'
   menuRef.value.style.right = 'auto'
+  menuRef.value.style.marginTop = '0.25rem'
+  menuRef.value.style.marginBottom = '0'
 
-  if (comboboxRect.left + dropdownWidth > viewport.width) {
+  if (comboboxRect.left + dropdownWidth > cachedViewport.width) {
     menuRef.value.style.right = '0'
     menuRef.value.style.left = 'auto'
   }
 
-  if (comboboxRect.bottom + menuRect.height > viewport.height) {
+  const menuHeight = menuRef.value.offsetHeight
+  if (comboboxRect.bottom + menuHeight > cachedViewport.height) {
     menuRef.value.style.bottom = '100%'
     menuRef.value.style.top = 'auto'
     menuRef.value.style.marginTop = '0'
-    menuRef.value.style.marginBottom = '0.5rem'
+    menuRef.value.style.marginBottom = '0.25rem'
   }
 }
 
@@ -360,14 +393,11 @@ const openDropdown = () => {
   isOpen.value = true
   highlightedIndex.value = -1
 
-  if (props.searchable) {
-    searchQuery.value = ''
-    nextTick(() => {
-      inputRef.value?.focus()
-    })
-  }
-
   nextTick(() => {
+    if (props.searchable) {
+      searchQuery.value = ''
+      inputRef.value?.focus()
+    }
     updatePosition()
     document.addEventListener('click', handleClickOutside)
   })
@@ -393,6 +423,8 @@ const handleClickOutside = (event) => {
 }
 
 const handleInputClick = () => {
+  if (props.disabled || props.readonly) return
+
   if (isOpen.value) {
     closeDropdown()
   } else {
@@ -431,6 +463,7 @@ const handleInput = (event) => {
 
 const selectOption = (option) => {
   const value = getValue(option)
+  let newModelValue
 
   if (props.multiple) {
     const currentValues = Array.isArray(props.modelValue) ? [...props.modelValue] : []
@@ -441,25 +474,24 @@ const selectOption = (option) => {
     if (existingIndex >= 0) {
       currentValues.splice(existingIndex, 1)
     } else {
-      currentValues.push(typeof option === 'object' ? option : value)
+      currentValues.push(value)
     }
 
-    emit('update:modelValue', currentValues)
-
-    if (props.closeOnSelect) {
-      closeDropdown()
-    }
+    newModelValue = currentValues
   } else {
-    emit('update:modelValue', typeof option === 'object' ? option : value)
-    if (props.closeOnSelect) {
-      closeDropdown()
-    }
+    newModelValue = value
+  }
+
+  emit('update:modelValue', newModelValue)
+
+  if (props.closeOnSelect) {
+    closeDropdown()
   }
 
   emit('select', option)
 
   if (props.validateOnInput) {
-    const isValid = validate(props.modelValue)
+    const isValid = validate(newModelValue)
     emit('validation', { valid: isValid, error: error.value })
   }
 }
@@ -564,19 +596,19 @@ const focus = () => {
   }
 }
 
-// Watchers
 watch(
   () => props.modelValue,
-  () => {
-    if (props.validateOnInput) {
-      validate(props.modelValue)
+  (newValue, oldValue) => {
+    if (newValue !== oldValue && props.validateOnInput) {
+      validate(newValue)
     }
   },
+  { deep: true },
 )
 
 onMounted(() => {
-  window.addEventListener('scroll', updatePosition, true)
-  window.addEventListener('resize', updatePosition)
+  window.addEventListener('scroll', throttledUpdatePosition, true)
+  window.addEventListener('resize', throttledUpdatePosition)
 
   emit('mounted', {
     validate: validateField,
@@ -588,8 +620,13 @@ onMounted(() => {
 
 onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside)
-  window.removeEventListener('scroll', updatePosition, true)
-  window.removeEventListener('resize', updatePosition)
+  window.removeEventListener('scroll', throttledUpdatePosition, true)
+  window.removeEventListener('resize', throttledUpdatePosition)
+
+  if (positionUpdateTimeout) {
+    clearTimeout(positionUpdateTimeout)
+    positionUpdateTimeout = null
+  }
 })
 </script>
 
@@ -1150,17 +1187,17 @@ onUnmounted(() => {
   }
 }
 
-// Animations
+// Animations - Otimizadas para melhor performance
 .combobox-dropdown-enter-active,
 .combobox-dropdown-leave-active {
   transition:
-    opacity 0.2s,
-    transform 0.2s;
+    opacity 0.1s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .combobox-dropdown-enter-from,
 .combobox-dropdown-leave-to {
   opacity: 0;
-  transform: translateY(-0.25rem);
+  transform: translateY(-0.125rem);
 }
 </style>

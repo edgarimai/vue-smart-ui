@@ -334,7 +334,6 @@ const computedRules = computed(() => {
 <style lang="scss">
 .base-color-picker {
   position: relative;
-  width: 100%;
 
   &__container {
     position: relative;
@@ -354,7 +353,7 @@ const computedRules = computed(() => {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--input-icon-color, #6b7280);
+    color: var(--vsui-input-icon-color, #6b7280);
     cursor: pointer;
   }
 
@@ -364,8 +363,8 @@ const computedRules = computed(() => {
     top: 100%;
     left: 0;
     margin-top: 0.5rem;
-    background-color: var(--surface-default, white);
-    border: 1px solid var(--border-default, #e5e7eb);
+    background-color: var(--vsui-surface-default, white);
+    border: 1px solid var(--vsui-border-default, #e5e7eb);
     border-radius: 0.375rem;
     box-shadow:
       0 4px 6px -1px rgba(0, 0, 0, 0.1),
@@ -388,7 +387,7 @@ const computedRules = computed(() => {
     }
 
     &::-webkit-color-swatch {
-      border: 1px solid var(--border-default, #e5e7eb);
+      border: 1px solid var(--vsui-border-default, #e5e7eb);
       border-radius: 0.25rem;
     }
   }
@@ -405,7 +404,7 @@ const computedRules = computed(() => {
     width: 1.5rem;
     height: 1.5rem;
     border-radius: 0.25rem;
-    border: 1px solid var(--border-default, #e5e7eb);
+    border: 1px solid var(--vsui-border-default, #e5e7eb);
     cursor: pointer;
     transition: all 0.2s;
 
@@ -414,7 +413,7 @@ const computedRules = computed(() => {
     }
 
     &--active {
-      box-shadow: 0 0 0 2px var(--color-primary, #3b82f6);
+      box-shadow: 0 0 0 2px var(--vsui-color-primary, #3b82f6);
     }
   }
 

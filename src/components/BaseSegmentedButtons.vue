@@ -315,23 +315,23 @@ onMounted(() => {
   align-items: center;
 
   &__label {
-    font-size: var(--input-label-font-size, 0.875rem);
+    font-size: var(--vsui-input-label-font-size, 0.875rem);
     font-weight: 500;
-    color: var(--input-label-color, #374151);
+    color: var(--vsui-input-label-color, #374151);
   }
 
   &__required {
-    color: var(--input-required-color, #ef4444);
+    color: var(--vsui-input-required-color, #ef4444);
     margin-left: 0.25rem;
   }
 
   &__helper {
-    font-size: var(--input-helper-font-size, 0.75rem);
-    color: var(--input-helper-color, #6b7280);
+    font-size: var(--vsui-input-helper-font-size, 0.75rem);
+    color: var(--vsui-input-helper-color, #6b7280);
     margin-top: 0.25rem;
 
     &--error {
-      color: var(--input-error-color, #ef4444);
+      color: var(--vsui-input-error-color, #ef4444);
     }
   }
 
@@ -350,7 +350,7 @@ onMounted(() => {
 
   &--error {
     .base-segmented-buttons__button {
-      border-color: var(--input-error-color, #ef4444);
+      border-color: var(--vsui-input-error-color, #ef4444);
     }
   }
 
@@ -360,14 +360,14 @@ onMounted(() => {
     justify-content: center;
     font-weight: 500;
     transition: all 0.2s ease;
-    border: 1px solid var(--button-outline-border, #d1d5db);
+    border: 1px solid var(--vsui-button-outline-border, #d1d5db);
     background-color: transparent;
     cursor: pointer;
     margin: 0;
     position: relative;
 
     &:focus {
-      outline: 2px solid var(--button-focus-outline, rgba(59, 130, 246, 0.5));
+      outline: 2px solid var(--vsui-button-focus-outline, rgba(59, 130, 246, 0.5));
       outline-offset: 2px;
       z-index: 2;
     }
@@ -400,46 +400,46 @@ onMounted(() => {
 
     // Primary variant
     &--primary {
-      color: var(--button-outline-text, #374151);
+      color: var(--vsui-button-outline-text, #374151);
 
       &:hover:not(:disabled):not(.base-segmented-buttons__button--selected) {
-        background-color: var(--button-outline-hover, rgba(229, 231, 235, 0.5));
+        background-color: var(--vsui-button-outline-hover, rgba(229, 231, 235, 0.5));
       }
 
       &.base-segmented-buttons__button--selected {
-        background-color: var(--button-primary-bg, #3b82f6);
-        color: var(--button-primary-text, white);
-        border-color: var(--button-primary-bg, #3b82f6);
+        background-color: var(--vsui-button-primary-bg, #3b82f6);
+        color: var(--vsui-button-primary-text, white);
+        border-color: var(--vsui-button-primary-bg, #3b82f6);
       }
     }
 
     // Secondary variant
     &--secondary {
-      color: var(--button-outline-text, #374151);
+      color: var(--vsui-button-outline-text, #374151);
 
       &:hover:not(:disabled):not(.base-segmented-buttons__button--selected) {
-        background-color: var(--button-outline-hover, rgba(229, 231, 235, 0.5));
+        background-color: var(--vsui-button-outline-hover, rgba(229, 231, 235, 0.5));
       }
 
       &.base-segmented-buttons__button--selected {
-        background-color: var(--button-secondary-bg, #6b7280);
-        color: var(--button-secondary-text, white);
-        border-color: var(--button-secondary-bg, #6b7280);
+        background-color: var(--vsui-button-secondary-bg, #6b7280);
+        color: var(--vsui-button-secondary-text, white);
+        border-color: var(--vsui-button-secondary-bg, #6b7280);
       }
     }
 
     // Gray variant
     &--gray {
-      color: var(--button-outline-text, #374151);
+      color: var(--vsui-button-outline-text, #374151);
 
       &:hover:not(:disabled):not(.base-segmented-buttons__button--selected) {
-        background-color: var(--button-outline-hover, rgba(229, 231, 235, 0.5));
+        background-color: var(--vsui-button-outline-hover, rgba(229, 231, 235, 0.5));
       }
 
       &.base-segmented-buttons__button--selected {
-        background-color: var(--button-gray-bg, #e5e7eb);
-        color: var(--button-gray-text, #111827);
-        border-color: var(--button-gray-bg, #e5e7eb);
+        background-color: var(--vsui-button-gray-bg, #e5e7eb);
+        color: var(--vsui-button-gray-text, #111827);
+        border-color: var(--vsui-button-gray-bg, #e5e7eb);
       }
     }
   }

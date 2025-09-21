@@ -52,14 +52,14 @@ provide('accordion', {
   width: 100%;
 
   &--default {
-    border: 1px solid var(--accordion-border-color, #e5e7eb);
+    border: 1px solid var(--vsui-accordion-border-color, #e5e7eb);
     border-radius: 0.5rem;
     overflow: hidden;
   }
 
   &--bordered {
     .base-accordion-item {
-      border-bottom: 1px solid var(--accordion-border-color, #e5e7eb);
+      border-bottom: 1px solid var(--vsui-accordion-border-color, #e5e7eb);
 
       &:last-child {
         border-bottom: none;

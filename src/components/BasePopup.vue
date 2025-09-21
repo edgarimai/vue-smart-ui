@@ -148,46 +148,46 @@ onUnmounted(() => {
 
   // Variants
   &--default {
-    background-color: var(--popup-default-bg, white);
-    border: 1px solid var(--popup-border-color, #e5e7eb);
+    background-color: var(--vsui-popup-default-bg, white);
+    border: 1px solid var(--vsui-popup-border-color, #e5e7eb);
   }
 
   &--info {
-    background-color: var(--popup-info-bg, #eff6ff);
-    border: 1px solid var(--popup-info-color, #3b82f6);
+    background-color: var(--vsui-popup-info-bg, #eff6ff);
+    border: 1px solid var(--vsui-popup-info-color, #3b82f6);
 
     .base-popup__header {
-      background-color: var(--popup-info-color, #3b82f6);
+      background-color: var(--vsui-popup-info-color, #3b82f6);
       color: white;
     }
   }
 
   &--success {
-    background-color: var(--popup-success-bg, #f0fdf4);
-    border: 1px solid var(--popup-success-color, #22c55e);
+    background-color: var(--vsui-popup-success-bg, #f0fdf4);
+    border: 1px solid var(--vsui-popup-success-color, #22c55e);
 
     .base-popup__header {
-      background-color: var(--popup-success-color, #22c55e);
+      background-color: var(--vsui-popup-success-color, #22c55e);
       color: white;
     }
   }
 
   &--warning {
-    background-color: var(--popup-warning-bg, #fffbeb);
-    border: 1px solid var(--popup-warning-color, #f59e0b);
+    background-color: var(--vsui-popup-warning-bg, #fffbeb);
+    border: 1px solid var(--vsui-popup-warning-color, #f59e0b);
 
     .base-popup__header {
-      background-color: var(--popup-warning-color, #f59e0b);
+      background-color: var(--vsui-popup-warning-color, #f59e0b);
       color: white;
     }
   }
 
   &--error {
-    background-color: var(--popup-error-bg, #fef2f2);
-    border: 1px solid var(--popup-error-color, #ef4444);
+    background-color: var(--vsui-popup-error-bg, #fef2f2);
+    border: 1px solid var(--vsui-popup-error-color, #ef4444);
 
     .base-popup__header {
-      background-color: var(--popup-error-color, #ef4444);
+      background-color: var(--vsui-popup-error-color, #ef4444);
       color: white;
     }
   }
@@ -216,12 +216,12 @@ onUnmounted(() => {
 
   &__header {
     padding: 1rem;
-    border-bottom: 1px solid var(--popup-border-color, #e5e7eb);
+    border-bottom: 1px solid var(--vsui-popup-border-color, #e5e7eb);
   }
 
   &__footer {
     padding: 1rem;
-    border-top: 1px solid var(--popup-border-color, #e5e7eb);
+    border-top: 1px solid var(--vsui-popup-border-color, #e5e7eb);
   }
 
   &__close {

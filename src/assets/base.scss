@@ -1,299 +1,352 @@
-.vsui {
-  // Variables with default values that can be overridden
-
-  // Light mode colors
+// Default theme variables - can be overridden by consumers
+:root {
+  // Light mode colors (default)
 
   // Base colors
-  --color-primary: #3b82f6;
-  --color-primary-dark: #2563eb;
-  --color-primary-light: #e0e7ff;
-  --color-primary-text: #1e40af;
+  --vsui-color-primary: #3b82f6;
+  --vsui-color-primary-dark: #2563eb;
+  --vsui-color-primary-light: #e0e7ff;
+  --vsui-color-primary-text: #1e40af;
 
-  --color-secondary: #9333ea;
-  --color-secondary-dark: #7e22ce;
-  --color-secondary-light: #ede9fe;
-  --color-secondary-text: #4338ca;
+  --vsui-color-secondary: #9333ea;
+  --vsui-color-secondary-dark: #7e22ce;
+  --vsui-color-secondary-light: #ede9fe;
+  --vsui-color-secondary-text: #4338ca;
 
-  --color-info: #3b82f6;
-  --color-info-dark: #0284c7;
-  --color-info-light: #dbeafe;
+  --vsui-color-info: #3b82f6;
+  --vsui-color-info-dark: #0284c7;
+  --vsui-color-info-light: #dbeafe;
 
-  --color-success: #22c55e;
-  --color-success-dark: #15803d;
-  --color-success-light: #f0fdf4;
+  --vsui-color-success: #22c55e;
+  --vsui-color-success-dark: #15803d;
+  --vsui-color-success-light: #f0fdf4;
 
-  --color-warning: #f59e0b;
-  --color-warning-dark: #92400e;
-  --color-warning-light: #fefce8;
+  --vsui-color-warning: #f59e0b;
+  --vsui-color-warning-dark: #92400e;
+  --vsui-color-warning-light: #fefce8;
 
-  --color-error: #ef4444;
-  --color-error-dark: #991b1b;
-  --color-error-light: #fee2e2;
+  --vsui-color-error: #ef4444;
+  --vsui-color-error-dark: #991b1b;
+  --vsui-color-error-light: #fee2e2;
 
   // Background colors
-  --bg-default: #ffffff;
-  --bg-subtle: #f9fafb;
-  --bg-muted: #f3f4f6;
-  --bg-emphasized: #e5e7eb;
-  --bg-disabled: #f3f4f6;
+  --vsui-bg-default: #ffffff;
+  --vsui-bg-subtle: #f9fafb;
+  --vsui-bg-muted: #f3f4f6;
+  --vsui-bg-emphasized: #e5e7eb;
+  --vsui-bg-disabled: #f3f4f6;
 
   // Surface colors (for cards, modals, etc.)
-  --surface-default: #f9fafb;
-  --surface-hover: #f3f4f6;
-  --surface-active: #e5e7eb;
-  --surface-selected: #eff6ff;
+  --vsui-surface-default: #f9fafb;
+  --vsui-surface-hover: #f3f4f6;
+  --vsui-surface-active: #e5e7eb;
+  --vsui-surface-selected: #eff6ff;
 
   // Text colors
-  --text-default: #111827;
-  --text-muted: #374151;
-  --text-subtle: #6b7280;
-  --text-disabled: #9ca3af;
-  --text-inverse: #ffffff;
+  --vsui-text-default: #111827;
+  --vsui-text-muted: #374151;
+  --vsui-text-subtle: #6b7280;
+  --vsui-text-disabled: #9ca3af;
+  --vsui-text-inverse: #ffffff;
 
   // Border colors
-  --border-default: #e5e7eb;
-  --border-strong: #c0c4c9;
-  --border-focus: #d1d5db;
+  --vsui-border-default: #e5e7eb;
+  --vsui-border-strong: #c0c4c9;
+  --vsui-border-focus: #d1d5db;
 
-  --color-white: #ffffff;
-  --color-black: #000000;
+  --vsui-color-white: #ffffff;
+  --vsui-color-black: #000000;
 
   // Dark mode colors
   &[data-theme='dark'],
   &.dark,
   html.dark &,
   [data-theme='dark'] & {
-    --color-primary: #60a5fa;
-    --color-primary-dark: #3b82f6;
-    --color-primary-light: #1e3a8a;
-    --color-primary-text: #dbeafe;
+    --vsui-color-primary: #60a5fa;
+    --vsui-color-primary-dark: #3b82f6;
+    --vsui-color-primary-light: #1e3a8a;
+    --vsui-color-primary-text: #dbeafe;
 
-    --color-secondary: #a855f7;
-    --color-secondary-dark: #9333ea;
-    --color-secondary-light: #4c1d95;
-    --color-secondary-text: #ede9fe;
+    --vsui-color-secondary: #a855f7;
+    --vsui-color-secondary-dark: #9333ea;
+    --vsui-color-secondary-light: #4c1d95;
+    --vsui-color-secondary-text: #ede9fe;
 
-    --color-info: #60a5fa;
-    --color-info-dark: #3b82f6;
-    --color-info-light: #1e3a8a;
+    --vsui-color-info: #60a5fa;
+    --vsui-color-info-dark: #3b82f6;
+    --vsui-color-info-light: #1e3a8a;
 
-    --color-success: #4ade80;
-    --color-success-dark: var(--text-default);
-    --color-success-light: #14532d;
+    --vsui-color-success: #4ade80;
+    --vsui-color-success-dark: var(--vsui-text-default);
+    --vsui-color-success-light: #14532d;
 
-    --color-warning: #fbbf24;
-    --color-warning-dark: var(--text-default);
-    --color-warning-light: #78350f;
+    --vsui-color-warning: #fbbf24;
+    --vsui-color-warning-dark: var(--vsui-text-default);
+    --vsui-color-warning-light: #78350f;
 
-    --color-error: #f87171;
-    --color-error-dark: var(--text-default);
-    --color-error-light: #7f1d1d;
+    --vsui-color-error: #f87171;
+    --vsui-color-error-dark: var(--vsui-text-default);
+    --vsui-color-error-light: #7f1d1d;
 
     // Dark mode background colors
-    --bg-default: #111827;
-    --bg-subtle: #1f2937;
-    --bg-muted: #374151;
-    --bg-emphasized: #4b5563;
-    --bg-disabled: #374151;
+    --vsui-bg-default: #111827;
+    --vsui-bg-subtle: #1f2937;
+    --vsui-bg-muted: #374151;
+    --vsui-bg-emphasized: #4b5563;
+    --vsui-bg-disabled: #374151;
 
     // Dark mode surface colors
-    --surface-default: #1f2937;
-    --surface-hover: #374151;
-    --surface-active: #4b5563;
-    --surface-selected: #2563eb;
+    --vsui-surface-default: #1f2937;
+    --vsui-surface-hover: #374151;
+    --vsui-surface-active: #4b5563;
+    --vsui-surface-selected: #2563eb;
 
     // Dark mode text colors
-    --text-default: #f9fafb;
-    --text-muted: #e5e7eb;
-    --text-subtle: #9ca3af;
-    --text-disabled: #6b7280;
-    --text-inverse: #111827;
+    --vsui-text-default: #f9fafb;
+    --vsui-text-muted: #e5e7eb;
+    --vsui-text-subtle: #9ca3af;
+    --vsui-text-disabled: #6b7280;
+    --vsui-text-inverse: #111827;
 
     // Dark mode border colors
-    --border-default: #4b5563;
-    --border-strong: #6b7280;
-    --border-focus: #9ca3af;
+    --vsui-border-default: #4b5563;
+    --vsui-border-strong: #6b7280;
+    --vsui-border-focus: #9ca3af;
   }
+}
+
+// Component-specific variables (for backward compatibility and scoped usage)
+.vsui {
+  // Create aliases for component usage within .vsui scope
+  --color-primary: var(--vsui-color-primary);
+  --color-primary-dark: var(--vsui-color-primary-dark);
+  --color-primary-light: var(--vsui-color-primary-light);
+  --color-primary-text: var(--vsui-color-primary-text);
+
+  --color-secondary: var(--vsui-color-secondary);
+  --color-secondary-dark: var(--vsui-color-secondary-dark);
+  --color-secondary-light: var(--vsui-color-secondary-light);
+  --color-secondary-text: var(--vsui-color-secondary-text);
+
+  --color-info: var(--vsui-color-info);
+  --color-info-dark: var(--vsui-color-info-dark);
+  --color-info-light: var(--vsui-color-info-light);
+
+  --color-success: var(--vsui-color-success);
+  --color-success-dark: var(--vsui-color-success-dark);
+  --color-success-light: var(--vsui-color-success-light);
+
+  --color-warning: var(--vsui-color-warning);
+  --color-warning-dark: var(--vsui-color-warning-dark);
+  --color-warning-light: var(--vsui-color-warning-light);
+
+  --color-error: var(--vsui-color-error);
+  --color-error-dark: var(--vsui-color-error-dark);
+  --color-error-light: var(--vsui-color-error-light);
+
+  --bg-default: var(--vsui-bg-default);
+  --bg-subtle: var(--vsui-bg-subtle);
+  --bg-muted: var(--vsui-bg-muted);
+  --bg-emphasized: var(--vsui-bg-emphasized);
+  --bg-disabled: var(--vsui-bg-disabled);
+
+  --surface-default: var(--vsui-surface-default);
+  --surface-hover: var(--vsui-surface-hover);
+  --surface-active: var(--vsui-surface-active);
+  --surface-selected: var(--vsui-surface-selected);
+
+  --text-default: var(--vsui-text-default);
+  --text-muted: var(--vsui-text-muted);
+  --text-subtle: var(--vsui-text-subtle);
+  --text-disabled: var(--vsui-text-disabled);
+  --text-inverse: var(--vsui-text-inverse);
+
+  --border-default: var(--vsui-border-default);
+  --border-strong: var(--vsui-border-strong);
+  --border-focus: var(--vsui-border-focus);
+
+  --color-white: var(--vsui-color-white);
+  --color-black: var(--vsui-color-black);
 
   // Font base
   --font-family-base: 'Roboto', sans-serif;
   // --font-size-base: 62.5%;
 
   // Buttons variables
-  --button-primary-bg: var(--color-primary);
-  --button-primary-hover: var(--color-primary-dark);
-  --button-primary-text: var(--color-white);
+  --vsui-button-primary-bg: var(--vsui-color-primary);
+  --vsui-button-primary-hover: var(--vsui-color-primary-dark);
+  --vsui-button-primary-text: var(--vsui-color-white);
 
-  --button-secondary-bg: var(--color-secondary);
-  --button-secondary-hover: var(--color-secondary-dark);
-  --button-secondary-text: var(--color-white);
+  --vsui-button-secondary-bg: var(--vsui-color-secondary);
+  --vsui-button-secondary-hover: var(--vsui-color-secondary-dark);
+  --vsui-button-secondary-text: var(--vsui-color-white);
 
-  --button-gray-bg: var(--bg-muted);
-  --button-gray-hover: var(--bg-emphasized);
-  --button-gray-text: var(--text-muted);
+  --vsui-button-gray-bg: var(--vsui-bg-muted);
+  --vsui-button-gray-hover: var(--vsui-bg-emphasized);
+  --vsui-button-gray-text: var(--vsui-text-muted);
 
-  --button-outline-border: var(--border-strong);
-  --button-outline-hover: var(--bg-muted);
-  --button-outline-text: var(--text-muted);
+  --vsui-button-outline-border: var(--vsui-border-strong);
+  --vsui-button-outline-hover: var(--vsui-bg-muted);
+  --vsui-button-outline-text: var(--vsui-text-muted);
 
-  --button-ghost-text: var(--text-muted);
+  --vsui-button-ghost-text: var(--vsui-text-muted);
 
-  --button-focus-outline: var(--color-primary);
+  --vsui-button-focus-outline: var(--vsui-color-primary);
 
-  --button-small-font-size: 0.875rem;
-  --button-medium-font-size: 1rem;
-  --button-large-font-size: 1.125rem;
+  --vsui-button-small-font-size: 0.875rem;
+  --vsui-button-medium-font-size: 1rem;
+  --vsui-button-large-font-size: 1.125rem;
 
   // Popups variables
-  --popup-default-color: var(--text-subtle);
-  --popup-info-color: var(--color-info);
-  --popup-success-color: var(--color-success);
-  --popup-warning-color: var(--color-warning);
-  --popup-error-color: var(--color-error);
-  --popup-border-color: var(--border-strong);
+  --vsui-popup-default-color: var(--vsui-text-subtle);
+  --vsui-popup-info-color: var(--vsui-color-info);
+  --vsui-popup-success-color: var(--vsui-color-success);
+  --vsui-popup-warning-color: var(--vsui-color-warning);
+  --vsui-popup-error-color: var(--vsui-color-error);
+  --vsui-popup-border-color: var(--vsui-border-strong);
 
-  --popup-default-bg: var(--surface-default);
-  --popup-info-bg: var(--surface-default);
-  --popup-success-bg: var(--surface-default);
-  --popup-warning-bg: var(--surface-default);
-  --popup-error-bg: var(--surface-default);
+  --vsui-popup-default-bg: var(--vsui-surface-default);
+  --vsui-popup-info-bg: var(--vsui-surface-default);
+  --vsui-popup-success-bg: var(--vsui-surface-default);
+  --vsui-popup-warning-bg: var(--vsui-surface-default);
+  --vsui-popup-error-bg: var(--vsui-surface-default);
 
   // Toasts variables
-  --toast-default-bg: var(--surface-default);
-  --toast-default-color: var(--border-strong);
-  --toast-default-text: var(--text-default);
+  --vsui-toast-default-bg: var(--vsui-surface-default);
+  --vsui-toast-default-color: var(--vsui-border-strong);
+  --vsui-toast-default-text: var(--vsui-text-default);
 
-  --toast-info-bg: var(--color-primary-light);
-  --toast-info-color: var(--color-primary);
-  --toast-info-text: var(--color-primary-text);
+  --vsui-toast-info-bg: var(--vsui-color-primary-light);
+  --vsui-toast-info-color: var(--vsui-color-primary);
+  --vsui-toast-info-text: var(--vsui-color-primary-text);
 
-  --toast-success-bg: var(--color-success-light);
-  --toast-success-color: var(--color-success);
-  --toast-success-text: var(--color-success-dark);
+  --vsui-toast-success-bg: var(--vsui-color-success-light);
+  --vsui-toast-success-color: var(--vsui-color-success);
+  --vsui-toast-success-text: var(--vsui-color-success-dark);
 
-  --toast-warning-bg: var(--color-warning-light);
-  --toast-warning-color: var(--color-warning);
-  --toast-warning-text: var(--color-warning-dark);
+  --vsui-toast-warning-bg: var(--vsui-color-warning-light);
+  --vsui-toast-warning-color: var(--vsui-color-warning);
+  --vsui-toast-warning-text: var(--vsui-color-warning-dark);
 
-  --toast-error-bg: var(--color-error-light);
-  --toast-error-color: var(--color-error);
-  --toast-error-text: var(--color-error-dark);
+  --vsui-toast-error-bg: var(--vsui-color-error-light);
+  --vsui-toast-error-color: var(--vsui-color-error);
+  --vsui-toast-error-text: var(--vsui-color-error-dark);
 
   --toast-title-font-size: 1rem;
   --toast-message-font-size: 0.75rem;
 
   // Dropdowns variables
-  --dropdown-bg: var(--surface-default);
-  --dropdown-border-color: var(--border-default);
-  --dropdown-item-hover-bg: var(--surface-hover);
+  --vsui-dropdown-bg: var(--vsui-surface-default);
+  --vsui-dropdown-border-color: var(--vsui-border-default);
+  --vsui-dropdown-item-hover-bg: var(--vsui-surface-hover);
 
-  --dropdown-dark-bg: var(--text-muted);
+  --vsui-dropdown-dark-bg: var(--vsui-text-muted);
   --dropdown-dark-border-color: #4b5563;
   --dropdown-dark-item-hover-bg: #4b5563;
 
   // Skeletons variables
-  --skeleton-bg: var(--bg-emphasized);
-  --skeleton-rectangle-height: 1.5rem;
-  --skeleton-circle-size: 3rem;
-  --skeleton-heading-height: 2rem;
-  --skeleton-button-height: 2.5rem;
-  --skeleton-button-width: 8rem;
-  --skeleton-text-height: 1rem;
-  --skeleton-rounded-radius: 0.375rem;
-  --skeleton-shine: rgba(255, 255, 255, 0.3);
+  --vsui-skeleton-bg: var(--bg-emphasized);
+  --vsui-skeleton-rectangle-height: 1.5rem;
+  --vsui-skeleton-circle-size: 3rem;
+  --vsui-skeleton-heading-height: 2rem;
+  --vsui-skeleton-button-height: 2.5rem;
+  --vsui-skeleton-button-width: 8rem;
+  --vsui-skeleton-text-height: 1rem;
+  --vsui-skeleton-rounded-radius: 0.375rem;
+  --vsui-skeleton-shine: rgba(255, 255, 255, 0.3);
 
   // Accordions variables
-  --accordion-border-color: var(--border-default);
-  --accordion-header-color: var(--text-default);
-  --accordion-hover-bg: var(--bg-subtle);
-  --accordion-focus-ring: var(--color-primary);
+  --vsui-accordion-border-color: var(--vsui-border-default);
+  --vsui-accordion-header-color: var(--vsui-text-default);
+  --vsui-accordion-hover-bg: var(--vsui-bg-subtle);
+  --vsui-accordion-focus-ring: var(--vsui-color-primary);
 
   // Input variables
-  --input-label-color: var(--text-muted);
-  --input-required-color: var(--color-error);
-  --input-helper-color: var(--text-subtle);
-  --input-border-color: var(--border-strong);
-  --input-bg: var(--bg-subtle);
-  --input-text-color: var(--text-default);
-  --input-focus-border-color: var(--color-primary);
+  --vsui-input-label-color: var(--vsui-text-muted);
+  --vsui-input-required-color: var(--vsui-color-error);
+  --vsui-input-helper-color: var(--vsui-text-subtle);
+  --vsui-input-border-color: var(--vsui-border-strong);
+  --vsui-input-bg: var(--vsui-bg-subtle);
+  --vsui-input-text-color: var(--vsui-text-default);
+  --vsui-input-focus-border-color: var(--vsui-color-primary);
   --input-focus-ring-color: rgba(59, 130, 246, 0.1);
-  --input-placeholder-color: var(--text-disabled);
-  --input-disabled-bg: var(--bg-muted);
-  --input-disabled-text: var(--text-subtle);
-  --input-icon-color: var(--text-subtle);
-  --input-filled-bg: var(--bg-muted);
-  --input-filled-focus-bg: var(--bg-subtle);
-  --input-success-color: var(--color-success);
-  --input-error-color: var(--color-error);
-  --input-warning-color: var(--color-warning);
+  --vsui-input-placeholder-color: var(--vsui-text-disabled);
+  --vsui-input-disabled-bg: var(--vsui-bg-muted);
+  --vsui-input-disabled-text: var(--vsui-text-subtle);
+  --vsui-input-icon-color: var(--vsui-text-subtle);
+  --vsui-input-filled-bg: var(--vsui-bg-muted);
+  --vsui-input-filled-focus-bg: var(--vsui-bg-subtle);
+  --vsui-input-success-color: var(--vsui-color-success);
+  --vsui-input-error-color: var(--vsui-color-error);
+  --vsui-input-warning-color: var(--vsui-color-warning);
 
   --input-label-font-size: 0.875rem;
   --input-field-font-size: 0.875rem;
   --input-helper-font-size: 0.75rem;
 
   // Checkbox variables
-  --checkbox-border: 1px solid var(--checkbox-border-color);
-  --checkbox-border-color: var(--border-strong);
-  --checkbox-hover-border-color: var(--bg-emphasized);
-  --checkbox-border-radius: 0.25rem;
-  --checkbox-bg: var(--bg-subtle);
-  --checkbox-check: var(--text-muted);
-  --checkbox-text: var(--text-muted);
-  --checkbox-small-font-size: 0.875rem;
-  --checkbox-medium-font-size: 1rem;
-  --checkbox-large-font-size: 1.125rem;
+  --vsui-checkbox-border: 1px solid var(--checkbox-border-color);
+  --vsui-checkbox-border-color: var(--border-strong);
+  --vsui-checkbox-hover-border-color: var(--bg-emphasized);
+  --vsui-checkbox-border-radius: 0.25rem;
+  --vsui-checkbox-bg: var(--bg-subtle);
+  --vsui-checkbox-check: var(--text-muted);
+  --vsui-checkbox-text: var(--text-muted);
+  --vsui-checkbox-small-font-size: 0.875rem;
+  --vsui-checkbox-medium-font-size: 1rem;
+  --vsui-checkbox-large-font-size: 1.125rem;
 
   // Combobox variables
-  --combobox-tag-bg: var(--bg-emphasized);
-  --combobox-tag-text: var(--text-default);
-  --combobox-tag-remove: var(--text-muted);
-  --combobox-tag-remove-hover: var(--bg-muted);
-  --combobox-clear-hover: var(--bg-subtle);
-  --combobox-option-selected-bg: var(--color-primary-light);
-  --combobox-option-selected-text: var(--color-primary);
-  --combobox-option-text-color: var(--text-muted);
+  --vsui-combobox-tag-bg: var(--vsui-bg-emphasized);
+  --vsui-combobox-tag-text: var(--vsui-text-default);
+  --vsui-combobox-tag-remove: var(--vsui-text-muted);
+  --vsui-combobox-tag-remove-hover: var(--vsui-bg-muted);
+  --vsui-combobox-clear-hover: var(--vsui-bg-subtle);
+  --vsui-combobox-option-selected-bg: var(--vsui-color-primary-light);
+  --vsui-combobox-option-selected-text: var(--vsui-color-primary);
+  --vsui-combobox-option-text-color: var(--vsui-text-muted);
 
   // Textarea variables
   --textarea-font-size: 1rem;
-  --textarea-font-family: var(--font-family-base);
+  --vsui-textarea-font-family: var(--vsui-font-family-base);
   --textarea-line-height: 1.6;
   --textarea-padding: 0.75rem 1rem;
   --textarea-border-radius: 0.5rem;
 
-  --textarea-bg: var(--bg-subtle);
-  --textarea-text-color: var(--text-default);
-  --textarea-border-color: var(--border-strong);
-  --textarea-focus-border-color: var(--color-primary);
+  --vsui-textarea-bg: var(--vsui-bg-subtle);
+  --vsui-textarea-text-color: var(--vsui-text-default);
+  --vsui-textarea-border-color: var(--vsui-border-strong);
+  --vsui-textarea-focus-border-color: var(--vsui-color-primary);
 
-  --textarea-success-color: var(--color-success);
-  --textarea-error-color: var(--color-error);
-  --textarea-warning-color: var(--color-warning);
+  --vsui-textarea-success-color: var(--vsui-color-success);
+  --vsui-textarea-error-color: var(--vsui-color-error);
+  --vsui-textarea-warning-color: var(--vsui-color-warning);
 
-  --textarea-filled-bg: var(--bg-muted);
-  --textarea-filled-hover-bg: var(--bg-emphasized);
-  --textarea-filled-focus-bg: var(--bg-subtle);
+  --vsui-textarea-filled-bg: var(--vsui-bg-muted);
+  --vsui-textarea-filled-hover-bg: var(--vsui-bg-emphasized);
+  --vsui-textarea-filled-focus-bg: var(--vsui-bg-subtle);
 
   --textarea-helper-font-size: 0.75rem;
   --textarea-label-font-size: 0.875rem;
 
   // Slider variables
   --slider-track-height: 6px;
-  --slider-track-bg: var(--surface-active);
+  --vsui-slider-track-bg: var(--vsui-surface-active);
   --slider-track-radius: 3px;
-  --slider-fill-color: var(--color-primary);
+  --vsui-slider-fill-color: var(--vsui-color-primary);
 
   --slider-thumb-size: 18px;
-  --slider-thumb-bg: var(--surface-default);
+  --vsui-slider-thumb-bg: var(--vsui-surface-default);
   --slider-thumb-border-width: 2px;
-  --slider-thumb-border-color: var(--color-primary);
+  --vsui-slider-thumb-border-color: var(--vsui-color-primary);
   --slider-thumb-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   --slider-focus-ring-color: rgba(59, 130, 246, 0.1);
 
   --slider-value-font-size: 0.875rem;
-  --slider-value-color: var(--text-muted);
+  --vsui-slider-value-color: var(--vsui-text-muted);
 
-  --slider-value-bubble-bg: var(--surface-default);
-  --slider-value-bubble-color: var(--text-muted);
+  --vsui-slider-value-bubble-bg: var(--vsui-surface-default);
+  --vsui-slider-value-bubble-color: var(--vsui-text-muted);
   --slider-value-bubble-font-size: 0.75rem;
   --slider-value-bubble-padding: 2px 6px;
   --slider-value-bubble-radius: 4px;
@@ -301,83 +354,83 @@
   --slider-value-bubble-border: 1px solid var(--color-primary);
 
   --slider-mark-size: 4px;
-  --slider-mark-color: var(--border-strong);
+  --vsui-slider-mark-color: var(--vsui-border-strong);
   --slider-mark-label-font-size: 0.75rem;
-  --slider-mark-label-color: var(--text-subtle);
+  --vsui-slider-mark-label-color: var(--vsui-text-subtle);
   --slider-mark-label-max-width: 80px;
 
   --slider-label-font-size: 0.875rem;
-  --slider-label-color: var(--text-muted);
-  --slider-required-color: var(--color-error);
+  --vsui-slider-label-color: var(--vsui-text-muted);
+  --vsui-slider-required-color: var(--vsui-color-error);
   --slider-helper-font-size: 0.75rem;
-  --slider-helper-color: var(--text-subtle);
+  --vsui-slider-helper-color: var(--vsui-text-subtle);
 
   --slider-disabled-opacity: 0.6;
-  --slider-disabled-track-bg: var(--bg-muted);
-  --slider-disabled-thumb-bg: var(--bg-muted);
-  --slider-disabled-thumb-border: var(--text-subtle);
+  --vsui-slider-disabled-track-bg: var(--vsui-bg-muted);
+  --vsui-slider-disabled-thumb-bg: var(--vsui-bg-muted);
+  --vsui-slider-disabled-thumb-border: var(--vsui-text-subtle);
 
-  --slider-success-color: var(--color-success);
+  --vsui-slider-success-color: var(--vsui-color-success);
   --slider-success-ring-color: rgba(34, 197, 94, 0.1);
-  --slider-error-color: var(--color-error);
+  --vsui-slider-error-color: var(--vsui-color-error);
   --slider-error-ring-color: rgba(239, 68, 68, 0.1);
-  --slider-warning-color: var(--color-warning);
+  --vsui-slider-warning-color: var(--vsui-color-warning);
   --slider-warning-ring-color: rgba(245, 158, 11, 0.1);
 
-  --slider-filled-bg: var(--bg-muted);
+  --vsui-slider-filled-bg: var(--vsui-bg-muted);
 
   // Avatar variables
-  --avatar-default-bg: var(--bg-muted);
-  --avatar-default-text: var(--text-muted);
-  --avatar-default-border: var(--border-default);
+  --vsui-avatar-default-bg: var(--vsui-bg-muted);
+  --vsui-avatar-default-text: var(--vsui-text-muted);
+  --vsui-avatar-default-border: var(--vsui-border-default);
 
-  --avatar-filled-bg: var(--color-primary);
-  --avatar-filled-text: var(--color-white);
-  --avatar-filled-border: var(--color-primary);
+  --vsui-avatar-filled-bg: var(--vsui-color-primary);
+  --vsui-avatar-filled-text: var(--vsui-color-white);
+  --vsui-avatar-filled-border: var(--vsui-color-primary);
 
-  --avatar-outlined-bg: var(--bg-default);
-  --avatar-outlined-text: var(--text-muted);
-  --avatar-outlined-border: var(--border-strong);
+  --vsui-avatar-outlined-bg: var(--vsui-bg-default);
+  --vsui-avatar-outlined-text: var(--vsui-text-muted);
+  --vsui-avatar-outlined-border: var(--vsui-border-strong);
 
-  --avatar-status-online: var(--color-success);
-  --avatar-status-offline: var(--text-disabled);
-  --avatar-status-away: var(--color-warning);
-  --avatar-status-busy: var(--color-error);
+  --vsui-avatar-status-online: var(--vsui-color-success);
+  --vsui-avatar-status-offline: var(--vsui-text-disabled);
+  --vsui-avatar-status-away: var(--vsui-color-warning);
+  --vsui-avatar-status-busy: var(--vsui-color-error);
 
-  --avatar-disabled-opacity: 0.6;
+  --vsui-avatar-disabled-opacity: 0.6;
 
   // Table variables
-  --table-border-color: var(--border-default);
+  --vsui-table-border-color: var(--vsui-border-default);
   --table-border-radius: 0.5rem;
-  --table-header-bg: var(--surface-default);
-  --table-header-text-color: var(--text-muted);
+  --vsui-table-header-bg: var(--vsui-surface-default);
+  --vsui-table-header-text-color: var(--vsui-text-muted);
   --table-header-font-weight: 600;
   --table-header-padding: 0.75rem;
 
-  --table-body-bg: var(--bg-default);
-  --table-row-hover-bg: var(--surface-hover);
-  --table-row-selected-bg: var(--surface-selected);
-  --table-stripe-bg: var(--bg-subtle);
+  --vsui-table-body-bg: var(--vsui-bg-default);
+  --vsui-table-row-hover-bg: var(--vsui-surface-hover);
+  --vsui-table-row-selected-bg: var(--vsui-surface-selected);
+  --vsui-table-stripe-bg: var(--vsui-bg-subtle);
   --table-cell-padding: 0.75rem;
-  --table-cell-text-color: var(--text-muted);
-  --table-cell-border-color: var(--border-default);
+  --vsui-table-cell-text-color: var(--vsui-text-muted);
+  --vsui-table-cell-border-color: var(--vsui-border-default);
 
   --table-sort-icon-opacity: 0.5;
   --table-sort-icon-size: 0.75rem;
-  --table-sort-active-color: var(--color-primary);
+  --vsui-table-sort-active-color: var(--vsui-color-primary);
 
   --table-filter-margin-top: 0.5rem;
 
-  --table-empty-text-color: var(--text-subtle);
+  --vsui-table-empty-text-color: var(--vsui-text-subtle);
   --table-empty-padding: 2rem;
 
-  --table-pagination-bg: var(--surface-default);
-  --table-pagination-border-color: var(--border-default);
+  --vsui-table-pagination-bg: var(--vsui-surface-default);
+  --vsui-table-pagination-border-color: var(--vsui-border-default);
   --table-pagination-padding: 1rem;
   --table-pagination-gap: 1rem;
-  --table-pagination-info-color: var(--text-subtle);
+  --vsui-table-pagination-info-color: var(--vsui-text-subtle);
   --table-pagination-info-font-size: 0.875rem;
-  --table-pagination-pages-color: var(--text-muted);
+  --vsui-table-pagination-pages-color: var(--vsui-text-muted);
   --table-pagination-pages-font-size: 0.875rem;
 
   --table-actions-gap: 0.5rem;

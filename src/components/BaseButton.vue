@@ -96,45 +96,45 @@ defineEmits(['click'])
 
   // Variants
   &--primary {
-    background-color: var(--button-primary-bg);
-    color: var(--button-primary-text);
+    background-color: var(--vsui-button-primary-bg);
+    color: var(--vsui-button-primary-text);
 
     &:hover:not(:disabled) {
-      background-color: var(--button-primary-hover);
+      background-color: var(--vsui-button-primary-hover);
     }
   }
 
   &--secondary {
-    background-color: var(--button-secondary-bg);
-    color: var(--button-secondary-text);
+    background-color: var(--vsui-button-secondary-bg);
+    color: var(--vsui-button-secondary-text);
 
     &:hover:not(:disabled) {
-      background-color: var(--button-secondary-hover);
+      background-color: var(--vsui-button-secondary-hover);
     }
   }
 
   &--gray {
-    background-color: var(--button-gray-bg);
-    color: var(--button-gray-text);
+    background-color: var(--vsui-button-gray-bg);
+    color: var(--vsui-button-gray-text);
 
     &:hover:not(:disabled) {
-      background-color: var(--button-gray-hover);
+      background-color: var(--vsui-button-gray-hover);
     }
   }
 
   &--outline {
     background-color: transparent;
-    border: 1px solid var(--button-outline-border);
-    color: var(--button-outline-text);
+    border: 1px solid var(--vsui-button-outline-border);
+    color: var(--vsui-button-outline-text);
 
     &:hover:not(:disabled) {
-      background-color: var(--button-outline-hover);
+      background-color: var(--vsui-button-outline-hover);
     }
   }
 
   &--ghost {
     background-color: transparent;
-    color: var(--button-ghost-text);
+    color: var(--vsui-button-ghost-text);
 
     &:hover:not(:disabled) {
       opacity: 0.8;
@@ -166,17 +166,17 @@ defineEmits(['click'])
   // Sizes
   &--small {
     padding: 0.5rem 1rem;
-    font-size: var(--button-small-font-size);
+    font-size: var(--vsui-button-small-font-size);
   }
 
   &--medium {
     padding: 0.75rem 1.5rem;
-    font-size: var(--button-medium-font-size);
+    font-size: var(--vsui-button-medium-font-size);
   }
 
   &--large {
     padding: 1rem 2rem;
-    font-size: var(--button-large-font-size);
+    font-size: var(--vsui-button-large-font-size);
   }
 
   &--auto {
@@ -196,7 +196,7 @@ defineEmits(['click'])
   }
 
   &:focus {
-    outline: 2px solid var(--button-focus-outline);
+    outline: 2px solid var(--vsui-button-focus-outline);
     outline-offset: 2px;
   }
 

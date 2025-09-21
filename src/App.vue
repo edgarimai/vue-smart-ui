@@ -682,15 +682,15 @@ onMounted(() => {
               font-weight: bold;
               text-align: center;
               margin-block: 0.5rem;
-              color: var(--text-default);
+              color: var(--vsui-text-default);
             "
           >
             Configured Popup
           </p>
         </template>
         <div class="popup-content">
-          <p style="color: var(--text-default)">Current configuration:</p>
-          <ul style="color: var(--text-default)">
+          <p style="color: var(--vsui-text-default)">Current configuration:</p>
+          <ul style="color: var(--vsui-text-default)">
             <li>Variant: {{ pageState.popup.variant }}</li>
             <li>Size: {{ pageState.popup.size }}</li>
             <li>Position: {{ pageState.popup.position }}</li>
@@ -702,7 +702,7 @@ onMounted(() => {
           </div>
         </template>
         <template #close>
-          <span style="color: var(--text-default)">&times;</span>
+          <span style="color: var(--vsui-text-default)">&times;</span>
         </template>
       </BasePopup>
     </div>
@@ -1540,18 +1540,18 @@ body {
   margin-top: 0;
 }
 .examples {
-  background-color: var(--bg-default);
+  background-color: var(--vsui-bg-default);
   padding-bottom: 10rem;
 
   h2,
   h3 {
     text-align: center;
     margin-bottom: 1rem;
-    color: var(--text-default);
+    color: var(--vsui-text-default);
   }
 
   label {
-    color: var(--text-default);
+    color: var(--vsui-text-default);
   }
 
   .container {
@@ -1578,20 +1578,20 @@ body {
     p,
     ul,
     li {
-      color: var(--text-default);
+      color: var(--vsui-text-default);
     }
   }
 
   .dropdown-container {
     .base-dropdown-item {
-      color: var(--text-default);
+      color: var(--vsui-text-default);
     }
   }
 
   .infinite-scroll-container {
     .items-grid {
       .item {
-        color: var(--text-default);
+        color: var(--vsui-text-default);
       }
     }
   }
@@ -1602,7 +1602,7 @@ body {
     h3,
     h4 {
       text-align: center;
-      color: var(--text-default);
+      color: var(--vsui-text-default);
     }
 
     .table-controls {
@@ -1619,7 +1619,7 @@ body {
     h2,
     h3 {
       text-align: center;
-      color: var(--text-default);
+      color: var(--vsui-text-default);
     }
 
     .container {

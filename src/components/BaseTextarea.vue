@@ -291,115 +291,115 @@ onMounted(() => {
   min-width: 20rem;
 
   &__label {
-    font-size: var(--textarea-label-font-size, 0.875rem);
+    font-size: var(--vsui-textarea-label-font-size, 0.875rem);
     font-weight: 500;
-    color: var(--textarea-label-color, #374151);
+    color: var(--vsui-textarea-label-color, #374151);
   }
 
   &__required {
-    color: var(--textarea-required-color, #ef4444);
+    color: var(--vsui-textarea-required-color, #ef4444);
     margin-left: 0.25rem;
   }
 
   &__wrapper {
     position: relative;
     width: 100%;
-    border-radius: var(--textarea-border-radius, 0.375rem);
-    border: 1px solid var(--textarea-border-color, #d1d5db);
-    background-color: var(--textarea-bg, white);
+    border-radius: var(--vsui-textarea-border-radius, 0.375rem);
+    border: 1px solid var(--vsui-textarea-border-color, #d1d5db);
+    background-color: var(--vsui-textarea-bg, white);
     transition: all 0.2s;
   }
 
   &__field {
     width: 100%;
-    padding: var(--textarea-padding, 0.625rem 0.75rem);
-    font-size: var(--textarea-font-size, 0.875rem);
-    line-height: var(--textarea-line-height, 1.5);
-    color: var(--textarea-text-color, #111827);
+    padding: var(--vsui-textarea-padding, 0.625rem 0.75rem);
+    font-size: var(--vsui-textarea-font-size, 0.875rem);
+    line-height: var(--vsui-textarea-line-height, 1.5);
+    color: var(--vsui-textarea-text-color, #111827);
     border: none;
     background-color: transparent;
     box-sizing: border-box;
-    font-family: var(--font-family-base, inherit);
+    font-family: var(--vsui-font-family-base, inherit);
 
     &:focus {
       outline: none;
     }
 
     &::placeholder {
-      color: var(--textarea-placeholder-color, #9ca3af);
+      color: var(--vsui-textarea-placeholder-color, #9ca3af);
     }
   }
 
   &__helper {
-    font-size: var(--textarea-helper-font-size, 0.75rem);
-    color: var(--textarea-helper-color, #6b7280);
+    font-size: var(--vsui-textarea-helper-font-size, 0.75rem);
+    color: var(--vsui-textarea-helper-color, #6b7280);
   }
 
   &--success {
     .base-textarea__wrapper {
-      border-color: var(--textarea-success-color, #22c55e) !important;
+      border-color: var(--vsui-textarea-success-color, #22c55e) !important;
 
       &:focus-within {
-        box-shadow: 0 0 0 3px var(--textarea-success-ring-color, rgba(34, 197, 94, 0.1));
+        box-shadow: 0 0 0 3px var(--vsui-textarea-success-ring-color, rgba(34, 197, 94, 0.1));
       }
     }
     .base-textarea__helper {
-      color: var(--textarea-success-color, #22c55e);
+      color: var(--vsui-textarea-success-color, #22c55e);
     }
   }
 
   &--error {
     .base-textarea__wrapper {
-      border-color: var(--textarea-error-color, #ef4444) !important;
+      border-color: var(--vsui-textarea-error-color, #ef4444) !important;
 
       &:focus-within {
-        box-shadow: 0 0 0 3px var(--textarea-error-ring-color, rgba(239, 68, 68, 0.1));
+        box-shadow: 0 0 0 3px var(--vsui-textarea-error-ring-color, rgba(239, 68, 68, 0.1));
       }
     }
     .base-textarea__helper {
-      color: var(--textarea-error-color, #ef4444);
+      color: var(--vsui-textarea-error-color, #ef4444);
     }
   }
 
   &--warning {
     .base-textarea__wrapper {
-      border-color: var(--textarea-warning-color, #f59e0b) !important;
+      border-color: var(--vsui-textarea-warning-color, #f59e0b) !important;
 
       &:focus-within {
-        box-shadow: 0 0 0 3px var(--textarea-warning-ring-color, rgba(245, 158, 11, 0.1));
+        box-shadow: 0 0 0 3px var(--vsui-textarea-warning-ring-color, rgba(245, 158, 11, 0.1));
       }
     }
     .base-textarea__helper {
-      color: var(--textarea-warning-color, #f59e0b);
+      color: var(--vsui-textarea-warning-color, #f59e0b);
     }
   }
 
   &__wrapper:focus-within {
-    border-color: var(--textarea-focus-border-color, #3b82f6);
-    box-shadow: 0 0 0 3px var(--textarea-focus-ring-color, rgba(59, 130, 246, 0.1));
+    border-color: var(--vsui-textarea-focus-border-color, #3b82f6);
+    box-shadow: 0 0 0 3px var(--vsui-textarea-focus-ring-color, rgba(59, 130, 246, 0.1));
   }
 
   &--filled {
     .base-textarea__wrapper {
-      background-color: var(--textarea-filled-bg, #f3f4f6);
+      background-color: var(--vsui-textarea-filled-bg, #f3f4f6);
       border-color: transparent;
 
       &:hover {
-        background-color: var(--textarea-filled-hover-bg, #e5e7eb);
+        background-color: var(--vsui-textarea-filled-hover-bg, #e5e7eb);
       }
 
       &:focus-within {
-        background-color: var(--textarea-filled-focus-bg, #f9fafb);
+        background-color: var(--vsui-textarea-filled-focus-bg, #f9fafb);
       }
     }
   }
 
   &--outlined &__wrapper {
-    border-width: var(--textarea-outlined-border-width, 2px);
+    border-width: var(--vsui-textarea-outlined-border-width, 2px);
   }
 
   &--disabled {
-    opacity: var(--textarea-disabled-opacity, 0.6);
+    opacity: var(--vsui-textarea-disabled-opacity, 0.6);
     cursor: not-allowed;
 
     .base-textarea__field {

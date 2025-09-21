@@ -46,23 +46,23 @@ defineProps({
 <style lang="scss">
 .base-skeleton {
   display: block;
-  background-color: var(--skeleton-bg, #e5e7eb);
+  background-color: var(--vsui-skeleton-bg, #e5e7eb);
   position: relative;
   overflow: hidden;
 
   // Variants
   &--rectangle {
-    height: var(--skeleton-rectangle-height, 1.5rem);
+    height: var(--vsui-skeleton-rectangle-height, 1.5rem);
   }
 
   &--circle {
     border-radius: 50%;
-    height: var(--skeleton-circle-size, 3rem);
-    width: var(--skeleton-circle-size, 3rem);
+    height: var(--vsui-skeleton-circle-size, 3rem);
+    width: var(--vsui-skeleton-circle-size, 3rem);
   }
 
   &--text {
-    height: var(--skeleton-text-height, 1rem);
+    height: var(--vsui-skeleton-text-height, 1rem);
     margin: 0.5rem 0;
 
     &:last-child {
@@ -71,13 +71,13 @@ defineProps({
   }
 
   &--heading {
-    height: var(--skeleton-heading-height, 2rem);
+    height: var(--vsui-skeleton-heading-height, 2rem);
     margin: 1rem 0;
   }
 
   &--button {
-    height: var(--skeleton-button-height, 2.5rem);
-    width: var(--skeleton-button-width, 8rem);
+    height: var(--vsui-skeleton-button-height, 2.5rem);
+    width: var(--vsui-skeleton-button-width, 8rem);
   }
 
   &--rounded {
@@ -96,7 +96,7 @@ defineProps({
       background: linear-gradient(
         90deg,
         transparent,
-        var(--skeleton-shine, rgba(255, 255, 255, 0.3)),
+        var(--vsui-skeleton-shine, rgba(255, 255, 255, 0.3)),
         transparent
       );
       animation: skeleton-shine 1.5s infinite;

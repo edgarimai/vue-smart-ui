@@ -800,13 +800,13 @@ onUnmounted(() => {
 
   // Label styles
   &__label {
-    font-size: var(--input-label-font-size, 0.875rem);
+    font-size: var(--vsui-input-label-font-size, 0.875rem);
     font-weight: 500;
-    color: var(--input-label-color, #374151);
+    color: var(--vsui-input-label-color, #374151);
   }
 
   &__required {
-    color: var(--input-required-color, #ef4444);
+    color: var(--vsui-input-required-color, #ef4444);
     margin-left: 0.25rem;
   }
 
@@ -818,8 +818,8 @@ onUnmounted(() => {
     width: 100%;
     // min-height: 2.5rem;
     border-radius: 0.375rem;
-    border: 1px solid var(--input-border-color, #d1d5db);
-    background-color: var(--input-bg, white);
+    border: 1px solid var(--vsui-input-border-color, #d1d5db);
+    background-color: var(--vsui-input-bg, white);
     transition: all 0.2s;
     cursor: pointer;
     box-sizing: border-box;
@@ -835,11 +835,11 @@ onUnmounted(() => {
     width: 100%;
     min-width: 0;
     padding: 0.625rem 0.75rem;
-    font-size: var(--input-field-font-size, 1rem);
+    font-size: var(--vsui-input-field-font-size, 1rem);
     border: none;
     background-color: transparent;
-    color: var(--input-text-color, #374151);
-    font-family: var(--font-family-base, inherit);
+    color: var(--vsui-input-text-color, #374151);
+    font-family: var(--vsui-font-family-base, inherit);
     cursor: inherit;
     box-sizing: border-box;
 
@@ -848,7 +848,7 @@ onUnmounted(() => {
     }
 
     &::placeholder {
-      color: var(--input-placeholder-color, #9ca3af);
+      color: var(--vsui-input-placeholder-color, #9ca3af);
     }
 
     &--display {
@@ -861,7 +861,7 @@ onUnmounted(() => {
     }
 
     &--placeholder {
-      color: var(--input-placeholder-color, #9ca3af);
+      color: var(--vsui-input-placeholder-color, #9ca3af);
     }
   }
 
@@ -881,8 +881,8 @@ onUnmounted(() => {
     align-items: center;
     gap: 0.25rem;
     padding: 0.125rem 0.5rem;
-    background-color: var(--combobox-tag-bg, #e5e7eb);
-    color: var(--combobox-tag-text, #374151);
+    background-color: var(--vsui-combobox-tag-bg, #e5e7eb);
+    color: var(--vsui-combobox-tag-text, #374151);
     border-radius: 0.25rem;
     font-size: 0.875rem;
   }
@@ -896,13 +896,13 @@ onUnmounted(() => {
     background: none;
     border: none;
     border-radius: 50%;
-    color: var(--combobox-tag-remove, #6b7280);
+    color: var(--vsui-combobox-tag-remove, #6b7280);
     cursor: pointer;
     font-size: 0.75rem;
     line-height: 1;
 
     &:hover {
-      background-color: var(--combobox-tag-remove-hover, #d1d5db);
+      background-color: var(--vsui-combobox-tag-remove-hover, #d1d5db);
     }
   }
 
@@ -911,7 +911,7 @@ onUnmounted(() => {
     display: flex;
     align-items: center;
     padding: 0 0.75rem;
-    color: var(--input-icon-color, #6b7280);
+    color: var(--vsui-input-icon-color, #6b7280);
     flex-shrink: 0;
   }
 
@@ -927,7 +927,7 @@ onUnmounted(() => {
   &__suffix-content {
     display: flex;
     align-items: center;
-    color: var(--input-icon-color, #6b7280);
+    color: var(--vsui-input-icon-color, #6b7280);
     flex-shrink: 0;
   }
 
@@ -949,13 +949,13 @@ onUnmounted(() => {
     background: none;
     border: none;
     border-radius: 50%;
-    color: var(--input-icon-color, #6b7280);
+    color: var(--vsui-input-icon-color, #6b7280);
     cursor: pointer;
     font-size: 1rem;
     line-height: 1;
 
     &:hover {
-      background-color: var(--combobox-clear-hover, #f3f4f6);
+      background-color: var(--vsui-combobox-clear-hover, #f3f4f6);
     }
   }
 
@@ -965,7 +965,7 @@ onUnmounted(() => {
     justify-content: center;
     width: 1.25rem;
     height: 1.25rem;
-    color: var(--input-icon-color, #6b7280);
+    color: var(--vsui-input-icon-color, #6b7280);
     transition: transform 0.2s;
     flex-shrink: 0; // Prevent arrow from shrinking
 
@@ -997,8 +997,8 @@ onUnmounted(() => {
     margin-top: 0.25rem;
     z-index: 50;
     border-radius: 0.375rem;
-    border: 1px solid var(--dropdown-border-color, #e5e7eb);
-    background-color: var(--dropdown-bg, #ffffff);
+    border: 1px solid var(--vsui-dropdown-border-color, #e5e7eb);
+    background-color: var(--vsui-dropdown-bg, #ffffff);
     box-shadow:
       0 4px 6px -1px rgba(0, 0, 0, 0.1),
       0 2px 4px -1px rgba(0, 0, 0, 0.06);
@@ -1021,12 +1021,12 @@ onUnmounted(() => {
 
     &:hover,
     &--highlighted {
-      background-color: var(--dropdown-item-hover-bg, #f3f4f6);
+      background-color: var(--vsui-dropdown-item-hover-bg, #f3f4f6);
     }
 
     &--selected {
-      background-color: var(--combobox-option-selected-bg, #eff6ff);
-      color: var(--combobox-option-selected-text, #1d4ed8);
+      background-color: var(--vsui-combobox-option-selected-bg, #eff6ff);
+      color: var(--vsui-combobox-option-selected-text, #1d4ed8);
     }
   }
 
@@ -1037,7 +1037,7 @@ onUnmounted(() => {
     text-overflow: ellipsis;
     white-space: nowrap;
     margin-right: 0.5rem;
-    color: var(--combobox-option-text-color);
+    color: var(--vsui-combobox-option-text-color);
 
     &--wrap {
       white-space: normal;
@@ -1060,78 +1060,78 @@ onUnmounted(() => {
     justify-content: center;
     gap: 0.5rem;
     padding: 1rem;
-    color: var(--input-placeholder-color, #9ca3af);
+    color: var(--vsui-input-placeholder-color, #9ca3af);
     font-size: 0.875rem;
   }
 
   // Helper text styles
   &__helper {
-    font-size: var(--input-helper-font-size, 0.75rem);
-    color: var(--input-helper-color, #6b7280);
+    font-size: var(--vsui-input-helper-font-size, 0.75rem);
+    color: var(--vsui-input-helper-color, #6b7280);
 
     &--error {
-      color: var(--input-error-color, #ef4444);
+      color: var(--vsui-input-error-color, #ef4444);
     }
   }
 
   // States
   &--success {
     .base-combobox__wrapper {
-      border-color: var(--input-success-color, #22c55e) !important;
+      border-color: var(--vsui-input-success-color, #22c55e) !important;
 
       &:focus-within {
-        box-shadow: 0 0 0 3px var(--input-success-ring-color, rgba(34, 197, 94, 0.1));
+        box-shadow: 0 0 0 3px var(--vsui-input-success-ring-color, rgba(34, 197, 94, 0.1));
       }
     }
     .base-combobox__helper {
-      color: var(--input-success-color, #22c55e);
+      color: var(--vsui-input-success-color, #22c55e);
     }
   }
 
   &--error {
     .base-combobox__wrapper {
-      border-color: var(--input-error-color, #ef4444) !important;
+      border-color: var(--vsui-input-error-color, #ef4444) !important;
 
       &:focus-within {
-        box-shadow: 0 0 0 3px var(--input-error-ring-color, rgba(239, 68, 68, 0.1));
+        box-shadow: 0 0 0 3px var(--vsui-input-error-ring-color, rgba(239, 68, 68, 0.1));
       }
     }
     .base-combobox__helper {
-      color: var(--input-error-color, #ef4444);
+      color: var(--vsui-input-error-color, #ef4444);
     }
   }
 
   &--warning {
     .base-combobox__wrapper {
-      border-color: var(--input-warning-color, #f59e0b) !important;
+      border-color: var(--vsui-input-warning-color, #f59e0b) !important;
 
       &:focus-within {
-        box-shadow: 0 0 0 3px var(--input-warning-ring-color, rgba(245, 158, 11, 0.1));
+        box-shadow: 0 0 0 3px var(--vsui-input-warning-ring-color, rgba(245, 158, 11, 0.1));
       }
     }
     .base-combobox__helper {
-      color: var(--input-warning-color, #f59e0b);
+      color: var(--vsui-input-warning-color, #f59e0b);
     }
   }
 
   &__wrapper:focus-within,
   &--focused &__wrapper {
-    border-color: var(--input-focus-border-color, #3b82f6);
-    box-shadow: 0 0 0 3px var(--input-focus-ring-color, rgba(59, 130, 246, 0.1));
+    border-color: var(--vsui-input-focus-border-color, #3b82f6);
+    box-shadow: 0 0 0 3px var(--vsui-input-focus-ring-color, rgba(59, 130, 246, 0.1));
   }
 
   // Variants
   &--filled {
     .base-combobox__wrapper {
-      background-color: var(--input-filled-bg, #f3f4f6);
+      background-color: var(--vsui-input-filled-bg, #f3f4f6);
       border-color: transparent;
 
       &:hover {
-        background-color: var(--input-filled-hover-bg, #e5e7eb);
+        background-color: var(--vsui-input-filled-hover-bg, #e5e7eb);
       }
 
       &:focus-within {
-        background-color: var(--input-filled-focus-bg, #f9fafb);
+        background-color: var(--vsui-input-filled-focus-bg, #f9fafb);
       }
     }
   }
@@ -1175,7 +1175,7 @@ onUnmounted(() => {
   border-radius: 50%;
   display: inline-block;
   animation: rotation 1s linear infinite;
-  color: var(--input-placeholder-color, #9ca3af);
+  color: var(--vsui-input-placeholder-color, #9ca3af);
 }
 
 @keyframes rotation {

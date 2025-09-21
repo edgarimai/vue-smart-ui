@@ -142,10 +142,10 @@ const handleChange = (event) => {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border: var(--checkbox-border);
-    border-radius: var(--checkbox-border-radius);
-    background-color: var(--checkbox-bg);
-    color: var(--checkbox-check);
+    border: var(--vsui-checkbox-border);
+    border-radius: var(--vsui-checkbox-border-radius);
+    background-color: var(--vsui-checkbox-bg);
+    color: var(--vsui-checkbox-check);
     transition: all 0.2s ease;
 
     svg {
@@ -156,12 +156,12 @@ const handleChange = (event) => {
   }
 
   &__label {
-    color: var(--checkbox-text);
+    color: var(--vsui-checkbox-text);
   }
 
   // Sizes
   &--small {
-    font-size: var(--checkbox-small-font-size);
+    font-size: var(--vsui-checkbox-small-font-size);
     .base-checkbox__checkmark {
       width: 16px;
       height: 16px;
@@ -173,7 +173,7 @@ const handleChange = (event) => {
   }
 
   &--medium {
-    font-size: var(--checkbox-medium-font-size);
+    font-size: var(--vsui-checkbox-medium-font-size);
     .base-checkbox__checkmark {
       width: 20px;
       height: 20px;
@@ -185,7 +185,7 @@ const handleChange = (event) => {
   }
 
   &--large {
-    font-size: var(--checkbox-large-font-size);
+    font-size: var(--vsui-checkbox-large-font-size);
     .base-checkbox__checkmark {
       width: 24px;
       height: 24px;
@@ -207,7 +207,7 @@ const handleChange = (event) => {
 
   &:hover:not(.base-checkbox--disabled) {
     .base-checkbox__checkmark {
-      border-color: var(--checkbox-hover-border-color, var(--checkbox-border-color));
+      border-color: var(--vsui-checkbox-hover-border-color, var(--vsui-checkbox-border-color));
     }
   }
 
@@ -217,12 +217,12 @@ const handleChange = (event) => {
   }
 
   &--error {
-    --checkbox-hover-border-color: var(--input-error-color);
+    --checkbox-hover-border-color: var(--vsui-input-error-color);
     .base-checkbox__checkmark {
-      border-color: var(--input-error-color);
+      border-color: var(--vsui-input-error-color);
     }
     .base-checkbox__label {
-      color: var(--input-error-color);
+      color: var(--vsui-input-error-color);
     }
   }
 

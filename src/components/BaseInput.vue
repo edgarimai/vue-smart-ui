@@ -148,9 +148,13 @@ const validators = {
     message: 'Invalid RGB color',
   }),
   rgbaColor: (value) => ({
-    valid: !value || /^rgba\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(0|0?\.\d+|1(\.0)?)\s*\)$/.test(value),
+    valid:
+      !value ||
+      /^rgba\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(0|0?\.\d+|1(\.0)?)\s*\)$/.test(
+        value,
+      ),
     message: 'Invalid RGBA color',
-  }), 
+  }),
   hslColor: (value) => ({
     valid: !value || /^hsl\(\s*(\d{1,3})\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%\s*\)$/.test(value),
     message: 'Invalid HSL color',
@@ -458,13 +462,13 @@ onMounted(() => {
 
   // Label styles
   &__label {
-    font-size: var(--input-label-font-size);
+    font-size: var(--vsui-input-label-font-size);
     font-weight: 500;
-    color: var(--input-label-color, #374151);
+    color: var(--vsui-input-label-color, #374151);
   }
 
   &__required {
-    color: var(--input-required-color, #ef4444);
+    color: var(--vsui-input-required-color, #ef4444);
     margin-left: 0.25rem;
   }
 
@@ -475,8 +479,8 @@ onMounted(() => {
     align-items: center;
     width: 100%;
     border-radius: 0.375rem;
-    border: 1px solid var(--input-border-color, #d1d5db);
-    background-color: var(--input-bg, white);
+    border: 1px solid var(--vsui-input-border-color, #d1d5db);
+    background-color: var(--vsui-input-bg, white);
     transition: all 0.2s;
   }
 
@@ -485,18 +489,18 @@ onMounted(() => {
     flex: 1;
     width: 100%;
     padding: 0.625rem 0.75rem;
-    font-size: var(--input-field-font-size);
+    font-size: var(--vsui-input-field-font-size);
     border: none;
     background-color: transparent;
-    color: var(--input-text-color, #374151);
-    font-family: var(--font-family-base, inherit);
+    color: var(--vsui-input-text-color, #374151);
+    font-family: var(--vsui-font-family-base, inherit);
 
     &:focus {
       outline: none;
     }
 
     &::placeholder {
-      color: var(--input-placeholder-color, #9ca3af);
+      color: var(--vsui-input-placeholder-color, #9ca3af);
     }
   }
 
@@ -506,7 +510,7 @@ onMounted(() => {
     display: flex;
     align-items: center;
     padding: 0 0.75rem;
-    color: var(--input-icon-color, #6b7280);
+    color: var(--vsui-input-icon-color, #6b7280);
     z-index: 1;
   }
 
@@ -520,67 +524,67 @@ onMounted(() => {
 
   // Helper text styles
   &__helper {
-    font-size: var(--input-helper-font-size);
-    color: var(--input-helper-color, #6b7280);
+    font-size: var(--vsui-input-helper-font-size);
+    color: var(--vsui-input-helper-color, #6b7280);
   }
 
   // States
   &--success {
     .base-input__wrapper {
-      border-color: var(--input-success-color, #22c55e) !important;
+      border-color: var(--vsui-input-success-color, #22c55e) !important;
 
       &:focus-within {
-        box-shadow: 0 0 0 3px var(--input-success-ring-color, rgba(34, 197, 94, 0.1));
+        box-shadow: 0 0 0 3px var(--vsui-input-success-ring-color, rgba(34, 197, 94, 0.1));
       }
     }
     .base-input__helper {
-      color: var(--input-success-color, #22c55e);
+      color: var(--vsui-input-success-color, #22c55e);
     }
   }
 
   &--error {
     .base-input__wrapper {
-      border-color: var(--input-error-color, #ef4444) !important;
+      border-color: var(--vsui-input-error-color, #ef4444) !important;
 
       &:focus-within {
-        box-shadow: 0 0 0 3px var(--input-error-ring-color, rgba(239, 68, 68, 0.1));
+        box-shadow: 0 0 0 3px var(--vsui-input-error-ring-color, rgba(239, 68, 68, 0.1));
       }
     }
     .base-input__helper {
-      color: var(--input-error-color, #ef4444);
+      color: var(--vsui-input-error-color, #ef4444);
     }
   }
 
   &--warning {
     .base-input__wrapper {
-      border-color: var(--input-warning-color, #f59e0b) !important;
+      border-color: var(--vsui-input-warning-color, #f59e0b) !important;
 
       &:focus-within {
-        box-shadow: 0 0 0 3px var(--input-warning-ring-color, rgba(245, 158, 11, 0.1));
+        box-shadow: 0 0 0 3px var(--vsui-input-warning-ring-color, rgba(245, 158, 11, 0.1));
       }
     }
     .base-input__helper {
-      color: var(--input-warning-color, #f59e0b);
+      color: var(--vsui-input-warning-color, #f59e0b);
     }
   }
 
   &__wrapper:focus-within {
-    border-color: var(--input-focus-border-color, #3b82f6);
-    box-shadow: 0 0 0 3px var(--input-focus-ring-color, rgba(59, 130, 246, 0.1));
+    border-color: var(--vsui-input-focus-border-color, #3b82f6);
+    box-shadow: 0 0 0 3px var(--vsui-input-focus-ring-color, rgba(59, 130, 246, 0.1));
   }
 
   // Variants
   &--filled {
     .base-input__wrapper {
-      background-color: var(--input-filled-bg, #f3f4f6);
+      background-color: var(--vsui-input-filled-bg, #f3f4f6);
       border-color: transparent;
 
       &:hover {
-        background-color: var(--input-filled-hover-bg, #e5e7eb);
+        background-color: var(--vsui-input-filled-hover-bg, #e5e7eb);
       }
 
       &:focus-within {
-        background-color: var(--input-filled-focus-bg, #f9fafb);
+        background-color: var(--vsui-input-filled-focus-bg, #f9fafb);
       }
     }
   }

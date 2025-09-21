@@ -102,14 +102,14 @@ watch(isActive, updateHeight)
     text-align: left;
     font-size: 1rem;
     font-weight: 500;
-    color: var(--accordion-header-color, #111827);
+    color: var(--vsui-accordion-header-color, #111827);
 
     &:hover {
-      background-color: var(--accordion-hover-bg, #f9fafb);
+      background-color: var(--vsui-accordion-hover-bg, #f9fafb);
     }
 
     &:focus {
-      outline: 2px solid var(--accordion-focus-ring, #3b82f6);
+      outline: 2px solid var(--vsui-accordion-focus-ring, #3b82f6);
       outline-offset: -2px;
     }
   }

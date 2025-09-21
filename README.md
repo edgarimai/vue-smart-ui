@@ -1143,271 +1143,94 @@ const isFormValid = computed(() => {
 
 ## 🎨 Customization
 
-### CSS Variables
+### Theme Customization with CSS Variables
 
-The cpomponents can be customized in multiple ways:
+The Vue Smart UI library is highly customizable and allows you to override colors and styling by defining CSS variables **before** importing the library styles.
 
-- Using CSS variables for theming
-- Overriding component classes directly
-- Using Tailwind CSS classes
+#### How to Customize Colors
 
-#### Available CSS variables for each component
+1. **Define your custom variables** in your CSS file (before importing Vue Smart UI)
+2. **Import Vue Smart UI styles** after your custom variables
+3. **All components will automatically use your custom colors**
+
+```css
+/* Your custom theme - define BEFORE importing Vue Smart UI */
+:root {
+  /* Custom primary colors */
+  --vsui-color-primary: #6366f1; /* Indigo instead of blue */
+  --vsui-color-primary-dark: #4f46e5; /* Darker indigo */
+  --vsui-color-primary-light: #e0e7ff; /* Light indigo background */
+  --vsui-color-primary-text: #312e81; /* Dark indigo text */
+
+  /* Custom secondary colors */
+  --vsui-color-secondary: #ec4899; /* Pink instead of purple */
+  --vsui-color-secondary-dark: #db2777; /* Darker pink */
+  --vsui-color-secondary-light: #fce7f3; /* Light pink background */
+  --vsui-color-secondary-text: #831843; /* Dark pink text */
+
+  /* Custom status colors */
+  --vsui-color-success: #10b981; /* Emerald */
+  --vsui-color-warning: #f59e0b; /* Amber */
+  --vsui-color-error: #ef4444; /* Red */
+  --vsui-color-info: #06b6d4; /* Cyan */
+
+  /* Custom background colors */
+  --vsui-bg-default: #ffffff; /* Pure white */
+  --vsui-bg-subtle: #f8fafc; /* Very light gray */
+  --vsui-bg-muted: #f1f5f9; /* Light gray */
+  --vsui-bg-emphasized: #e2e8f0; /* Medium gray */
+  --vsui-bg-disabled: #f8fafc; /* Disabled background */
+
+  /* Custom text colors */
+  --vsui-text-default: #0f172a; /* Very dark slate */
+  --vsui-text-muted: #475569; /* Medium slate */
+  --vsui-text-subtle: #64748b; /* Light slate */
+  --vsui-text-disabled: #94a3b8; /* Disabled text */
+  --vsui-text-inverse: #ffffff; /* White text */
+}
+
+/* Dark mode overrides */
+:root[data-theme='dark'] {
+  --vsui-bg-default: #0f172a; /* Dark slate */
+  --vsui-text-default: #f8fafc; /* Light text */
+  /* ... other dark mode variables */
+}
+```
+
+```javascript
+// In your main.js or App.vue
+import './your-custom-theme.css' // Import your custom variables FIRST
+import 'vue-smart-ui/style.css' // Then import Vue Smart UI
+```
+
+#### Advanced Customization
+
+You can also override component-specific variables for more granular control:
 
 ```css
 :root {
-  // Base colors
-  --color-primary: #3b82f6;
-  --color-primary-dark: #2563eb;
-  --color-primary-light: #e0e7ff;
-  --color-primary-text: #1e40af;
+  /* Button customization */
+  --vsui-button-primary-bg: #059669; /* Custom green primary */
+  --vsui-button-primary-hover: #047857; /* Darker green */
 
-  --color-secondary: #9333ea;
-  --color-secondary-dark: #7e22ce;
-  --color-secondary-light: #ede9fe;
-  --color-secondary-text: #4338ca;
+  /* Input customization */
+  --vsui-input-bg: #f0f9ff; /* Very light blue background */
+  --vsui-input-border-color: #0ea5e9; /* Blue border */
 
-  --color-info: #3b82f6;
-  --color-info-dark: #0284c7;
-  --color-info-light: #dbeafe;
-
-  --color-success: #22c55e;
-  --color-success-dark: #15803d;
-  --color-success-light: #f0fdf4;
-
-  --color-warning: #f59e0b;
-  --color-warning-dark: #92400e;
-  --color-warning-light: #fefce8;
-
-  --color-error: #ef4444;
-  --color-error-dark: #991b1b;
-  --color-error-light: #fee2e2;
-
-  // Background colors
-  --bg-default: #ffffff;
-  --bg-subtle: #f9fafb;
-  --bg-muted: #f3f4f6;
-  --bg-emphasized: #e5e7eb;
-  --bg-disabled: #f3f4f6;
-
-  // Surface colors (for cards, modals, etc.)
-  --surface-default: #f9fafb;
-  --surface-hover: #f3f4f6;
-  --surface-active: #e5e7eb;
-  --surface-selected: #eff6ff;
-
-  // Text colors
-  --text-default: #111827;
-  --text-muted: #374151;
-  --text-subtle: #6b7280;
-  --text-disabled: #9ca3af;
-  --text-inverse: #ffffff;
-
-  // Border colors
-  --border-default: #e5e7eb;
-  --border-strong: #c0c4c9;
-  --border-focus: #d1d5db;
-
-  --color-white: #ffffff;
-  --color-black: #000000;
-
-  // Font base
-  --font-family-base: 'Roboto', sans-serif;
-  // --font-size-base: 62.5%;
-
-  // Buttons variables
-  --button-primary-bg: var(--color-primary);
-  --button-primary-hover: var(--color-primary-dark);
-  --button-primary-text: var(--color-white);
-
-  --button-secondary-bg: var(--color-secondary);
-  --button-secondary-hover: var(--color-secondary-dark);
-  --button-secondary-text: var(--color-white);
-
-  --button-gray-bg: var(--bg-muted);
-  --button-gray-hover: var(--bg-emphasized);
-  --button-gray-text: var(--text-muted);
-
-  --button-outline-border: var(--border-strong);
-  --button-outline-hover: var(--bg-muted);
-  --button-outline-text: var(--text-muted);
-
-  --button-ghost-text: var(--text-muted);
-
-  --button-focus-outline: var(--color-primary);
-
-  --button-small-font-size: 0.875rem;
-  --button-medium-font-size: 1rem;
-  --button-large-font-size: 1.125rem;
-
-  // Popups variables
-  --popup-default-color: var(--text-subtle);
-  --popup-info-color: var(--color-info);
-  --popup-success-color: var(--color-success);
-  --popup-warning-color: var(--color-warning);
-  --popup-error-color: var(--color-error);
-  --popup-border-color: var(--border-strong);
-
-  --popup-default-bg: var(--surface-default);
-  --popup-info-bg: var(--surface-default);
-  --popup-success-bg: var(--surface-default);
-  --popup-warning-bg: var(--surface-default);
-  --popup-error-bg: var(--surface-default);
-
-  // Toasts variables
-  --toast-default-bg: var(--surface-default);
-  --toast-default-color: var(--border-strong);
-  --toast-default-text: var(--text-default);
-
-  --toast-info-bg: var(--color-primary-light);
-  --toast-info-color: var(--color-primary);
-  --toast-info-text: var(--color-primary-text);
-
-  --toast-success-bg: var(--color-success-light);
-  --toast-success-color: var(--color-success);
-  --toast-success-text: var(--color-success-dark);
-
-  --toast-warning-bg: var(--color-warning-light);
-  --toast-warning-color: var(--color-warning);
-  --toast-warning-text: var(--color-warning-dark);
-
-  --toast-error-bg: var(--color-error-light);
-  --toast-error-color: var(--color-error);
-  --toast-error-text: var(--color-error-dark);
-
-  --toast-title-font-size: 1rem;
-  --toast-message-font-size: 0.75rem;
-
-  // Dropdowns variables
-  --dropdown-bg: var(--surface-default);
-  --dropdown-border-color: var(--border-default);
-  --dropdown-item-hover-bg: var(--surface-hover);
-
-  --dropdown-dark-bg: var(--text-muted);
-  --dropdown-dark-border-color: #4b5563;
-  --dropdown-dark-item-hover-bg: #4b5563;
-
-  // Skeletons variables
-  --skeleton-bg: var(--bg-emphasized);
-  --skeleton-rectangle-height: 1.5rem;
-  --skeleton-circle-size: 3rem;
-  --skeleton-heading-height: 2rem;
-  --skeleton-button-height: 2.5rem;
-  --skeleton-button-width: 8rem;
-  --skeleton-text-height: 1rem;
-  --skeleton-rounded-radius: 0.375rem;
-  --skeleton-shine: rgba(255, 255, 255, 0.3);
-
-  // Accordions variables
-  --accordion-border-color: var(--border-default);
-  --accordion-header-color: var(--text-default);
-  --accordion-hover-bg: var(--bg-subtle);
-  --accordion-focus-ring: var(--color-primary);
-
-  // Input variables
-  --input-label-color: var(--text-muted);
-  --input-required-color: var(--color-error);
-  --input-helper-color: var(--text-subtle);
-  --input-border-color: var(--border-strong);
-  --input-bg: var(--color-white);
-  --input-focus-border-color: var(--color-primary);
-  --input-focus-ring-color: rgba(59, 130, 246, 0.1);
-  --input-placeholder-color: var(--text-disabled);
-  --input-disabled-bg: var(--bg-muted);
-  --input-disabled-text: var(--text-subtle);
-  --input-icon-color: var(--text-subtle);
-  --input-filled-bg: var(--bg-muted);
-  --input-filled-focus-bg: var(--bg-subtle);
-  --input-success-color: var(--color-success);
-  --input-error-color: var(--color-error);
-  --input-warning-color: var(--color-warning);
-
-  --input-label-font-size: 0.875rem;
-  --input-field-font-size: 0.875rem;
-  --input-helper-font-size: 0.75rem;
-
-  // Checkbox variables
-  --checkbox-border: 1px solid var(--checkbox-border-color);
-  --checkbox-border-color: var(--border-strong);
-  --checkbox-hover-border-color: var(--bg-emphasized);
-  --checkbox-border-radius: 0.25rem;
-  --checkbox-bg: var(--color-white);
-  --checkbox-check: var(--text-muted);
-  --checkbox-text: var(--text-muted);
-  --checkbox-small-font-size: 0.875rem;
-  --checkbox-medium-font-size: 1rem;
-  --checkbox-large-font-size: 1.125rem;
-
-  // Textarea variables
-  --textarea-font-size: 1rem;
-  --textarea-font-family: var(--font-family-base);
-  --textarea-line-height: 1.6;
-  --textarea-padding: 0.75rem 1rem;
-  --textarea-border-radius: 0.5rem;
-
-  --textarea-bg: var(--color-white);
-  --textarea-text-color: var(--text-default);
-  --textarea-border-color: var(--border-strong);
-  --textarea-focus-border-color: var(--color-primary);
-
-  --textarea-success-color: var(--color-success);
-  --textarea-error-color: var(--color-error);
-  --textarea-warning-color: var(--color-warning);
-
-  --textarea-filled-bg: var(--bg-muted);
-  --textarea-filled-hover-bg: var(--bg-emphasized);
-  --textarea-filled-focus-bg: var(--bg-subtle);
-
-  --textarea-helper-font-size: 0.75rem;
-  --textarea-label-font-size: 0.875rem;
-
-  // Slider variables
-  --slider-track-height: 6px;
-  --slider-track-bg: var(--surface-active);
-  --slider-track-radius: 3px;
-  --slider-fill-color: var(--color-primary);
-
-  --slider-thumb-size: 18px;
-  --slider-thumb-bg: var(--surface-default);
-  --slider-thumb-border-width: 2px;
-  --slider-thumb-border-color: var(--color-primary);
-  --slider-thumb-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  --slider-focus-ring-color: rgba(59, 130, 246, 0.1);
-
-  --slider-value-font-size: 0.875rem;
-  --slider-value-color: var(--text-muted);
-
-  --slider-value-bubble-bg: var(--surface-default);
-  --slider-value-bubble-color: var(--text-muted);
-  --slider-value-bubble-font-size: 0.75rem;
-  --slider-value-bubble-padding: 2px 6px;
-  --slider-value-bubble-radius: 4px;
-  --slider-value-bubble-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  --slider-value-bubble-border: 1px solid var(--color-primary);
-
-  --slider-mark-size: 4px;
-  --slider-mark-color: var(--border-strong);
-  --slider-mark-label-font-size: 0.75rem;
-  --slider-mark-label-color: var(--text-subtle);
-  --slider-mark-label-max-width: 80px;
-
-  --slider-label-font-size: 0.875rem;
-  --slider-label-color: var(--text-muted);
-  --slider-required-color: var(--color-error);
-  --slider-helper-font-size: 0.75rem;
-  --slider-helper-color: var(--text-subtle);
-
-  --slider-disabled-opacity: 0.6;
-  --slider-disabled-track-bg: var(--bg-muted);
-  --slider-disabled-thumb-bg: var(--bg-muted);
-  --slider-disabled-thumb-border: var(--text-subtle);
-
-  --slider-success-color: var(--color-success);
-  --slider-success-ring-color: rgba(34, 197, 94, 0.1);
-  --slider-error-color: var(--color-error);
-  --slider-error-ring-color: rgba(239, 68, 68, 0.1);
-  --slider-warning-color: var(--color-warning);
-  --slider-warning-ring-color: rgba(245, 158, 11, 0.1);
-
-  --slider-filled-bg: var(--bg-muted);
+  /* Avatar customization */
+  --vsui-avatar-default-bg: #f3f4f6; /* Light gray */
+  --vsui-avatar-filled-bg: #7c3aed; /* Purple filled */
 }
 ```
+
+#### Other Customization Methods
+
+The components can be customized in multiple ways:
+
+- **CSS variables for theming** (recommended)
+- **Overriding component classes directly**
+- **Using Tailwind CSS classes**
+
+#### Complete CSS Variables Reference
+
+See the `src/theme-example.css` file for a complete example of how to customize all available variables.

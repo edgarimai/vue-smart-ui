@@ -592,19 +592,19 @@ watch(
 <style lang="scss">
 .base-table {
   width: 100%;
-  border-radius: var(--table-border-radius);
+  border-radius: var(--vsui-table-border-radius);
   // overflow: hidden;
-  border: 1px solid var(--table-border-color);
+  border: 1px solid var(--vsui-table-border-color);
 
   &__header {
-    padding: var(--table-pagination-padding);
-    background: var(--table-header-bg);
-    border-bottom: 1px solid var(--table-border-color);
+    padding: var(--vsui-table-pagination-padding);
+    background: var(--vsui-table-header-bg);
+    border-bottom: 1px solid var(--vsui-table-border-color);
   }
 
   &__search {
     display: flex;
-    gap: var(--table-pagination-gap);
+    gap: var(--vsui-table-pagination-gap);
     align-items: center;
   }
 
@@ -618,32 +618,32 @@ watch(
   }
 
   &__thead {
-    background: var(--table-header-bg);
+    background: var(--vsui-table-header-bg);
   }
 
   &__th {
-    padding: var(--table-header-padding);
+    padding: var(--vsui-table-header-padding);
     text-align: left;
-    font-weight: var(--table-header-font-weight);
-    color: var(--table-header-text-color);
-    border-bottom: 1px solid var(--table-border-color);
+    font-weight: var(--vsui-table-header-font-weight);
+    color: var(--vsui-table-header-text-color);
+    border-bottom: 1px solid var(--vsui-table-border-color);
 
     &--sortable {
       cursor: pointer;
       user-select: none;
 
       &:hover {
-        background: var(--table-row-hover-bg);
+        background: var(--vsui-table-row-hover-bg);
       }
     }
 
     &--sorted {
-      color: var(--table-sort-active-color);
+      color: var(--vsui-table-sort-active-color);
     }
 
     &--checkbox {
-      width: var(--table-checkbox-width);
-      padding: var(--table-checkbox-padding);
+      width: var(--vsui-table-checkbox-width);
+      padding: var(--vsui-table-checkbox-padding);
     }
 
     &--actions {
@@ -660,25 +660,25 @@ watch(
   }
 
   &__sort-icon {
-    opacity: var(--table-sort-icon-opacity);
-    font-size: var(--table-sort-icon-size);
+    opacity: var(--vsui-table-sort-icon-opacity);
+    font-size: var(--vsui-table-sort-icon-size);
   }
 
   &__filter {
-    margin-top: var(--table-filter-margin-top);
+    margin-top: var(--vsui-table-filter-margin-top);
   }
 
   &__tbody {
-    background: var(--table-body-bg);
+    background: var(--vsui-table-body-bg);
   }
 
   &__tr {
     &:hover:not(&--loading):not(&--empty) {
-      background: var(--table-row-hover-bg);
+      background: var(--vsui-table-row-hover-bg);
     }
 
     &--selected {
-      background: var(--table-row-selected-bg);
+      background: var(--vsui-table-row-selected-bg);
     }
 
     &--clickable {
@@ -693,13 +693,13 @@ watch(
   }
 
   &__td {
-    padding: var(--table-cell-padding);
-    border-bottom: 1px solid var(--table-cell-border-color);
-    color: var(--table-cell-text-color);
+    padding: var(--vsui-table-cell-padding);
+    border-bottom: 1px solid var(--vsui-table-cell-border-color);
+    color: var(--vsui-table-cell-text-color);
 
     &--checkbox {
-      width: var(--table-checkbox-width);
-      padding: var(--table-checkbox-padding);
+      width: var(--vsui-table-checkbox-width);
+      padding: var(--vsui-table-checkbox-padding);
     }
 
     &--actions {
@@ -709,16 +709,16 @@ watch(
 
     &--empty {
       text-align: center;
-      padding: var(--table-empty-padding);
-      color: var(--table-empty-text-color);
+      padding: var(--vsui-table-empty-padding);
+      color: var(--vsui-table-empty-text-color);
     }
   }
 
   &__actions {
     display: flex;
-    gap: var(--table-actions-gap);
+    gap: var(--vsui-table-actions-gap);
     align-items: center;
-    justify-content: var(--table-actions-justify-content);
+    justify-content: var(--vsui-table-actions-justify-content);
   }
 
   &__empty {
@@ -729,7 +729,7 @@ watch(
 
     p {
       margin: 0;
-      color: var(--table-empty-text-color);
+      color: var(--vsui-table-empty-text-color);
     }
   }
 
@@ -737,26 +737,26 @@ watch(
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: var(--table-pagination-padding);
-    background: var(--table-pagination-bg);
-    border-top: 1px solid var(--table-pagination-border-color);
-    gap: var(--table-pagination-gap);
+    padding: var(--vsui-table-pagination-padding);
+    background: var(--vsui-table-pagination-bg);
+    border-top: 1px solid var(--vsui-table-pagination-border-color);
+    gap: var(--vsui-table-pagination-gap);
     flex-wrap: wrap;
   }
 
   &__pagination-info {
-    color: var(--table-pagination-info-color);
-    font-size: var(--table-pagination-info-font-size);
+    color: var(--vsui-table-pagination-info-color);
+    font-size: var(--vsui-table-pagination-info-font-size);
   }
 
   &__page-size {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    font-size: var(--table-pagination-info-font-size);
+    font-size: var(--vsui-table-pagination-info-font-size);
 
     label {
-      color: var(--text-muted);
+      color: var(--vsui-text-muted);
     }
   }
 
@@ -767,7 +767,7 @@ watch(
   &__pagination-nav {
     display: flex;
     align-items: center;
-    gap: var(--table-pagination-gap);
+    gap: var(--vsui-table-pagination-gap);
 
     // Icon buttons styling
     .base-button {
@@ -784,21 +784,21 @@ watch(
   }
 
   &__pagination-pages {
-    color: var(--table-pagination-pages-color);
-    font-size: var(--table-pagination-pages-font-size);
+    color: var(--vsui-table-pagination-pages-color);
+    font-size: var(--vsui-table-pagination-pages-font-size);
   }
 
   // Variants
   &--striped {
     .base-table__tr:nth-child(even) {
-      background: var(--table-stripe-bg);
+      background: var(--vsui-table-stripe-bg);
     }
   }
 
   &--bordered {
     .base-table__td,
     .base-table__th {
-      border-right: 1px solid var(--table-border-color);
+      border-right: 1px solid var(--vsui-table-border-color);
 
       &:last-child {
         border-right: none;
@@ -810,16 +810,16 @@ watch(
   &--small {
     .base-table__th,
     .base-table__td {
-      padding: var(--table-small-padding);
-      font-size: var(--table-small-font-size);
+      padding: var(--vsui-table-small-padding);
+      font-size: var(--vsui-table-small-font-size);
     }
   }
 
   &--large {
     .base-table__th,
     .base-table__td {
-      padding: var(--table-large-padding);
-      font-size: var(--table-large-font-size);
+      padding: var(--vsui-table-large-padding);
+      font-size: var(--vsui-table-large-font-size);
     }
   }
 

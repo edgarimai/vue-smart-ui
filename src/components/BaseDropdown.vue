@@ -161,8 +161,8 @@ onUnmounted(() => {
 
     // Variants
     &--default {
-      background-color: var(--dropdown-bg, #ffffff);
-      border: 1px solid var(--dropdown-border-color, #e5e7eb);
+      background-color: var(--vsui-dropdown-bg, #ffffff);
+      border: 1px solid var(--vsui-dropdown-border-color, #e5e7eb);
     }
 
     &--white {
@@ -171,8 +171,8 @@ onUnmounted(() => {
     }
 
     &--dark {
-      background-color: var(--dropdown-dark-bg, #374151);
-      border: 1px solid var(--dropdown-dark-border-color, #4b5563);
+      background-color: var(--vsui-dropdown-dark-bg, #374151);
+      border: 1px solid var(--vsui-dropdown-dark-border-color, #4b5563);
       color: white;
     }
   }
@@ -201,12 +201,12 @@ onUnmounted(() => {
   transition: background-color 0.2s;
 
   &:hover {
-    background-color: var(--dropdown-item-hover-bg, #f3f4f6);
+    background-color: var(--vsui-dropdown-item-hover-bg, #f3f4f6);
   }
 
   .base-dropdown__menu--dark & {
     &:hover {
-      background-color: var(--dropdown-dark-item-hover-bg, #4b5563);
+      background-color: var(--vsui-dropdown-dark-item-hover-bg, #4b5563);
     }
   }
 }

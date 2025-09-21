@@ -172,33 +172,33 @@ onUnmounted(() => {
 
   // Variants
   &--default {
-    background-color: var(--toast-default-bg, #fff);
-    border: 1px solid var(--toast-default-color, #e5e7eb);
-    color: var(--toast-default-text, #1f2937);
+    background-color: var(--vsui-toast-default-bg, #fff);
+    border: 1px solid var(--vsui-toast-default-color, #e5e7eb);
+    color: var(--vsui-toast-default-text, #1f2937);
   }
 
   &--info {
-    background-color: var(--toast-info-bg, #eff6ff);
-    border: 1px solid var(--toast-info-color, #3b82f6);
-    color: var(--toast-info-text, #1e40af);
+    background-color: var(--vsui-toast-info-bg, #eff6ff);
+    border: 1px solid var(--vsui-toast-info-color, #3b82f6);
+    color: var(--vsui-toast-info-text, #1e40af);
   }
 
   &--success {
-    background-color: var(--toast-success-bg, #f0fdf4);
-    border: 1px solid var(--toast-success-color, #22c55e);
-    color: var(--toast-success-text, #15803d);
+    background-color: var(--vsui-toast-success-bg, #f0fdf4);
+    border: 1px solid var(--vsui-toast-success-color, #22c55e);
+    color: var(--vsui-toast-success-text, #15803d);
   }
 
   &--warning {
-    background-color: var(--toast-warning-bg, #fffbeb);
-    border: 1px solid var(--toast-warning-color, #f59e0b);
-    color: var(--toast-warning-text, #b45309);
+    background-color: var(--vsui-toast-warning-bg, #fffbeb);
+    border: 1px solid var(--vsui-toast-warning-color, #f59e0b);
+    color: var(--vsui-toast-warning-text, #b45309);
   }
 
   &--error {
-    background-color: var(--toast-error-bg, #fef2f2);
-    border: 1px solid var(--toast-error-color, #ef4444);
-    color: var(--toast-error-text, #b91c1c);
+    background-color: var(--vsui-toast-error-bg, #fef2f2);
+    border: 1px solid var(--vsui-toast-error-color, #ef4444);
+    color: var(--vsui-toast-error-text, #b91c1c);
   }
 
   &__icon {
@@ -215,11 +215,11 @@ onUnmounted(() => {
   &__title {
     font-weight: 600;
     margin-bottom: 0.25rem;
-    font-size: var(--toast-title-font-size);
+    font-size: var(--vsui-toast-title-font-size);
   }
 
   &__message {
-    font-size: var(--toast-message-font-size);
+    font-size: var(--vsui-toast-message-font-size);
   }
 
   &__close {
@@ -247,23 +247,23 @@ onUnmounted(() => {
     animation: progress linear forwards;
 
     &--default {
-      background-color: var(--toast-default-color, #9ca3af);
+      background-color: var(--vsui-toast-default-color, #9ca3af);
     }
 
     &--info {
-      background-color: var(--toast-info-color, #3b82f6);
+      background-color: var(--vsui-toast-info-color, #3b82f6);
     }
 
     &--success {
-      background-color: var(--toast-success-color, #22c55e);
+      background-color: var(--vsui-toast-success-color, #22c55e);
     }
 
     &--warning {
-      background-color: var(--toast-warning-color, #f59e0b);
+      background-color: var(--vsui-toast-warning-color, #f59e0b);
     }
 
     &--error {
-      background-color: var(--toast-error-color, #ef4444);
+      background-color: var(--vsui-toast-error-color, #ef4444);
     }
   }
 

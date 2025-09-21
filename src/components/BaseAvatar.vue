@@ -124,7 +124,7 @@ const handleImageLoad = (event) => {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--font-family-base, inherit);
+  font-family: var(--vsui-font-family-base, inherit);
   font-weight: 600;
   user-select: none;
   flex-shrink: 0;
@@ -169,21 +169,21 @@ const handleImageLoad = (event) => {
 
   // Variants
   &--default {
-    background-color: var(--avatar-default-bg);
-    color: var(--avatar-default-text);
-    border: 2px solid var(--avatar-default-border);
+    background-color: var(--vsui-avatar-default-bg);
+    color: var(--vsui-avatar-default-text);
+    border: 2px solid var(--vsui-avatar-default-border);
   }
 
   &--filled {
-    background-color: var(--avatar-filled-bg);
-    color: var(--avatar-filled-text);
-    border: 2px solid var(--avatar-filled-border);
+    background-color: var(--vsui-avatar-filled-bg);
+    color: var(--vsui-avatar-filled-text);
+    border: 2px solid var(--vsui-avatar-filled-border);
   }
 
   &--outlined {
-    background-color: var(--avatar-outlined-bg);
-    color: var(--avatar-outlined-text);
-    border: 2px solid var(--avatar-outlined-border);
+    background-color: var(--vsui-avatar-outlined-bg);
+    color: var(--vsui-avatar-outlined-text);
+    border: 2px solid var(--vsui-avatar-outlined-border);
   }
 
   // Image styles
@@ -213,28 +213,28 @@ const handleImageLoad = (event) => {
     width: 25%;
     height: 25%;
     border-radius: 50%;
-    border: 2px solid var(--bg-default, #ffffff);
+    border: 2px solid var(--vsui-bg-default);
 
     &--online {
-      background-color: var(--avatar-status-online);
+      background-color: var(--vsui-avatar-status-online);
     }
 
     &--offline {
-      background-color: var(--avatar-status-offline);
+      background-color: var(--vsui-avatar-status-offline);
     }
 
     &--away {
-      background-color: var(--avatar-status-away);
+      background-color: var(--vsui-avatar-status-away);
     }
 
     &--busy {
-      background-color: var(--avatar-status-busy);
+      background-color: var(--vsui-avatar-status-busy);
     }
   }
 
   // Disabled state
   &--disabled {
-    opacity: var(--avatar-disabled-opacity);
+    opacity: var(--vsui-avatar-disabled-opacity);
     cursor: not-allowed;
 
     .base-avatar__status {
@@ -246,18 +246,18 @@ const handleImageLoad = (event) => {
   .vsui[data-theme='dark'] &,
   .vsui.dark & {
     &--default {
-      background-color: var(--bg-emphasized, #4b5563);
-      color: var(--text-subtle, #9ca3af);
-      border-color: var(--border-default, #4b5563);
+      background-color: var(--vsui-bg-emphasized);
+      color: var(--vsui-text-subtle);
+      border-color: var(--vsui-border-default);
     }
 
     &--outlined {
-      background-color: var(--bg-subtle, #1f2937);
-      border-color: var(--border-strong, #6b7280);
+      background-color: var(--vsui-bg-subtle);
+      border-color: var(--vsui-border-strong);
     }
 
     .base-avatar__status {
-      border-color: var(--bg-subtle, #1f2937);
+      border-color: var(--vsui-bg-subtle);
     }
   }
 }

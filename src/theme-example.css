@@ -1,0 +1,145 @@
+/* Vue Smart UI - Theme Customization Example */
+
+/*
+ * This file demonstrates how to customize the Vue Smart UI library colors
+ * by overriding the CSS variables. Import this file BEFORE importing the library.
+ */
+
+/* ========================================
+   BASIC COLOR PALETTE OVERRIDE
+   ======================================== */
+
+:root {
+  /* Primary Colors */
+  --vsui-color-primary: #6366f1; /* Indigo instead of blue */
+  --vsui-color-primary-dark: #4f46e5; /* Darker indigo */
+  --vsui-color-primary-light: #e0e7ff; /* Light indigo background */
+  --vsui-color-primary-text: #312e81; /* Dark indigo text */
+
+  /* Secondary Colors */
+  --vsui-color-secondary: #ec4899; /* Pink instead of purple */
+  --vsui-color-secondary-dark: #db2777; /* Darker pink */
+  --vsui-color-secondary-light: #fce7f3; /* Light pink background */
+  --vsui-color-secondary-text: #831843; /* Dark pink text */
+
+  /* Status Colors */
+  --vsui-color-success: #10b981; /* Emerald */
+  --vsui-color-warning: #f59e0b; /* Amber */
+  --vsui-color-error: #ef4444; /* Red */
+  --vsui-color-info: #06b6d4; /* Cyan */
+
+  /* Background Colors */
+  --vsui-bg-default: #ffffff; /* Pure white */
+  --vsui-bg-subtle: #f8fafc; /* Very light gray */
+  --vsui-bg-muted: #f1f5f9; /* Light gray */
+  --vsui-bg-emphasized: #e2e8f0; /* Medium gray */
+  --vsui-bg-disabled: #f8fafc; /* Disabled background */
+
+  /* Surface Colors */
+  --vsui-surface-default: #f8fafc; /* Card background */
+  --vsui-surface-hover: #f1f5f9; /* Hover state */
+  --vsui-surface-active: #e2e8f0; /* Active state */
+  --vsui-surface-selected: #dbeafe; /* Selected state */
+
+  /* Text Colors */
+  --vsui-text-default: #0f172a; /* Very dark slate */
+  --vsui-text-muted: #475569; /* Medium slate */
+  --vsui-text-subtle: #64748b; /* Light slate */
+  --vsui-text-disabled: #94a3b8; /* Disabled text */
+  --vsui-text-inverse: #ffffff; /* White text */
+
+  /* Border Colors */
+  --vsui-border-default: #e2e8f0; /* Light border */
+  --vsui-border-strong: #cbd5e1; /* Strong border */
+  --vsui-border-focus: #3b82f6; /* Focus ring color */
+
+  /* Utility Colors */
+  --vsui-color-white: #ffffff;
+  --vsui-color-black: #000000;
+}
+
+/* ========================================
+   DARK MODE OVERRIDE
+   ======================================== */
+
+:root[data-theme='dark'],
+html.dark {
+  /* Dark mode primary colors */
+  --vsui-color-primary: #818cf8; /* Light indigo for dark mode */
+  --vsui-color-primary-dark: #6366f1; /* Medium indigo */
+  --vsui-color-primary-light: #1e1b4b; /* Dark indigo background */
+  --vsui-color-primary-text: #c7d2fe; /* Light indigo text */
+
+  /* Dark mode secondary colors */
+  --vsui-color-secondary: #f472b6; /* Light pink for dark mode */
+  --vsui-color-secondary-dark: #ec4899; /* Medium pink */
+  --vsui-color-secondary-light: #831843; /* Dark pink background */
+  --vsui-color-secondary-text: #fce7f3; /* Light pink text */
+
+  /* Dark mode status colors */
+  --vsui-color-success: #34d399; /* Light green */
+  --vsui-color-warning: #fbbf24; /* Light amber */
+  --vsui-color-error: #f87171; /* Light red */
+  --vsui-color-info: #22d3ee; /* Light cyan */
+
+  /* Dark mode backgrounds */
+  --vsui-bg-default: #0f172a; /* Dark slate */
+  --vsui-bg-subtle: #1e293b; /* Medium dark slate */
+  --vsui-bg-muted: #334155; /* Light dark slate */
+  --vsui-bg-emphasized: #475569; /* Medium light dark slate */
+  --vsui-bg-disabled: #1e293b; /* Disabled dark background */
+
+  /* Dark mode surfaces */
+  --vsui-surface-default: #1e293b; /* Card dark background */
+  --vsui-surface-hover: #334155; /* Hover dark state */
+  --vsui-surface-active: #475569; /* Active dark state */
+  --vsui-surface-selected: #1e3a8a; /* Selected dark state */
+
+  /* Dark mode text */
+  --vsui-text-default: #f8fafc; /* Light text */
+  --vsui-text-muted: #cbd5e1; /* Medium light text */
+  --vsui-text-subtle: #94a3b8; /* Light medium text */
+  --vsui-text-disabled: #64748b; /* Disabled dark text */
+  --vsui-text-inverse: #0f172a; /* Dark text on light backgrounds */
+
+  /* Dark mode borders */
+  --vsui-border-default: #475569; /* Dark border */
+  --vsui-border-strong: #64748b; /* Strong dark border */
+  --vsui-border-focus: #60a5fa; /* Focus ring for dark mode */
+}
+
+/* ========================================
+   COMPONENT-SPECIFIC OVERRIDES
+   ======================================== */
+
+/* Custom button colors */
+:root {
+  --vsui-button-primary-bg: #059669; /* Custom green primary */
+  --vsui-button-primary-hover: #047857; /* Darker green */
+}
+
+/* Custom input styling */
+:root {
+  --vsui-input-bg: #f0f9ff; /* Very light blue background */
+  --vsui-input-border-color: #0ea5e9; /* Blue border */
+}
+
+/* Custom avatar styling */
+:root {
+  --vsui-avatar-default-bg: #f3f4f6; /* Light gray */
+  --vsui-avatar-filled-bg: #7c3aed; /* Purple filled */
+}
+
+/*
+ * Usage in your project:
+ *
+ * 1. Import this CSS file BEFORE importing Vue Smart UI
+ * 2. Or copy these variables to your main CSS file
+ * 3. Modify the values to match your brand colors
+ *
+ * Example in main.js or App.vue:
+ * import './theme-customization.css'
+ * import 'vue-smart-ui'
+ *
+ * All components will automatically use your custom colors!
+ */

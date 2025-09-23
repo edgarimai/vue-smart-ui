@@ -66,7 +66,7 @@ defineEmits(['click'])
     :disabled="disabled || loading"
     @click="$emit('click', $event)"
   >
-    <div class="button-content" :class="[{ hidden: loading }, $attrs.class]">
+    <div class="button-content" :class="[{ hidden: loading }]">
       <template v-if="$slots.prefix">
         <slot name="prefix" />
       </template>

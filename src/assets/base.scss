@@ -169,7 +169,7 @@
   --color-black: var(--vsui-color-black);
 
   // Font base
-  --font-family-base: 'Roboto', sans-serif;
+  --vsui-font-family-base: 'Roboto', sans-serif;
   // --font-size-base: 62.5%;
 
   // Buttons variables
@@ -232,8 +232,8 @@
   --vsui-toast-error-color: var(--vsui-color-error);
   --vsui-toast-error-text: var(--vsui-color-error-dark);
 
-  --toast-title-font-size: 1rem;
-  --toast-message-font-size: 0.75rem;
+  --vsui-toast-title-font-size: 1rem;
+  --vsui-toast-message-font-size: 0.75rem;
 
   // Dropdowns variables
   --vsui-dropdown-bg: var(--vsui-surface-default);
@@ -241,8 +241,8 @@
   --vsui-dropdown-item-hover-bg: var(--vsui-surface-hover);
 
   --vsui-dropdown-dark-bg: var(--vsui-text-muted);
-  --dropdown-dark-border-color: #4b5563;
-  --dropdown-dark-item-hover-bg: #4b5563;
+  --vsui-dropdown-dark-border-color: #4b5563;
+  --vsui-dropdown-dark-item-hover-bg: #4b5563;
 
   // Skeletons variables
   --vsui-skeleton-bg: var(--bg-emphasized);
@@ -269,7 +269,7 @@
   --vsui-input-bg: var(--vsui-bg-subtle);
   --vsui-input-text-color: var(--vsui-text-default);
   --vsui-input-focus-border-color: var(--vsui-color-primary);
-  --input-focus-ring-color: rgba(59, 130, 246, 0.1);
+  --vsui-input-focus-ring-color: rgba(59, 130, 246, 0.1);
   --vsui-input-placeholder-color: var(--vsui-text-disabled);
   --vsui-input-disabled-bg: var(--vsui-bg-muted);
   --vsui-input-disabled-text: var(--vsui-text-subtle);
@@ -280,9 +280,10 @@
   --vsui-input-error-color: var(--vsui-color-error);
   --vsui-input-warning-color: var(--vsui-color-warning);
 
-  --input-label-font-size: 0.875rem;
-  --input-field-font-size: 0.875rem;
-  --input-helper-font-size: 0.75rem;
+  --vsui-input-label-font-size: 0.875rem;
+  --vsui-input-field-font-size: 0.875rem;
+  --vsui-input-helper-font-size: 0.75rem;
+  
 
   // Checkbox variables
   --vsui-checkbox-border: 1px solid var(--checkbox-border-color);
@@ -309,9 +310,9 @@
   // Textarea variables
   --textarea-font-size: 1rem;
   --vsui-textarea-font-family: var(--vsui-font-family-base);
-  --textarea-line-height: 1.6;
-  --textarea-padding: 0.75rem 1rem;
-  --textarea-border-radius: 0.5rem;
+  --vsui-textarea-line-height: 1.6;
+  --vsui-textarea-padding: 0.75rem 1rem;
+  --vsui-textarea-border-radius: 0.5rem;
 
   --vsui-textarea-bg: var(--vsui-bg-subtle);
   --vsui-textarea-text-color: var(--vsui-text-default);
@@ -326,56 +327,56 @@
   --vsui-textarea-filled-hover-bg: var(--vsui-bg-emphasized);
   --vsui-textarea-filled-focus-bg: var(--vsui-bg-subtle);
 
-  --textarea-helper-font-size: 0.75rem;
-  --textarea-label-font-size: 0.875rem;
+  --vsui-textarea-helper-font-size: 0.75rem;
+  --vsui-textarea-label-font-size: 0.875rem;
 
   // Slider variables
-  --slider-track-height: 6px;
+  --vsui-slider-track-height: 6px;
   --vsui-slider-track-bg: var(--vsui-surface-active);
-  --slider-track-radius: 3px;
+  --vsui-slider-track-radius: 3px;
   --vsui-slider-fill-color: var(--vsui-color-primary);
 
-  --slider-thumb-size: 18px;
+  --vsui-slider-thumb-size: 18px;
   --vsui-slider-thumb-bg: var(--vsui-surface-default);
-  --slider-thumb-border-width: 2px;
+  --vsui-slider-thumb-border-width: 2px;
   --vsui-slider-thumb-border-color: var(--vsui-color-primary);
-  --slider-thumb-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  --slider-focus-ring-color: rgba(59, 130, 246, 0.1);
+  --vsui-slider-thumb-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --vsui-slider-focus-ring-color: rgba(59, 130, 246, 0.1);
 
-  --slider-value-font-size: 0.875rem;
+  --vsui-slider-value-font-size: 0.875rem;
   --vsui-slider-value-color: var(--vsui-text-muted);
 
   --vsui-slider-value-bubble-bg: var(--vsui-surface-default);
   --vsui-slider-value-bubble-color: var(--vsui-text-muted);
-  --slider-value-bubble-font-size: 0.75rem;
-  --slider-value-bubble-padding: 2px 6px;
-  --slider-value-bubble-radius: 4px;
-  --slider-value-bubble-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  --slider-value-bubble-border: 1px solid var(--color-primary);
+  --vsui-slider-value-bubble-font-size: 0.75rem;
+  --vsui-slider-value-bubble-padding: 2px 6px;
+  --vsui-slider-value-bubble-radius: 4px;
+  --vsui-slider-value-bubble-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  --vsui-slider-value-bubble-border: 1px solid var(--color-primary);
 
-  --slider-mark-size: 4px;
+  --vsui-slider-mark-size: 4px;
   --vsui-slider-mark-color: var(--vsui-border-strong);
-  --slider-mark-label-font-size: 0.75rem;
+  --vsui-slider-mark-label-font-size: 0.75rem;
   --vsui-slider-mark-label-color: var(--vsui-text-subtle);
-  --slider-mark-label-max-width: 80px;
+  --vsui-slider-mark-label-max-width: 80px;
 
-  --slider-label-font-size: 0.875rem;
+  --vsui-slider-label-font-size: 0.875rem;
   --vsui-slider-label-color: var(--vsui-text-muted);
   --vsui-slider-required-color: var(--vsui-color-error);
-  --slider-helper-font-size: 0.75rem;
+  --vsui-slider-helper-font-size: 0.75rem;
   --vsui-slider-helper-color: var(--vsui-text-subtle);
 
-  --slider-disabled-opacity: 0.6;
+  --vsui-slider-disabled-opacity: 0.6;
   --vsui-slider-disabled-track-bg: var(--vsui-bg-muted);
   --vsui-slider-disabled-thumb-bg: var(--vsui-bg-muted);
   --vsui-slider-disabled-thumb-border: var(--vsui-text-subtle);
 
   --vsui-slider-success-color: var(--vsui-color-success);
-  --slider-success-ring-color: rgba(34, 197, 94, 0.1);
+  --vsui-slider-success-ring-color: rgba(34, 197, 94, 0.1);
   --vsui-slider-error-color: var(--vsui-color-error);
-  --slider-error-ring-color: rgba(239, 68, 68, 0.1);
+  --vsui-slider-error-ring-color: rgba(239, 68, 68, 0.1);
   --vsui-slider-warning-color: var(--vsui-color-warning);
-  --slider-warning-ring-color: rgba(245, 158, 11, 0.1);
+  --vsui-slider-warning-ring-color: rgba(245, 158, 11, 0.1);
 
   --vsui-slider-filled-bg: var(--vsui-bg-muted);
 
@@ -401,48 +402,48 @@
 
   // Table variables
   --vsui-table-border-color: var(--vsui-border-default);
-  --table-border-radius: 0.5rem;
+  --vsui-table-border-radius: 0.5rem;
   --vsui-table-header-bg: var(--vsui-surface-default);
   --vsui-table-header-text-color: var(--vsui-text-muted);
-  --table-header-font-weight: 600;
-  --table-header-padding: 0.75rem;
+  --vsui-table-header-font-weight: 600;
+  --vsui-table-header-padding: 0.75rem;
 
   --vsui-table-body-bg: var(--vsui-bg-default);
   --vsui-table-row-hover-bg: var(--vsui-surface-hover);
   --vsui-table-row-selected-bg: var(--vsui-surface-selected);
   --vsui-table-stripe-bg: var(--vsui-bg-subtle);
-  --table-cell-padding: 0.75rem;
+  --vsui-table-cell-padding: 0.75rem;
   --vsui-table-cell-text-color: var(--vsui-text-muted);
   --vsui-table-cell-border-color: var(--vsui-border-default);
 
-  --table-sort-icon-opacity: 0.5;
-  --table-sort-icon-size: 0.75rem;
+  --vsui-table-sort-icon-opacity: 0.5;
+  --vsui-table-sort-icon-size: 0.75rem;
   --vsui-table-sort-active-color: var(--vsui-color-primary);
 
-  --table-filter-margin-top: 0.5rem;
+  --vsui-table-filter-margin-top: 0.5rem;
 
   --vsui-table-empty-text-color: var(--vsui-text-subtle);
-  --table-empty-padding: 2rem;
+  --vsui-table-empty-padding: 2rem;
 
   --vsui-table-pagination-bg: var(--vsui-surface-default);
   --vsui-table-pagination-border-color: var(--vsui-border-default);
-  --table-pagination-padding: 1rem;
-  --table-pagination-gap: 1rem;
+  --vsui-table-pagination-padding: 1rem;
+  --vsui-table-pagination-gap: 1rem;
   --vsui-table-pagination-info-color: var(--vsui-text-subtle);
-  --table-pagination-info-font-size: 0.875rem;
+  --vsui-table-pagination-info-font-size: 0.875rem;
   --vsui-table-pagination-pages-color: var(--vsui-text-muted);
-  --table-pagination-pages-font-size: 0.875rem;
+  --vsui-table-pagination-pages-font-size: 0.875rem;
 
-  --table-actions-gap: 0.5rem;
-  --table-actions-justify-content: center;
+  --vsui-table-actions-gap: 0.5rem;
+  --vsui-table-actions-justify-content: center;
 
-  --table-checkbox-width: 2.5rem;
-  --table-checkbox-padding: 0.75rem 0.5rem;
+  --vsui-table-checkbox-width: 2.5rem;
+  --vsui-table-checkbox-padding: 0.75rem 0.5rem;
 
-  --table-small-padding: 0.5rem;
-  --table-small-font-size: 0.875rem;
-  --table-large-padding: 1rem;
-  --table-large-font-size: 1.125rem;
+  --vsui-table-small-padding: 0.5rem;
+  --vsui-table-small-font-size: 0.875rem;
+  --vsui-table-large-padding: 1rem;
+  --vsui-table-large-font-size: 1.125rem;
 
-  font-family: var(--font-family-base);
+  font-family: var(--vsui-font-family-base);
 }

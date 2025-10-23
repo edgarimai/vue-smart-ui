@@ -208,7 +208,81 @@ export const useTheme = () => {
 */
 
 // =============================================================================
-// 6. IMPORTANT NOTES
+// 6. VALIDATION CONFIGURATION
+// =============================================================================
+
+// Global validation messages can be configured once in your main.js:
+
+import { useValidationConfig } from 'vue-smart-ui'
+
+const { setValidationMessages } = useValidationConfig()
+
+// Configure messages in your preferred language
+setValidationMessages({
+  // Simple string messages
+  required: 'Este campo é obrigatório',
+  email: 'Por favor, insira um email válido',
+  pattern: 'Formato inválido',
+  hexColor: 'Cor HEX inválida',
+  rgbColor: 'Cor RGB inválida',
+  rgbaColor: 'Cor RGBA inválida',
+  hslColor: 'Cor HSL inválida',
+
+  // Function messages with dynamic parameters
+  min: (min) => `Deve ter no mínimo ${min} caracteres`,
+  max: (max) => `Deve ter no máximo ${max} caracteres`,
+  minValue: (min) => `O valor mínimo é ${min}`,
+  maxValue: (max) => `O valor máximo é ${max}`,
+})
+
+// Now all inputs will use these messages automatically:
+// Example in component:
+/*
+<BaseInput
+  v-model="email"
+  :rules="['required', 'email']"
+  label="Email"
+/>
+// Will show "Este campo é obrigatório" instead of "This field is required"
+
+<BaseInput
+  v-model="password"
+  :rules="['required', { min: 8 }]"
+  label="Senha"
+/>
+// Will show "Deve ter no mínimo 8 caracteres"
+
+<BaseInput
+  v-model="age"
+  type="number"
+  :rules="[{ minValue: 18 }]"
+  label="Idade"
+/>
+// Will show "O valor mínimo é 18"
+*/
+
+// You can still override with custom messages per input:
+/*
+<BaseInput
+  v-model="customField"
+  :rules="[
+    {
+      validator: (value) => value.startsWith('VSU'),
+      message: 'Código deve começar com VSU'
+    }
+  ]"
+  label="Código"
+/>
+*/
+
+// Reset to default messages (English):
+/*
+const { resetValidationMessages } = useValidationConfig()
+resetValidationMessages()
+*/
+
+// =============================================================================
+// 7. IMPORTANT NOTES
 // =============================================================================
 
 /*

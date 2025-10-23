@@ -1,8 +1,10 @@
 <script setup>
 import { ref, computed, useSlots, onMounted } from 'vue'
 import { useAutoId } from '../composables/autoId'
+import { useValidationConfig } from '../composables/validationConfig'
 
 const slots = useSlots()
+const { getValidationMessage } = useValidationConfig()
 const props = defineProps({
   id: {
     type: String,
@@ -11,6 +13,10 @@ const props = defineProps({
   modelValue: {
     type: [String, Number],
     default: '',
+  },
+  transparentBg: {
+    type: Boolean,
+    default: false,
   },
   variant: {
     type: String,
@@ -98,6 +104,7 @@ const emit = defineEmits(['update:modelValue', 'focus', 'blur', 'input', 'valida
 const inputRef = ref(null)
 const isFocused = ref(false)
 const error = ref('')
+const hasBeenValidated = ref(false)
 
 const inputClasses = computed(() => ({
   'vsui base-input': true,
@@ -113,39 +120,39 @@ const inputClasses = computed(() => ({
 const validators = {
   required: (value) => ({
     valid: !!value?.toString().trim(),
-    message: 'This field is required',
+    message: getValidationMessage('required'),
   }),
   email: (value) => ({
     valid: !value || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
-    message: 'Please enter a valid email',
+    message: getValidationMessage('email'),
   }),
   min: (value, min) => ({
     valid: !value || value.length >= min,
-    message: `Must be at least ${min} characters`,
+    message: getValidationMessage('min', min),
   }),
   max: (value, max) => ({
     valid: !value || value.length <= max,
-    message: `Must be no more than ${max} characters`,
+    message: getValidationMessage('max', max),
   }),
   pattern: (value, pattern) => ({
     valid: !value || new RegExp(pattern).test(value),
-    message: 'Invalid format',
+    message: getValidationMessage('pattern'),
   }),
   minValue: (value, min) => ({
     valid: !value || Number(value) >= min,
-    message: `Value must be at least ${min}`,
+    message: getValidationMessage('minValue', min),
   }),
   maxValue: (value, max) => ({
     valid: !value || Number(value) <= max,
-    message: `Value must be no more than ${max}`,
+    message: getValidationMessage('maxValue', max),
   }),
   hexColor: (value) => ({
     valid: !value || /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(value),
-    message: 'Invalid HEX color',
+    message: getValidationMessage('hexColor'),
   }),
   rgbColor: (value) => ({
     valid: !value || /^rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)$/.test(value),
-    message: 'Invalid RGB color',
+    message: getValidationMessage('rgbColor'),
   }),
   rgbaColor: (value) => ({
     valid:
@@ -153,11 +160,11 @@ const validators = {
       /^rgba\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(0|0?\.\d+|1(\.0)?)\s*\)$/.test(
         value,
       ),
-    message: 'Invalid RGBA color',
+    message: getValidationMessage('rgbaColor'),
   }),
   hslColor: (value) => ({
     valid: !value || /^hsl\(\s*(\d{1,3})\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%\s*\)$/.test(value),
-    message: 'Invalid HSL color',
+    message: getValidationMessage('hslColor'),
   }),
 }
 
@@ -165,6 +172,7 @@ const validators = {
 const validate = (value) => {
   if (!props.rules.length) return true
 
+  hasBeenValidated.value = true
   for (const rule of props.rules) {
     if (typeof rule === 'string') {
       const validator = validators[rule]
@@ -320,7 +328,7 @@ const handleInput = (event) => {
 
   emit('input', { ...event, target: { ...event.target, value: newValue } })
 
-  if (props.validateOnInput) {
+  if (props.validateOnInput || hasBeenValidated.value) {
     const isValid = validate(inputValue.value)
     emit('validation', { valid: isValid, error: error.value })
   }
@@ -410,7 +418,7 @@ onMounted(() => {
       <span v-if="isRequired" class="base-input__required" aria-hidden="true">*</span>
     </label>
 
-    <div class="base-input__wrapper">
+    <div class="base-input__wrapper" :class="{ 'base-input__wrapper--transparent': transparentBg }">
       <div v-if="$slots.prefix || prefixIcon" class="base-input__prefix">
         <slot name="prefix">
           <i :class="prefixIcon"></i>
@@ -482,6 +490,10 @@ onMounted(() => {
     border: 1px solid var(--vsui-input-border-color, #d1d5db);
     background-color: var(--vsui-input-bg, white);
     transition: all 0.2s;
+  }
+
+  &__wrapper--transparent {
+    background-color: transparent;
   }
 
   // Input field styles

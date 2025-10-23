@@ -1,8 +1,10 @@
 <script setup>
 import { ref, computed, useSlots, onMounted } from 'vue'
 import { useAutoId } from '../composables/autoId'
+import { useValidationConfig } from '../composables/validationConfig'
 
 const slots = useSlots()
+const { getValidationMessage } = useValidationConfig()
 const props = defineProps({
   id: {
     type: String,
@@ -114,39 +116,39 @@ const inputClasses = computed(() => ({
 const validators = {
   required: (value) => ({
     valid: !!value?.toString().trim(),
-    message: 'This field is required',
+    message: getValidationMessage('required'),
   }),
   email: (value) => ({
     valid: !value || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
-    message: 'Please enter a valid email',
+    message: getValidationMessage('email'),
   }),
   min: (value, min) => ({
     valid: !value || value.length >= min,
-    message: `Must be at least ${min} characters`,
+    message: getValidationMessage('min', min),
   }),
   max: (value, max) => ({
     valid: !value || value.length <= max,
-    message: `Must be no more than ${max} characters`,
+    message: getValidationMessage('max', max),
   }),
   pattern: (value, pattern) => ({
     valid: !value || new RegExp(pattern).test(value),
-    message: 'Invalid format',
+    message: getValidationMessage('pattern'),
   }),
   minValue: (value, min) => ({
     valid: !value || Number(value) >= min,
-    message: `Value must be at least ${min}`,
+    message: getValidationMessage('minValue', min),
   }),
   maxValue: (value, max) => ({
     valid: !value || Number(value) <= max,
-    message: `Value must be no more than ${max}`,
+    message: getValidationMessage('maxValue', max),
   }),
   hexColor: (value) => ({
     valid: !value || /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(value),
-    message: 'Invalid HEX color',
+    message: getValidationMessage('hexColor'),
   }),
   rgbColor: (value) => ({
     valid: !value || /^rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)$/.test(value),
-    message: 'Invalid RGB color',
+    message: getValidationMessage('rgbColor'),
   }),
   rgbaColor: (value) => ({
     valid:
@@ -154,11 +156,11 @@ const validators = {
       /^rgba\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(0|0?\.\d+|1(\.0)?)\s*\)$/.test(
         value,
       ),
-    message: 'Invalid RGBA color',
+    message: getValidationMessage('rgbaColor'),
   }),
   hslColor: (value) => ({
     valid: !value || /^hsl\(\s*(\d{1,3})\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%\s*\)$/.test(value),
-    message: 'Invalid HSL color',
+    message: getValidationMessage('hslColor'),
   }),
 }
 

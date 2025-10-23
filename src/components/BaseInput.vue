@@ -98,6 +98,7 @@ const emit = defineEmits(['update:modelValue', 'focus', 'blur', 'input', 'valida
 const inputRef = ref(null)
 const isFocused = ref(false)
 const error = ref('')
+const hasBeenValidated = ref(false)
 
 const inputClasses = computed(() => ({
   'vsui base-input': true,
@@ -165,6 +166,7 @@ const validators = {
 const validate = (value) => {
   if (!props.rules.length) return true
 
+  hasBeenValidated.value = true
   for (const rule of props.rules) {
     if (typeof rule === 'string') {
       const validator = validators[rule]
@@ -320,7 +322,7 @@ const handleInput = (event) => {
 
   emit('input', { ...event, target: { ...event.target, value: newValue } })
 
-  if (props.validateOnInput) {
+  if (props.validateOnInput || hasBeenValidated.value) {
     const isValid = validate(inputValue.value)
     emit('validation', { valid: isValid, error: error.value })
   }

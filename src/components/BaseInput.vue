@@ -14,6 +14,10 @@ const props = defineProps({
     type: [String, Number],
     default: '',
   },
+  transparentBg: {
+    type: Boolean,
+    default: false,
+  },
   variant: {
     type: String,
     default: 'default',
@@ -414,7 +418,7 @@ onMounted(() => {
       <span v-if="isRequired" class="base-input__required" aria-hidden="true">*</span>
     </label>
 
-    <div class="base-input__wrapper">
+    <div class="base-input__wrapper" :class="{ 'base-input__wrapper--transparent': transparentBg }">
       <div v-if="$slots.prefix || prefixIcon" class="base-input__prefix">
         <slot name="prefix">
           <i :class="prefixIcon"></i>
@@ -486,6 +490,10 @@ onMounted(() => {
     border: 1px solid var(--vsui-input-border-color, #d1d5db);
     background-color: var(--vsui-input-bg, white);
     transition: all 0.2s;
+  }
+
+  &__wrapper--transparent {
+    background-color: transparent;
   }
 
   // Input field styles

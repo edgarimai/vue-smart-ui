@@ -305,31 +305,24 @@ const applySimpleMask = (value, pattern) => {
 
 const handleInput = (event) => {
   let newValue = event.target.value
+  let valueToEmit = newValue
 
   if (props.mask) {
     const maskDef =
       typeof props.mask === 'string' ? maskPatterns[props.mask] || props.mask : props.mask.pattern
 
-    newValue = applyMask(newValue, maskDef)
+    valueToEmit = applyMask(newValue, maskDef)
 
-    if (inputRef.value) {
-      inputRef.value.value = newValue
-    }
+    if (inputRef.value) inputRef.value.value = newValue
+    if (props.mask === 'currency') valueToEmit = maskPatterns.currency.parse(newValue)
   }
 
-  if (props.mask === 'currency') {
-    const parsedValue = maskPatterns.currency.parse(newValue)
-    inputValue.value = parsedValue
-    emit('update:modelValue', parsedValue)
-  } else {
-    inputValue.value = newValue
-    emit('update:modelValue', newValue)
-  }
-
+  inputValue.value = valueToEmit
+  emit('update:modelValue', valueToEmit)
   emit('input', { ...event, target: { ...event.target, value: newValue } })
 
   if (props.validateOnInput || hasBeenValidated.value) {
-    const isValid = validate(inputValue.value)
+    const isValid = validate(valueToEmit)
     emit('validation', { valid: isValid, error: error.value })
   }
 }

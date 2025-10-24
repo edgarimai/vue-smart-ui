@@ -467,7 +467,7 @@ onMounted(() => {
           tabindex="-1"
           @click="togglePasswordVisibility"
           @mousedown.prevent
-          :aria-label="showPassword ? 'Ocultar senha' : 'Mostrar senha'"
+          :aria-label="showPassword ? 'Hide password' : 'Show password'"
         >
           <svg
             v-if="showPassword"

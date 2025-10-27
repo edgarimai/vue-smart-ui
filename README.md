@@ -277,6 +277,32 @@ const registerInput = (name, ref) => {
 <BaseInput v-model="price" label="Price" mask="currency" placeholder="R$ 0,00" />
 ```
 
+#### Global Validation Configuration
+
+You can configure validation messages globally in your `main.js`:
+
+```javascript
+import { createApp } from 'vue'
+import App from './App.vue'
+import { useValidationConfig } from 'vue-smart-ui'
+
+const app = createApp(App)
+
+// Configure validation messages globally
+const { setValidationMessages } = useValidationConfig()
+
+setValidationMessages({
+  required: 'This field is required',
+  email: 'Please enter a valid email',
+  min: (min) => `Must be at least ${min} characters`,
+  max: (max) => `Must be no more than ${max} characters`,
+})
+
+app.mount('#app')
+```
+
+For more details about validation configuration and advanced usage, see [VALIDATION.md](./VALIDATION.md).
+
 ### BaseTextarea
 
 Highly customizable textarea component that matches the BaseInput styling and functionality. Perfect for multi-line text input with support for validation, different variants, and auto-resize capability.
@@ -552,6 +578,32 @@ const showSimple = () => {
 }
 </script>
 ```
+
+#### Global Toast Configuration
+
+You can configure default toast behavior globally in your `main.js`:
+
+```javascript
+import { createApp } from 'vue'
+import App from './App.vue'
+import { useToastConfig } from 'vue-smart-ui'
+
+const app = createApp(App)
+
+// Configure toast defaults globally
+const { setToastDefaults } = useToastConfig()
+
+setToastDefaults({
+  position: 'bottom-right',  // Default position for all toasts
+  duration: 5000,            // Default duration in milliseconds
+  closable: true,            // Show close button by default
+  simple: false,             // Use full toast style by default
+})
+
+app.mount('#app')
+```
+
+For more details about toast configuration and advanced usage, see [TOAST.md](./TOAST.md).
 
 ### BaseInfiniteScroll
 

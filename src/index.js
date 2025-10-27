@@ -21,6 +21,7 @@ import BaseTable from './components/BaseTable.vue'
 import BaseAvatar from './components/BaseAvatar.vue'
 import { useToast } from './composables/toast'
 import { useValidationConfig } from './composables/validationConfig'
+import { useToastConfig } from './composables/toastConfig'
 
 export default {
   install(app) {
@@ -66,6 +67,7 @@ export {
   BaseOTP,
   useToast,
   useValidationConfig,
+  useToastConfig,
   BaseTable,
   BaseAvatar,
 }

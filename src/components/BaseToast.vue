@@ -161,6 +161,7 @@ onUnmounted(() => {
   position: relative;
   display: flex;
   align-items: center;
+  gap: 1.5rem;
 
   padding: 1rem;
   border-radius: 0.5rem;
@@ -202,10 +203,8 @@ onUnmounted(() => {
   }
 
   &__icon {
+    display: flex;
     flex-shrink: 0;
-    margin-right: 0.75rem;
-    width: 1.5rem;
-    height: 1.5rem;
   }
 
   &__content {

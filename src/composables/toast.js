@@ -1,11 +1,14 @@
 import { ref, createApp, h } from 'vue'
 import ToastsContainer from '@/components/ToastsContainer.vue'
+import { useToastConfig } from './toastConfig'
 
 const toasts = ref([])
 let toastId = 0
 let toastContainer = null
 
 export function useToast() {
+  const { getToastDefaults } = useToastConfig()
+
   const createContainer = () => {
     if (toastContainer) return
 
@@ -22,13 +25,14 @@ export function useToast() {
     message,
     title = '',
     variant = 'default',
-    position = 'top-right',
-    duration = 3000,
-    closable = true,
-    simple = false,
+    position,
+    duration,
+    closable,
+    simple,
   }) => {
     createContainer()
 
+    const defaults = getToastDefaults()
     const id = ++toastId
 
     toasts.value.push({
@@ -36,10 +40,10 @@ export function useToast() {
       message,
       title,
       variant,
-      position,
-      duration,
-      closable,
-      simple,
+      position: position ?? defaults.position,
+      duration: duration ?? defaults.duration,
+      closable: closable ?? defaults.closable,
+      simple: simple ?? defaults.simple,
     })
 
     return id

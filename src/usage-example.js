@@ -282,7 +282,64 @@ resetValidationMessages()
 */
 
 // =============================================================================
-// 7. IMPORTANT NOTES
+// 7. TOAST CONFIGURATION
+// =============================================================================
+
+// Global toast defaults can be configured once in your main.js:
+
+import { useToastConfig } from 'vue-smart-ui'
+
+const { setToastDefaults } = useToastConfig()
+
+// Configure default toast behavior
+setToastDefaults({
+  position: 'bottom-right', // Default position for all toasts
+  duration: 5000, // Default duration in milliseconds (5 seconds)
+  closable: true, // Show close button by default
+  simple: false, // Use full toast style by default
+})
+
+// Available position options:
+// 'top-right', 'top-left', 'top-center'
+// 'bottom-right', 'bottom-left', 'bottom-center'
+
+// Now all toasts will use these defaults:
+/*
+import { useToast } from 'vue-smart-ui'
+
+const toast = useToast()
+
+// Use global defaults
+toast.success('Saved successfully!')
+
+// Override specific defaults
+toast.error('Error occurred', {
+  position: 'top-center',
+  duration: 10000,
+  title: 'Error',
+})
+
+// Simple toast
+toast.info('Quick notification', {
+  simple: true,
+  duration: 2000,
+})
+
+// Toast that doesn't auto-dismiss
+toast.warning('Important message', {
+  duration: 0,
+  title: 'Warning',
+})
+*/
+
+// Reset to default settings:
+/*
+const { resetToastDefaults } = useToastConfig()
+resetToastDefaults()
+*/
+
+// =============================================================================
+// 8. IMPORTANT NOTES
 // =============================================================================
 
 /*

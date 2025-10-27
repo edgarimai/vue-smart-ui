@@ -105,6 +105,7 @@ const inputRef = ref(null)
 const isFocused = ref(false)
 const error = ref('')
 const hasBeenValidated = ref(false)
+const showPassword = ref(false)
 
 const inputClasses = computed(() => ({
   'vsui base-input': true,
@@ -113,8 +114,25 @@ const inputClasses = computed(() => ({
   'base-input--disabled': props.disabled,
   'base-input--focused': isFocused.value,
   'base-input--with-prefix': props.prefixIcon || slots.prefix,
-  'base-input--with-suffix': props.suffixIcon || slots.suffix,
+  'base-input--with-suffix': props.suffixIcon || slots.suffix || props.type === 'password',
 }))
+
+const inputType = computed(() => {
+  if (props.type === 'password' && showPassword.value) return 'text'
+  return props.type
+})
+
+const togglePasswordVisibility = () => {
+  const cursorPosition = inputRef.value?.selectionStart
+
+  showPassword.value = !showPassword.value
+
+  if (cursorPosition !== undefined) {
+    setTimeout(() => {
+      inputRef.value?.setSelectionRange(cursorPosition, cursorPosition)
+    }, 50)
+  }
+}
 
 // Built-in validators
 const validators = {
@@ -305,31 +323,24 @@ const applySimpleMask = (value, pattern) => {
 
 const handleInput = (event) => {
   let newValue = event.target.value
+  let valueToEmit = newValue
 
   if (props.mask) {
     const maskDef =
       typeof props.mask === 'string' ? maskPatterns[props.mask] || props.mask : props.mask.pattern
 
-    newValue = applyMask(newValue, maskDef)
+    valueToEmit = applyMask(newValue, maskDef)
 
-    if (inputRef.value) {
-      inputRef.value.value = newValue
-    }
+    if (inputRef.value) inputRef.value.value = newValue
+    if (props.mask === 'currency') valueToEmit = maskPatterns.currency.parse(newValue)
   }
 
-  if (props.mask === 'currency') {
-    const parsedValue = maskPatterns.currency.parse(newValue)
-    inputValue.value = parsedValue
-    emit('update:modelValue', parsedValue)
-  } else {
-    inputValue.value = newValue
-    emit('update:modelValue', newValue)
-  }
-
+  inputValue.value = valueToEmit
+  emit('update:modelValue', valueToEmit)
   emit('input', { ...event, target: { ...event.target, value: newValue } })
 
   if (props.validateOnInput || hasBeenValidated.value) {
-    const isValid = validate(inputValue.value)
+    const isValid = validate(valueToEmit)
     emit('validation', { valid: isValid, error: error.value })
   }
 }
@@ -428,7 +439,7 @@ onMounted(() => {
       <input
         :id="autoId"
         ref="inputRef"
-        :type="type"
+        :type="inputType"
         :value="inputValue"
         :placeholder="placeholder"
         :disabled="disabled"
@@ -445,10 +456,52 @@ onMounted(() => {
         @keydown.enter="handleEnter"
       />
 
-      <div v-if="$slots.suffix || suffixIcon" class="base-input__suffix">
+      <div v-if="$slots.suffix || suffixIcon || type === 'password'" class="base-input__suffix">
         <slot name="suffix">
-          <i :class="suffixIcon"></i>
+          <i v-if="suffixIcon" :class="suffixIcon"></i>
         </slot>
+        <button
+          v-if="type === 'password'"
+          type="button"
+          class="base-input__password-toggle"
+          tabindex="-1"
+          @click="togglePasswordVisibility"
+          @mousedown.prevent
+          :aria-label="showPassword ? 'Hide password' : 'Show password'"
+        >
+          <svg
+            v-if="showPassword"
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"
+            />
+            <line x1="1" y1="1" x2="23" y2="23" />
+          </svg>
+          <svg
+            v-else
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+            <circle cx="12" cy="12" r="3" />
+          </svg>
+        </button>
       </div>
     </div>
 
@@ -521,7 +574,6 @@ onMounted(() => {
   &__suffix {
     display: flex;
     align-items: center;
-    padding: 0 0.75rem;
     color: var(--vsui-input-icon-color, #6b7280);
     z-index: 1;
   }
@@ -532,6 +584,32 @@ onMounted(() => {
 
   &__suffix {
     padding-left: 0;
+  }
+
+  &__password-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--vsui-input-icon-color, #6b7280);
+    padding: 0;
+    margin: 0;
+    transition: color 0.2s;
+    padding: 0 0.75rem;
+
+    &:hover {
+      color: var(--vsui-input-text-color, #374151);
+    }
+
+    &:focus {
+      outline: none;
+    }
+
+    svg {
+      display: block;
+    }
   }
 
   // Helper text styles

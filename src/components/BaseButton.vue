@@ -139,6 +139,10 @@ defineEmits(['click'])
     &:hover:not(:disabled) {
       opacity: 0.8;
     }
+
+    &:focus {
+      outline: none;
+    }
   }
 
   &--icon-only {

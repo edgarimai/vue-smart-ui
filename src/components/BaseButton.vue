@@ -18,7 +18,8 @@ const props = defineProps({
   variant: {
     type: String,
     default: 'primary',
-    validator: (value) => ['primary', 'secondary', 'gray', 'outline', 'ghost'].includes(value),
+    validator: (value) =>
+      ['primary', 'secondary', 'gray', 'white', 'outline', 'ghost'].includes(value),
   },
   size: {
     type: String,
@@ -119,6 +120,15 @@ defineEmits(['click'])
 
     &:hover:not(:disabled) {
       background-color: var(--vsui-button-gray-hover);
+    }
+  }
+
+  &--white {
+    background-color: var(--vsui-button-white-bg);
+    color: var(--vsui-button-white-text);
+
+    &:hover:not(:disabled) {
+      background-color: var(--vsui-button-white-hover);
     }
   }
 

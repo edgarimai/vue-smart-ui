@@ -522,6 +522,13 @@ onMounted(() => {
           :loading="pageState.isLoading && pageState.isLoadingEnabled"
           >Gray variant</BaseButton
         >
+        <!-- White button -->
+        <BaseButton
+          variant="white"
+          @click="handleSaveWithLoading"
+          :loading="pageState.isLoading && pageState.isLoadingEnabled"
+          >White variant</BaseButton
+        >
         <!-- Outline button -->
         <BaseButton
           variant="outline"

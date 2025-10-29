@@ -486,6 +486,7 @@ const selectOption = (option) => {
 
   if (props.closeOnSelect) {
     closeDropdown()
+    handleBlur()
   }
 
   emit('select', option)

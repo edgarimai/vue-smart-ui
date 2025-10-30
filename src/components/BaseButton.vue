@@ -220,8 +220,8 @@ defineEmits(['click'])
   }
 
   &:focus {
-    outline: 2px solid var(--vsui-button-focus-outline);
-    outline-offset: 2px;
+    outline: 1px solid var(--vsui-button-focus-outline);
+    outline-offset: 1px;
   }
 
   &--loading {

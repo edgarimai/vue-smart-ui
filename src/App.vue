@@ -18,6 +18,7 @@ import {
   BaseOTP,
   BaseTable,
   BaseAvatar,
+  BaseSwitch,
 } from './components'
 import { useToast } from '@/composables/toast'
 
@@ -66,6 +67,14 @@ const pageState = reactive({
     selectedFruits: [],
     selectAll: false,
     someSelected: false,
+  },
+  switch: {
+    notifications: false,
+    size: false,
+    mode: false,
+    state: false,
+    loading: false,
+    disabled: false,
   },
   slider: {
     value: 0,
@@ -980,6 +989,33 @@ onMounted(() => {
           label="Select all"
           @update:model-value="handleSelectAll"
         />
+      </div>
+    </div>
+
+    <hr />
+
+    <div class="switch-container">
+      <h2>Switch</h2>
+      <div class="container">
+        <BaseSwitch v-model="pageState.switch.notifications" required label="Notifications" />
+
+        <BaseSwitch v-model="pageState.switch.size" size="small" label="Small" />
+        <BaseSwitch v-model="pageState.switch.size" size="medium" label="Medium" />
+        <BaseSwitch v-model="pageState.switch.size" size="large" label="Large" />
+
+        <BaseSwitch v-model="pageState.switch.mode" onLabel="ON" offLabel="OFF" />
+
+        <BaseSwitch
+          v-model="pageState.switch.state"
+          state="success"
+          label="Success"
+          helperText="Success state"
+        />
+        <BaseSwitch v-model="pageState.switch.state" state="error" errorMessage="Error state" />
+
+        <BaseSwitch v-model="pageState.switch.loading" :loading="true" label="Loading" />
+
+        <BaseSwitch v-model="pageState.switch.disabled" :disabled="true" label="Disabled" />
       </div>
     </div>
 

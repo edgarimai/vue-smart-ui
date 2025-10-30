@@ -19,6 +19,7 @@ import BaseCombobox from './components/BaseCombobox.vue'
 import BaseOTP from './components/BaseOTP.vue'
 import BaseTable from './components/BaseTable.vue'
 import BaseAvatar from './components/BaseAvatar.vue'
+import BaseSwitch from './components/BaseSwitch.vue'
 import { useToast } from './composables/toast'
 import { useValidationConfig } from './composables/validationConfig'
 import { useToastConfig } from './composables/toastConfig'
@@ -44,6 +45,7 @@ export default {
     app.component('BaseOTP', BaseOTP)
     app.component('BaseTable', BaseTable)
     app.component('BaseAvatar', BaseAvatar)
+    app.component('BaseSwitch', BaseSwitch)
   },
 }
 
@@ -70,4 +72,5 @@ export {
   useToastConfig,
   BaseTable,
   BaseAvatar,
+  BaseSwitch,
 }

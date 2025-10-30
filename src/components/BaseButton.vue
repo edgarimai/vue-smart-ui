@@ -142,6 +142,16 @@ defineEmits(['click'])
     }
   }
 
+  &--outline-red {
+    background-color: transparent;
+    border: 1px solid var(--vsui-color-error);
+    color: var(--vsui-color-error);
+
+    &:hover:not(:disabled) {
+      background-color: var(--vsui-button-outline-hover);
+    }
+  }
+
   &--ghost {
     background-color: transparent;
     color: var(--vsui-button-ghost-text);

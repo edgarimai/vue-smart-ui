@@ -15,6 +15,11 @@ const props = defineProps({
     type: String,
     default: null,
   },
+  labelPosition: {
+    type: String,
+    default: 'right',
+    validator: (value) => ['top', 'left', 'right'].includes(value),
+  },
   disabled: {
     type: Boolean,
     default: false,
@@ -76,6 +81,7 @@ const switchClasses = computed(() => ({
   [`base-switch--${props.size}`]: true,
   [`base-switch--${props.variant}`]: true,
   [`base-switch--${props.state}`]: props.state,
+  [`base-switch--label-${props.labelPosition}`]: props.label,
   'base-switch--disabled': props.disabled || props.loading,
   'base-switch--loading': props.loading,
   'base-switch--focused': isFocused.value,
@@ -132,49 +138,73 @@ onMounted(() => {
 
 <template>
   <div :class="switchClasses">
-    <div class="base-switch__container">
-      <label :for="autoId" class="base-switch__wrapper">
-        <input
-          :id="autoId"
-          ref="switchRef"
-          type="checkbox"
-          :checked="switchValue"
-          :disabled="disabled || loading"
-          :required="required"
-          :aria-required="required"
-          :aria-checked="switchValue"
-          :name="name"
-          class="base-switch__input"
-          @change="toggle"
-          @focus="handleFocus"
-          @blur="handleBlur"
-          @keydown="handleKeyDown"
-        />
-
-        <div class="base-switch__track">
-          <div class="base-switch__thumb">
-            <div v-if="loading" class="base-switch__spinner"></div>
-          </div>
-
-          <span
-            v-if="onLabel && switchValue"
-            class="base-switch__track-label base-switch__track-label--on"
-          >
-            {{ onLabel }}
-          </span>
-          <span
-            v-if="offLabel && !switchValue"
-            class="base-switch__track-label base-switch__track-label--off"
-          >
-            {{ offLabel }}
-          </span>
-        </div>
-      </label>
-
-      <label v-if="label" :for="autoId" class="base-switch__label">
+    <div class="base-switch__wrapper-container">
+      <label
+        v-if="label && labelPosition === 'top'"
+        :for="autoId"
+        class="base-switch__label base-switch__label--top"
+      >
         {{ label }}
         <span v-if="required" class="base-switch__required" aria-hidden="true">*</span>
       </label>
+
+      <div class="base-switch__container">
+        <label
+          v-if="label && labelPosition === 'left'"
+          :for="autoId"
+          class="base-switch__label base-switch__label--left"
+        >
+          {{ label }}
+          <span v-if="required" class="base-switch__required" aria-hidden="true">*</span>
+        </label>
+
+        <label :for="autoId" class="base-switch__wrapper">
+          <input
+            :id="autoId"
+            ref="switchRef"
+            type="checkbox"
+            :checked="switchValue"
+            :disabled="disabled || loading"
+            :required="required"
+            :aria-required="required"
+            :aria-checked="switchValue"
+            :name="name"
+            class="base-switch__input"
+            @change="toggle"
+            @focus="handleFocus"
+            @blur="handleBlur"
+            @keydown="handleKeyDown"
+          />
+
+          <div class="base-switch__track">
+            <div class="base-switch__thumb">
+              <div v-if="loading" class="base-switch__spinner"></div>
+            </div>
+
+            <span
+              v-if="onLabel && switchValue"
+              class="base-switch__track-label base-switch__track-label--on"
+            >
+              {{ onLabel }}
+            </span>
+            <span
+              v-if="offLabel && !switchValue"
+              class="base-switch__track-label base-switch__track-label--off"
+            >
+              {{ offLabel }}
+            </span>
+          </div>
+        </label>
+
+        <label
+          v-if="label && labelPosition === 'right'"
+          :for="autoId"
+          class="base-switch__label base-switch__label--right"
+        >
+          {{ label }}
+          <span v-if="required" class="base-switch__required" aria-hidden="true">*</span>
+        </label>
+      </div>
     </div>
 
     <div
@@ -190,9 +220,13 @@ onMounted(() => {
 <style lang="scss">
 .base-switch {
   font-family: var(--vsui-font-family-base);
-  display: inline-flex;
+  display: flex;
   flex-direction: column;
   gap: 0.25rem;
+
+  &__wrapper-container {
+    display: flex;
+  }
 
   &__container {
     display: flex;
@@ -262,11 +296,39 @@ onMounted(() => {
     font-weight: 500;
     color: var(--vsui-switch-label-color, #374151);
     cursor: pointer;
+
+    &--top {
+      margin-bottom: 0.5rem;
+    }
+
+    &--left {
+      order: -1;
+    }
+
+    &--right {
+      order: 1;
+    }
   }
 
   &__required {
     color: var(--vsui-switch-required-color, #ef4444);
     margin-left: 0.25rem;
+  }
+
+  // Label position variants
+  &--label-top {
+    .base-switch__wrapper-container {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
+  &--label-left,
+  &--label-right {
+    .base-switch__wrapper-container {
+      flex-direction: row;
+      align-items: center;
+    }
   }
 
   &__helper {

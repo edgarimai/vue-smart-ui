@@ -92,7 +92,7 @@ defineEmits(['click'])
   border-radius: 0.375rem;
   font-weight: 500;
   transition: all 0.2s ease;
-  border: none;
+  border: 1px solid transparent;
   cursor: pointer;
 
   // Variants
@@ -134,7 +134,7 @@ defineEmits(['click'])
 
   &--outline {
     background-color: transparent;
-    border: 1px solid var(--vsui-button-outline-border);
+    border-color: var(--vsui-button-outline-border);
     color: var(--vsui-button-outline-text);
 
     &:hover:not(:disabled) {
@@ -144,7 +144,7 @@ defineEmits(['click'])
 
   &--outline-red {
     background-color: transparent;
-    border: 1px solid var(--vsui-color-error);
+    border-color: var(--vsui-color-error);
     color: var(--vsui-color-error);
 
     &:hover:not(:disabled) {

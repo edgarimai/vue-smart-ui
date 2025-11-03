@@ -11,6 +11,10 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  transparentBg: {
+    type: Boolean,
+    default: false,
+  },
   variant: {
     type: String,
     default: 'default',
@@ -255,7 +259,10 @@ onMounted(() => {
       <span v-if="isRequired" class="base-textarea__required" aria-hidden="true">*</span>
     </label>
 
-    <div class="base-textarea__wrapper">
+    <div
+      class="base-textarea__wrapper"
+      :class="{ 'base-textarea__wrapper--transparent': transparentBg }"
+    >
       <textarea
         :id="autoId"
         ref="textareaRef"
@@ -308,6 +315,10 @@ onMounted(() => {
     border: 1px solid var(--vsui-textarea-border-color, #d1d5db);
     background-color: var(--vsui-textarea-bg, white);
     transition: all 0.2s;
+  }
+
+  &__wrapper--transparent {
+    background-color: transparent;
   }
 
   &__field {

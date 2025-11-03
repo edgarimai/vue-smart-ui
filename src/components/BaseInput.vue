@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, useSlots, onMounted } from 'vue'
+import { ref, computed, useSlots, onMounted, watch, nextTick } from 'vue'
 import { useAutoId } from '../composables/autoId'
 import { useValidationConfig } from '../composables/validationConfig'
 
@@ -99,7 +99,15 @@ const props = defineProps({
 })
 const { autoId } = useAutoId('input', props)
 
-const emit = defineEmits(['update:modelValue', 'focus', 'blur', 'input', 'validation', 'mounted'])
+const emit = defineEmits([
+  'update:modelValue',
+  'focus',
+  'blur',
+  'input',
+  'enter',
+  'validation',
+  'mounted',
+])
 
 const inputRef = ref(null)
 const isFocused = ref(false)
@@ -206,7 +214,6 @@ const validate = (value) => {
 
     if (typeof rule === 'object') {
       const [validatorName, config] = Object.entries(rule)[0]
-      console.log(validatorName, config)
       const validator = validators[validatorName]
 
       if (validator) {
@@ -230,17 +237,6 @@ const validate = (value) => {
   error.value = ''
   return true
 }
-
-// Internal value to track input
-const inputValue = computed({
-  get: () => {
-    if (props.mask === 'currency' && props.modelValue) {
-      return maskPatterns.currency.format(props.modelValue)
-    }
-    return props.modelValue
-  },
-  set: (value) => emit('update:modelValue', value),
-})
 
 // Built-in mask patterns
 const maskPatterns = {
@@ -276,22 +272,25 @@ const maskPatterns = {
   cep: '#####-###',
 }
 
+const getMaskDefinition = (mask) => {
+  if (typeof mask === 'string') return maskPatterns[mask] || mask
+  return mask
+}
+
 const applyMask = (value, maskDef) => {
   if (!value) return value
 
   // Handle currency mask
-  if (maskDef === 'currency' || maskDef.pattern === 'currency') {
+  if (maskDef === 'currency' || maskDef?.pattern === 'currency') {
     const parsedValue = maskPatterns.currency.parse(value)
     return maskPatterns.currency.format(parsedValue)
   }
 
   // Handle simple string pattern
-  if (typeof maskDef === 'string') {
-    return applySimpleMask(value, maskDef)
-  }
+  if (typeof maskDef === 'string') return applySimpleMask(value, maskDef)
 
   // Handle multiple patterns
-  if (maskDef.patterns) {
+  if (maskDef?.patterns) {
     const patternIndex = maskDef.match(value)
     return applySimpleMask(value, maskDef.patterns[patternIndex])
   }
@@ -321,21 +320,33 @@ const applySimpleMask = (value, pattern) => {
   return output
 }
 
+// Internal value to track input
+const inputValue = computed({
+  get: () => {
+    if (!props.mask || !props.modelValue) return props.modelValue
+
+    const maskDef = getMaskDefinition(props.mask)
+
+    if (props.mask === 'currency') return maskPatterns.currency.format(props.modelValue)
+
+    return applyMask(String(props.modelValue), maskDef)
+  },
+  set: (value) => emit('update:modelValue', value),
+})
+
 const handleInput = (event) => {
   let newValue = event.target.value
   let valueToEmit = newValue
 
   if (props.mask) {
-    const maskDef =
-      typeof props.mask === 'string' ? maskPatterns[props.mask] || props.mask : props.mask.pattern
+    const maskDef = getMaskDefinition(props.mask)
+    const maskedValue = applyMask(newValue, maskDef)
 
-    valueToEmit = applyMask(newValue, maskDef)
+    if (inputRef.value) inputRef.value.value = maskedValue
 
-    if (inputRef.value) inputRef.value.value = newValue
-    if (props.mask === 'currency') valueToEmit = maskPatterns.currency.parse(newValue)
+    valueToEmit = props.mask === 'currency' ? maskPatterns.currency.parse(newValue) : maskedValue
   }
 
-  inputValue.value = valueToEmit
   emit('update:modelValue', valueToEmit)
   emit('input', { ...event, target: { ...event.target, value: newValue } })
 
@@ -346,7 +357,6 @@ const handleInput = (event) => {
 }
 
 const handleEnter = (event) => {
-  isFocused.value = true
   emit('enter', event)
 }
 
@@ -400,21 +410,40 @@ const isRequired = computed(() => {
 const maxLength = computed(() => {
   if (!props.mask) return undefined
 
-  const maskDef =
-    typeof props.mask === 'string' ? maskPatterns[props.mask] || props.mask : props.mask.pattern
+  const maskDef = getMaskDefinition(props.mask)
 
-  if (typeof maskDef === 'string') {
-    return maskDef.length
-  }
+  if (typeof maskDef === 'string') return maskDef.length
 
-  if (maskDef.patterns) {
-    return Math.max(...maskDef.patterns.map((pattern) => pattern.length))
-  }
+  if (maskDef?.patterns) return Math.max(...maskDef.patterns.map((pattern) => pattern.length))
 
   return undefined
 })
 
+const applyMaskToInput = () => {
+  if (!props.mask || !inputRef.value || !props.modelValue) return
+
+  const maskDef = getMaskDefinition(props.mask)
+
+  const maskedValue =
+    props.mask === 'currency'
+      ? maskPatterns.currency.format(props.modelValue)
+      : applyMask(String(props.modelValue), maskDef)
+
+  if (inputRef.value.value !== maskedValue) inputRef.value.value = maskedValue
+}
+
+watch(
+  () => props.modelValue,
+  () => {
+    nextTick(() => {
+      applyMaskToInput()
+    })
+  },
+)
+
 onMounted(() => {
+  applyMaskToInput()
+
   emit('mounted', {
     validate: validateField,
     focus,

@@ -250,9 +250,11 @@ const maskPatterns = {
   currency: {
     pattern: 'currency',
     format: (value) => {
-      if (!value) return ''
+      if (!value && value !== 0) return ''
 
       const number = typeof value === 'string' ? parseFloat(value.replace(/\D/g, '')) / 100 : value
+
+      if (isNaN(number)) return ''
 
       return new Intl.NumberFormat('pt-BR', {
         style: 'currency',
@@ -262,8 +264,13 @@ const maskPatterns = {
       }).format(number)
     },
     parse: (value) => {
+      if (!value) return 0
+
       const numericValue = value.replace(/[^\d]/g, '')
-      return parseFloat(numericValue) / 100
+      if (!numericValue) return 0
+
+      const parsed = parseFloat(numericValue) / 100
+      return isNaN(parsed) ? 0 : parsed
     },
   },
   date: '##/##/####',
@@ -323,7 +330,8 @@ const applySimpleMask = (value, pattern) => {
 // Internal value to track input
 const inputValue = computed({
   get: () => {
-    if (!props.mask || !props.modelValue) return props.modelValue
+    if (!props.mask) return props.modelValue
+    if (!props.modelValue && props.modelValue !== 0) return props.modelValue
 
     const maskDef = getMaskDefinition(props.mask)
 
@@ -420,7 +428,8 @@ const maxLength = computed(() => {
 })
 
 const applyMaskToInput = () => {
-  if (!props.mask || !inputRef.value || !props.modelValue) return
+  if (!props.mask || !inputRef.value) return
+  if (!props.modelValue && props.modelValue !== 0) return
 
   const maskDef = getMaskDefinition(props.mask)
 

@@ -1003,6 +1003,10 @@ onMounted(() => {
         <BaseSwitch v-model="pageState.switch.size" size="medium" label="Medium" />
         <BaseSwitch v-model="pageState.switch.size" size="large" label="Large" />
 
+        <BaseSwitch v-model="pageState.switch.size" label="Top" label-position="top" />
+        <BaseSwitch v-model="pageState.switch.size" label="Left" label-position="left" />
+        <BaseSwitch v-model="pageState.switch.size" label="Right" label-position="right" />
+
         <BaseSwitch v-model="pageState.switch.mode" onLabel="ON" offLabel="OFF" />
 
         <BaseSwitch

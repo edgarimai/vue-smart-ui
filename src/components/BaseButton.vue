@@ -168,6 +168,10 @@ defineEmits(['click'])
   &--icon-only {
     aspect-ratio: 1/1;
 
+    &:focus {
+      outline: none;
+    }
+
     &.base-button--small {
       width: 2rem;
       height: 2rem;

@@ -29,6 +29,10 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  scrollContentOnly: {
+    type: Boolean,
+    default: true,
+  },
 })
 
 const emit = defineEmits(['update:modelValue', 'close'])
@@ -73,7 +77,12 @@ onUnmounted(() => {
       <div
         ref="popupRef"
         class="base-popup"
-        :class="[`base-popup--${variant}`, `base-popup--${size}`, `base-popup--${position}`]"
+        :class="[
+          `base-popup--${variant}`,
+          `base-popup--${size}`,
+          `base-popup--${position}`,
+          { 'base-popup--scroll-content-only': scrollContentOnly },
+        ]"
       >
         <div class="base-popup__header" v-if="$slots.header">
           <slot name="header" />
@@ -100,6 +109,28 @@ onUnmounted(() => {
 </template>
 
 <style lang="scss">
+@mixin custom-scrollbar {
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--vsui-border-strong);
+    border-radius: 3px;
+
+    &:hover {
+      background: var(--vsui-border-strong);
+    }
+  }
+
+  scrollbar-width: thin;
+  scrollbar-color: var(--vsui-border-strong) transparent;
+}
+
 .base-popup-overlay {
   position: fixed;
   top: 0;
@@ -145,6 +176,23 @@ onUnmounted(() => {
   position: relative;
   max-height: 90vh;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+
+  @include custom-scrollbar;
+
+  &--scroll-content-only {
+    overflow-y: visible;
+
+    .base-popup__content {
+      flex: 1;
+      overflow-y: auto;
+      max-height: calc(90vh - 4rem);
+      min-height: 0;
+
+      @include custom-scrollbar;
+    }
+  }
 
   // Variants
   &--default {

@@ -640,6 +640,14 @@ onMounted(() => {
           style="margin: 1rem 0"
           >Block button</BaseButton
         >
+        <!-- Button with hide focus outline -->
+        <BaseButton
+          hide-focus-outline
+          @click="handleSaveWithLoading"
+          :loading="pageState.isLoading && pageState.isLoadingEnabled"
+          style="margin: 1rem 0"
+          >Hide focus outline button</BaseButton
+        >
       </div>
     </div>
 

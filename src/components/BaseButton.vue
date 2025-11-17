@@ -42,6 +42,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  hideFocusOutline: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const { autoId } = useAutoId('button', props)
@@ -61,6 +65,7 @@ defineEmits(['click'])
         'base-button--disabled': disabled || loading,
         'base-button--icon-only': iconOnly,
         'base-button--loading': loading,
+        'base-button--hide-focus-outline': hideFocusOutline,
       },
       $attrs.class,
     ]"
@@ -226,6 +231,10 @@ defineEmits(['click'])
   &:focus {
     outline: 1px solid var(--vsui-button-focus-outline);
     outline-offset: 1px;
+  }
+
+  &--hide-focus-outline:focus {
+    outline: none;
   }
 
   &--loading {

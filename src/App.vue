@@ -1006,7 +1006,6 @@ onMounted(() => {
     <div class="switch-container">
       <h2>Switch</h2>
       <div class="container">
-        {{ pageState.switch.customValue }}
         <BaseSwitch
           v-model="pageState.switch.customValue"
           :on-value="1"
@@ -1224,6 +1223,22 @@ onMounted(() => {
           searchable
           helperText="Shows only checkmarks in dropdown"
           style="width: 500px"
+        />
+
+        <!-- Multiple selection without tags (default) -->
+        <BaseCombobox
+          v-model="pageState.combobox.selectedCountriesNoTags"
+          :options="countryOptions"
+          label="Countries (Multiple without tags with custom text)"
+          placeholder="Select countries"
+          multiple
+          clearable
+          :close-on-select="false"
+          searchable
+          helperText="Shows only checkmarks in dropdown"
+          style="width: 500px"
+          selected-multiple-text="Selected {count} countries"
+          selected-single-text="Selected 1 country"
         />
 
         <!-- Searchable combobox -->

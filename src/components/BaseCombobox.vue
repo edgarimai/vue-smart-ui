@@ -130,6 +130,14 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  selectedSingleText: {
+    type: String,
+    default: '1 item selected',
+  },
+  selectedMultipleText: {
+    type: [String, Function],
+    default: null,
+  },
 })
 
 const { autoId } = useAutoId('combobox', props)
@@ -277,9 +285,15 @@ const displayText = computed(() => {
 
   if (props.multiple) {
     if (!props.showTags && selectedOptions.value.length > 0) {
-      return selectedOptions.value.length === 1
-        ? '1 item selected'
-        : `${selectedOptions.value.length} items selected`
+      if (selectedOptions.value.length === 1) return props.selectedSingleText
+
+      if (typeof props.selectedMultipleText === 'function')
+        return props.selectedMultipleText(selectedOptions.value.length)
+
+      if (props.selectedMultipleText)
+        return props.selectedMultipleText.replace('{count}', selectedOptions.value.length)
+
+      return `${selectedOptions.value.length} items selected`
     }
     return ''
   } else {

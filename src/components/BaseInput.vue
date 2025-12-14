@@ -475,6 +475,8 @@ const handleInput = (event) => {
     }
   }
 
+  if (props.type === 'email' && valueToEmit) valueToEmit = valueToEmit.toLowerCase()
+
   emit('update:modelValue', valueToEmit)
   emit('input', { ...event, target: { ...event.target, value: newValue } })
 

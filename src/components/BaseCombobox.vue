@@ -178,13 +178,13 @@ const validators = {
     valid: !value || value.length <= max,
     message: getValidationMessage('max', max),
   }),
-  minLength: (value, min) => ({
-    valid: !value || value.length >= min,
-    message: getValidationMessage('min', min),
+  minValue: (value, min) => ({
+    valid: !value || Number(value) >= min,
+    message: getValidationMessage('minValue', min),
   }),
-  maxLength: (value, max) => ({
-    valid: !value || value.length <= max,
-    message: getValidationMessage('max', max),
+  maxValue: (value, max) => ({
+    valid: !value || Number(value) <= max,
+    message: getValidationMessage('maxValue', max),
   }),
 }
 

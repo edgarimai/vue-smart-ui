@@ -96,6 +96,10 @@ const props = defineProps({
     type: [String, Object],
     default: null,
   },
+  rawValue: {
+    type: Boolean,
+    default: true,
+  },
 })
 const { autoId } = useAutoId('input', props)
 
@@ -313,7 +317,7 @@ const applySimpleMask = (value, pattern) => {
   let output = ''
   let patternIndex = 0
 
-  for (let i = 0; i < pattern.length && chars[i]; i++) {
+  for (let i = 0; i < chars.length && patternIndex < pattern.length; i++) {
     if (pattern[patternIndex] === '#') {
       output += chars[i]
       patternIndex++
@@ -327,6 +331,15 @@ const applySimpleMask = (value, pattern) => {
   return output
 }
 
+const removeMask = (value, maskDef) => {
+  if (!value) return value
+
+  if (maskDef === 'currency' || maskDef?.pattern === 'currency')
+    return maskPatterns.currency.parse(value)
+
+  return value.replace(/\D/g, '')
+}
+
 // Internal value to track input
 const inputValue = computed({
   get: () => {
@@ -337,7 +350,9 @@ const inputValue = computed({
 
     if (props.mask === 'currency') return maskPatterns.currency.format(props.modelValue)
 
-    return applyMask(String(props.modelValue), maskDef)
+    if (props.rawValue) return applyMask(String(props.modelValue), maskDef)
+
+    return props.modelValue
   },
   set: (value) => emit('update:modelValue', value),
 })
@@ -352,7 +367,8 @@ const handleInput = (event) => {
 
     if (inputRef.value) inputRef.value.value = maskedValue
 
-    valueToEmit = props.mask === 'currency' ? maskPatterns.currency.parse(newValue) : maskedValue
+    // Emit raw value (without mask) if rawValue is true, otherwise emit masked value
+    valueToEmit = props.rawValue ? removeMask(newValue, maskDef) : maskedValue
   }
 
   emit('update:modelValue', valueToEmit)

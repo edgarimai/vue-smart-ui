@@ -313,7 +313,12 @@ const applySimpleMask = (value, pattern) => {
   if (!pattern) return value
 
   const numbers = value.replace(/\D/g, '')
-  const chars = numbers.split('')
+
+  const maxDigits = (pattern.match(/#/g) || []).length
+
+  const truncatedNumbers = numbers.slice(0, maxDigits)
+  const chars = truncatedNumbers.split('')
+
   let output = ''
   let patternIndex = 0
 
@@ -350,7 +355,10 @@ const inputValue = computed({
 
     if (props.mask === 'currency') return maskPatterns.currency.format(props.modelValue)
 
-    if (props.rawValue) return applyMask(String(props.modelValue), maskDef)
+    if (props.rawValue) {
+      const masked = applyMask(String(props.modelValue), maskDef)
+      return masked || ''
+    }
 
     return props.modelValue
   },
@@ -365,10 +373,11 @@ const handleInput = (event) => {
     const maskDef = getMaskDefinition(props.mask)
     const maskedValue = applyMask(newValue, maskDef)
 
-    if (inputRef.value) inputRef.value.value = maskedValue
+    const safeValue = maskedValue || ''
 
-    // Emit raw value (without mask) if rawValue is true, otherwise emit masked value
-    valueToEmit = props.rawValue ? removeMask(newValue, maskDef) : maskedValue
+    if (inputRef.value) inputRef.value.value = safeValue
+
+    valueToEmit = props.rawValue ? removeMask(newValue, maskDef) : safeValue
   }
 
   emit('update:modelValue', valueToEmit)
@@ -454,7 +463,9 @@ const applyMaskToInput = () => {
       ? maskPatterns.currency.format(props.modelValue)
       : applyMask(String(props.modelValue), maskDef)
 
-  if (inputRef.value.value !== maskedValue) inputRef.value.value = maskedValue
+  const safeValue = maskedValue || ''
+
+  if (inputRef.value.value !== safeValue) inputRef.value.value = safeValue
 }
 
 watch(

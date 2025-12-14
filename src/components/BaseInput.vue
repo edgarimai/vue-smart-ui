@@ -100,6 +100,16 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  dateDisplayFormat: {
+    type: String,
+    default: 'DD/MM/YYYY',
+    validator: (value) => ['DD/MM/YYYY', 'MM/DD/YYYY', 'YYYY-MM-DD', 'YYYY/MM/DD'].includes(value),
+  },
+  dateValueFormat: {
+    type: String,
+    default: 'YYYY-MM-DD',
+    validator: (value) => ['DD/MM/YYYY', 'MM/DD/YYYY', 'YYYY-MM-DD', 'YYYY/MM/DD'].includes(value),
+  },
 })
 const { autoId } = useAutoId('input', props)
 
@@ -242,6 +252,55 @@ const validate = (value) => {
   return true
 }
 
+// Date format utilities
+const parseDateByFormat = (dateString, format) => {
+  if (!dateString) return null
+
+  const numbers = dateString.replace(/\D/g, '')
+  if (numbers.length < 8) return null
+
+  let day, month, year
+
+  if (format === 'DD/MM/YYYY') {
+    day = numbers.substring(0, 2)
+    month = numbers.substring(2, 4)
+    year = numbers.substring(4, 8)
+  } else if (format === 'MM/DD/YYYY') {
+    month = numbers.substring(0, 2)
+    day = numbers.substring(2, 4)
+    year = numbers.substring(4, 8)
+  } else if (format === 'YYYY-MM-DD' || format === 'YYYY/MM/DD') {
+    year = numbers.substring(0, 4)
+    month = numbers.substring(4, 6)
+    day = numbers.substring(6, 8)
+  }
+
+  return { day, month, year }
+}
+
+const formatDateByFormat = (day, month, year, format) => {
+  if (!day || !month || !year) return ''
+
+  if (format === 'DD/MM/YYYY') return `${day}/${month}/${year}`
+  if (format === 'MM/DD/YYYY') return `${month}/${day}/${year}`
+  if (format === 'YYYY-MM-DD') return `${year}-${month}-${day}`
+  if (format === 'YYYY/MM/DD') return `${year}/${month}/${day}`
+
+  return ''
+}
+
+const convertDateFormat = (dateString, fromFormat, toFormat) => {
+  if (!dateString) return ''
+
+  const numbers = dateString.replace(/\D/g, '')
+  if (numbers.length < 8) return ''
+
+  const parsed = parseDateByFormat(dateString, fromFormat)
+  if (!parsed) return ''
+
+  return formatDateByFormat(parsed.day, parsed.month, parsed.year, toFormat)
+}
+
 // Built-in mask patterns
 const maskPatterns = {
   phone: {
@@ -284,7 +343,16 @@ const maskPatterns = {
 }
 
 const getMaskDefinition = (mask) => {
-  if (typeof mask === 'string') return maskPatterns[mask] || mask
+  if (typeof mask === 'string') {
+    if (mask === 'date') {
+      const format = props.dateDisplayFormat
+      if (format === 'DD/MM/YYYY') return '##/##/####'
+      if (format === 'MM/DD/YYYY') return '##/##/####'
+      if (format === 'YYYY-MM-DD') return '####-##-##'
+      if (format === 'YYYY/MM/DD') return '####/##/##'
+    }
+    return maskPatterns[mask] || mask
+  }
   return mask
 }
 
@@ -355,6 +423,19 @@ const inputValue = computed({
 
     if (props.mask === 'currency') return maskPatterns.currency.format(props.modelValue)
 
+    if (props.mask === 'date' && props.rawValue) {
+      const numbers = String(props.modelValue).replace(/\D/g, '')
+      if (numbers.length === 8) {
+        const displayValue = convertDateFormat(
+          props.modelValue,
+          props.dateValueFormat,
+          props.dateDisplayFormat,
+        )
+        if (displayValue) return displayValue
+      }
+      return applyMask(String(props.modelValue), maskDef) || ''
+    }
+
     if (props.rawValue) {
       const masked = applyMask(String(props.modelValue), maskDef)
       return masked || ''
@@ -377,7 +458,21 @@ const handleInput = (event) => {
 
     if (inputRef.value) inputRef.value.value = safeValue
 
-    valueToEmit = props.rawValue ? removeMask(newValue, maskDef) : safeValue
+    if (props.mask === 'date' && props.rawValue) {
+      const numbers = safeValue.replace(/\D/g, '')
+      if (numbers.length === 8) {
+        const convertedValue = convertDateFormat(
+          safeValue,
+          props.dateDisplayFormat,
+          props.dateValueFormat,
+        )
+        valueToEmit = convertedValue || removeMask(newValue, maskDef)
+      } else {
+        valueToEmit = removeMask(newValue, maskDef)
+      }
+    } else {
+      valueToEmit = props.rawValue ? removeMask(newValue, maskDef) : safeValue
+    }
   }
 
   emit('update:modelValue', valueToEmit)
@@ -458,10 +553,23 @@ const applyMaskToInput = () => {
 
   const maskDef = getMaskDefinition(props.mask)
 
-  const maskedValue =
-    props.mask === 'currency'
-      ? maskPatterns.currency.format(props.modelValue)
-      : applyMask(String(props.modelValue), maskDef)
+  let maskedValue
+  if (props.mask === 'currency') {
+    maskedValue = maskPatterns.currency.format(props.modelValue)
+  } else if (props.mask === 'date' && props.rawValue) {
+    const numbers = String(props.modelValue).replace(/\D/g, '')
+    if (numbers.length === 8) {
+      maskedValue = convertDateFormat(
+        props.modelValue,
+        props.dateValueFormat,
+        props.dateDisplayFormat,
+      )
+    } else {
+      maskedValue = applyMask(String(props.modelValue), maskDef)
+    }
+  } else {
+    maskedValue = applyMask(String(props.modelValue), maskDef)
+  }
 
   const safeValue = maskedValue || ''
 

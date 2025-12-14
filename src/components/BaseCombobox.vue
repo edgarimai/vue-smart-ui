@@ -1,8 +1,10 @@
 <script setup>
 import { ref, computed, useSlots, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { useAutoId } from '../composables/autoId'
+import { useValidationConfig } from '../composables/validationConfig'
 
 const slots = useSlots()
+const { getValidationMessage } = useValidationConfig()
 const props = defineProps({
   id: {
     type: String,
@@ -166,15 +168,23 @@ const highlightedIndex = ref(-1)
 const validators = {
   required: (value) => ({
     valid: !!value || (Array.isArray(value) && value.length > 0),
-    message: 'This field is required',
+    message: getValidationMessage('required'),
+  }),
+  min: (value, min) => ({
+    valid: !value || value.length >= min,
+    message: getValidationMessage('min', min),
+  }),
+  max: (value, max) => ({
+    valid: !value || value.length <= max,
+    message: getValidationMessage('max', max),
   }),
   minLength: (value, min) => ({
     valid: !value || value.length >= min,
-    message: `Must be at least ${min} characters`,
+    message: getValidationMessage('min', min),
   }),
   maxLength: (value, max) => ({
     valid: !value || value.length <= max,
-    message: `Must be no more than ${max} characters`,
+    message: getValidationMessage('max', max),
   }),
 }
 

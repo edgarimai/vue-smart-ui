@@ -62,14 +62,14 @@ defineEmits(['click'])
       `base-button--${size}`,
       {
         'base-button--block': block,
-        'base-button--disabled': disabled || loading,
+        'base-button--disabled': disabled,
         'base-button--icon-only': iconOnly,
         'base-button--loading': loading,
         'base-button--hide-focus-outline': hideFocusOutline,
       },
       $attrs.class,
     ]"
-    :disabled="disabled || loading"
+    :disabled="disabled"
     @click="$emit('click', $event)"
   >
     <div class="button-content" :class="[{ hidden: loading }]">
@@ -224,7 +224,7 @@ defineEmits(['click'])
   }
 
   &--disabled {
-    opacity: 0.5;
+    opacity: 0.4;
     cursor: not-allowed;
   }
 
@@ -239,6 +239,7 @@ defineEmits(['click'])
 
   &--loading {
     position: relative;
+    pointer-events: none;
   }
 
   .button-content {
@@ -248,7 +249,8 @@ defineEmits(['click'])
     gap: 0.75rem;
 
     &.hidden {
-      visibility: hidden;
+      // visibility: hidden;
+      opacity: 0.6;
     }
   }
 

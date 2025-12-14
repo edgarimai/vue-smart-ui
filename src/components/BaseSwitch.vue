@@ -8,7 +8,15 @@ const props = defineProps({
     default: '',
   },
   modelValue: {
-    type: Boolean,
+    type: [Boolean, String, Number],
+    default: false,
+  },
+  onValue: {
+    type: [Boolean, String, Number],
+    default: true,
+  },
+  offValue: {
+    type: [Boolean, String, Number],
     default: false,
   },
   label: {
@@ -76,6 +84,8 @@ const { autoId } = useAutoId('switch', props)
 const switchValue = ref(props.modelValue)
 const isFocused = ref(false)
 
+const isOn = computed(() => switchValue.value === props.onValue)
+
 const switchClasses = computed(() => ({
   'vsui base-switch': true,
   [`base-switch--${props.size}`]: true,
@@ -85,7 +95,7 @@ const switchClasses = computed(() => ({
   'base-switch--disabled': props.disabled || props.loading,
   'base-switch--loading': props.loading,
   'base-switch--focused': isFocused.value,
-  'base-switch--on': switchValue.value,
+  'base-switch--on': isOn.value,
 }))
 
 const displayMessage = computed(() => {
@@ -102,7 +112,7 @@ watch(
 const toggle = () => {
   if (props.disabled || props.loading) return
 
-  switchValue.value = !switchValue.value
+  switchValue.value = isOn.value ? props.offValue : props.onValue
   emit('update:modelValue', switchValue.value)
   emit('change', switchValue.value)
 }
@@ -163,11 +173,11 @@ onMounted(() => {
             :id="autoId"
             ref="switchRef"
             type="checkbox"
-            :checked="switchValue"
+            :checked="isOn"
             :disabled="disabled || loading"
             :required="required"
             :aria-required="required"
-            :aria-checked="switchValue"
+            :aria-checked="isOn"
             :name="name"
             class="base-switch__input"
             @change="toggle"
@@ -182,13 +192,13 @@ onMounted(() => {
             </div>
 
             <span
-              v-if="onLabel && switchValue"
+              v-if="onLabel && isOn"
               class="base-switch__track-label base-switch__track-label--on"
             >
               {{ onLabel }}
             </span>
             <span
-              v-if="offLabel && !switchValue"
+              v-if="offLabel && !isOn"
               class="base-switch__track-label base-switch__track-label--off"
             >
               {{ offLabel }}

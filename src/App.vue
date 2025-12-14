@@ -69,6 +69,7 @@ const pageState = reactive({
     someSelected: false,
   },
   switch: {
+    customValue: -1,
     notifications: false,
     size: false,
     mode: false,
@@ -1005,6 +1006,13 @@ onMounted(() => {
     <div class="switch-container">
       <h2>Switch</h2>
       <div class="container">
+        {{ pageState.switch.customValue }}
+        <BaseSwitch
+          v-model="pageState.switch.customValue"
+          :on-value="1"
+          :off-value="-1"
+          label="Custom Value"
+        />
         <BaseSwitch v-model="pageState.switch.notifications" required label="Notifications" />
 
         <BaseSwitch v-model="pageState.switch.size" size="small" label="Small" />
@@ -1613,6 +1621,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-wrap: wrap;
     gap: 25px;
     padding-inline: 20px;
 

@@ -864,6 +864,7 @@ onMounted(() => {
         <BaseInput
           v-model="pageState.input.email"
           label="Email"
+          type="email"
           :rules="['required', 'email']"
           @mounted="(ref) => registerInput('email', ref)"
         />

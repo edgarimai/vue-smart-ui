@@ -1,8 +1,10 @@
 <script setup>
 import { ref, computed, useSlots, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { useAutoId } from '../composables/autoId'
+import { useValidationConfig } from '../composables/validationConfig'
 
 const slots = useSlots()
+const { getValidationMessage } = useValidationConfig()
 const props = defineProps({
   id: {
     type: String,
@@ -130,6 +132,14 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  selectedSingleText: {
+    type: String,
+    default: '1 item selected',
+  },
+  selectedMultipleText: {
+    type: [String, Function],
+    default: null,
+  },
 })
 
 const { autoId } = useAutoId('combobox', props)
@@ -158,15 +168,23 @@ const highlightedIndex = ref(-1)
 const validators = {
   required: (value) => ({
     valid: !!value || (Array.isArray(value) && value.length > 0),
-    message: 'This field is required',
+    message: getValidationMessage('required'),
   }),
-  minLength: (value, min) => ({
+  min: (value, min) => ({
     valid: !value || value.length >= min,
-    message: `Must be at least ${min} characters`,
+    message: getValidationMessage('min', min),
   }),
-  maxLength: (value, max) => ({
+  max: (value, max) => ({
     valid: !value || value.length <= max,
-    message: `Must be no more than ${max} characters`,
+    message: getValidationMessage('max', max),
+  }),
+  minValue: (value, min) => ({
+    valid: !value || Number(value) >= min,
+    message: getValidationMessage('minValue', min),
+  }),
+  maxValue: (value, max) => ({
+    valid: !value || Number(value) <= max,
+    message: getValidationMessage('maxValue', max),
   }),
 }
 
@@ -277,9 +295,15 @@ const displayText = computed(() => {
 
   if (props.multiple) {
     if (!props.showTags && selectedOptions.value.length > 0) {
-      return selectedOptions.value.length === 1
-        ? '1 item selected'
-        : `${selectedOptions.value.length} items selected`
+      if (selectedOptions.value.length === 1) return props.selectedSingleText
+
+      if (typeof props.selectedMultipleText === 'function')
+        return props.selectedMultipleText(selectedOptions.value.length)
+
+      if (props.selectedMultipleText)
+        return props.selectedMultipleText.replace('{count}', selectedOptions.value.length)
+
+      return `${selectedOptions.value.length} items selected`
     }
     return ''
   } else {

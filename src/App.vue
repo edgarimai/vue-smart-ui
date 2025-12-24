@@ -927,6 +927,18 @@ onMounted(() => {
           placeholder="ABCDEF"
           @enter="handleSubmit"
         />
+        <BaseInput
+          v-model="pageState.input.uppercase"
+          label="Uppercase"
+          uppercase
+          @enter="handleSubmit"
+        />
+        <BaseInput
+          v-model="pageState.input.lowercase"
+          label="Lowercase"
+          lowercase
+          @enter="handleSubmit"
+        />
         <BaseButton variant="primary" @click="handleSubmit">Submit</BaseButton>
       </div>
     </div>

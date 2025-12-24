@@ -110,6 +110,14 @@ const props = defineProps({
     default: 'YYYY-MM-DD',
     validator: (value) => ['DD/MM/YYYY', 'MM/DD/YYYY', 'YYYY-MM-DD', 'YYYY/MM/DD'].includes(value),
   },
+  uppercase: {
+    type: Boolean,
+    default: false,
+  },
+  lowercase: {
+    type: Boolean,
+    default: false,
+  },
 })
 const { autoId } = useAutoId('input', props)
 
@@ -377,16 +385,26 @@ const applyMask = (value, maskDef) => {
   return value
 }
 
+const applyCase = (str) => {
+  if (!str) return str
+  if (props.uppercase) return str.toUpperCase()
+  if (props.lowercase) return str.toLowerCase()
+  return str
+}
+
 const extractChars = (str, maskPattern) => {
   const hasNumbers = maskPattern.includes('#')
   const hasLetters = maskPattern.includes('A')
   const hasAlphanumeric = maskPattern.includes('X')
 
-  if (hasAlphanumeric) return str.replace(/[^a-zA-Z0-9]/g, '')
-  if (hasLetters && hasNumbers) return str.replace(/[^a-zA-Z0-9]/g, '')
-  if (hasLetters) return str.replace(/[^a-zA-Z]/g, '')
-  if (hasNumbers) return str.replace(/\D/g, '')
-  return str
+  let cleaned = str
+  if (hasAlphanumeric) cleaned = str.replace(/[^a-zA-Z0-9]/g, '')
+  else if (hasLetters && hasNumbers) cleaned = str.replace(/[^a-zA-Z0-9]/g, '')
+  else if (hasLetters) cleaned = str.replace(/[^a-zA-Z]/g, '')
+  else if (hasNumbers) cleaned = str.replace(/\D/g, '')
+  else cleaned = str
+
+  return applyCase(cleaned)
 }
 
 const applySimpleMask = (value, pattern) => {
@@ -453,7 +471,14 @@ const removeMask = (value, maskDef) => {
 
 const inputValue = computed({
   get: () => {
-    if (!props.mask) return props.modelValue
+    if (!props.mask) {
+      if (props.modelValue && (props.uppercase || props.lowercase)) {
+        const strValue = String(props.modelValue)
+        if (props.uppercase) return strValue.toUpperCase()
+        if (props.lowercase) return strValue.toLowerCase()
+      }
+      return props.modelValue
+    }
     if (!props.modelValue && props.modelValue !== 0) return props.modelValue
 
     const maskDef = getMaskDefinition(props.mask)
@@ -509,6 +534,14 @@ const handleInput = (event) => {
       }
     } else {
       valueToEmit = props.rawValue ? removeMask(newValue, maskDef) : safeValue
+    }
+  } else {
+    if (props.uppercase) {
+      valueToEmit = newValue.toUpperCase()
+      if (inputRef.value) inputRef.value.value = valueToEmit
+    } else if (props.lowercase) {
+      valueToEmit = newValue.toLowerCase()
+      if (inputRef.value) inputRef.value.value = valueToEmit
     }
   }
 

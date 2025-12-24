@@ -54,6 +54,8 @@ const pageState = reactive({
     email: '',
     price: '',
     phone: '',
+    alphanumericMask: '',
+    letterMask: '',
   },
   textarea: {
     content1: '',
@@ -909,6 +911,20 @@ onMounted(() => {
           label="Price"
           mask="currency"
           placeholder="R$ 0,00"
+          @enter="handleSubmit"
+        />
+        <BaseInput
+          v-model="pageState.input.alphanumericMask"
+          label="Alphanumeric mask"
+          mask="XXXXXX"
+          placeholder="ABC123"
+          @enter="handleSubmit"
+        />
+        <BaseInput
+          v-model="pageState.input.letterMask"
+          label="Letter mask"
+          mask="AAAAAA"
+          placeholder="ABCDEF"
           @enter="handleSubmit"
         />
         <BaseButton variant="primary" @click="handleSubmit">Submit</BaseButton>

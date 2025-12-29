@@ -264,7 +264,7 @@ const validate = (value) => {
 const parseDateByFormat = (dateString, format) => {
   if (!dateString) return null
 
-  const numbers = dateString.replace(/\D/g, '')
+  const numbers = dateString.replace(/\D/g, '').substring(0, 8)
   if (numbers.length < 8) return null
 
   let day, month, year
@@ -300,7 +300,7 @@ const formatDateByFormat = (day, month, year, format) => {
 const convertDateFormat = (dateString, fromFormat, toFormat) => {
   if (!dateString) return ''
 
-  const numbers = dateString.replace(/\D/g, '')
+  const numbers = dateString.replace(/\D/g, '').substring(0, 8)
   if (numbers.length < 8) return ''
 
   const parsed = parseDateByFormat(dateString, fromFormat)
@@ -487,7 +487,7 @@ const inputValue = computed({
 
     if (props.mask === 'date' && props.rawValue) {
       const numbers = String(props.modelValue).replace(/\D/g, '')
-      if (numbers.length === 8) {
+      if (numbers.length >= 8) {
         const displayValue = convertDateFormat(
           props.modelValue,
           props.dateValueFormat,
@@ -522,7 +522,7 @@ const handleInput = (event) => {
 
     if (props.mask === 'date' && props.rawValue) {
       const numbers = safeValue.replace(/\D/g, '')
-      if (numbers.length === 8) {
+      if (numbers.length >= 8) {
         const convertedValue = convertDateFormat(
           safeValue,
           props.dateDisplayFormat,
@@ -630,7 +630,7 @@ const applyMaskToInput = () => {
     maskedValue = maskPatterns.currency.format(props.modelValue)
   } else if (props.mask === 'date' && props.rawValue) {
     const numbers = String(props.modelValue).replace(/\D/g, '')
-    if (numbers.length === 8) {
+    if (numbers.length >= 8) {
       maskedValue = convertDateFormat(
         props.modelValue,
         props.dateValueFormat,

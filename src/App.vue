@@ -54,6 +54,7 @@ const pageState = reactive({
     email: '',
     price: '',
     phone: '',
+    birthdate: '',
     alphanumericMask: '',
     letterMask: '',
   },
@@ -904,6 +905,15 @@ onMounted(() => {
           @mounted="(ref) => registerInput('phone', ref)"
           mask="phone"
           placeholder="(00) 00000-0000"
+        />
+        <!-- Date mask -->
+        <BaseInput
+          v-model="pageState.input.birthdate"
+          label="Birthdate"
+          :rules="['required']"
+          @mounted="(ref) => registerInput('birthdate', ref)"
+          mask="date"
+          placeholder="DD/MM/YYYY"
         />
         <!-- Currency mask -->
         <BaseInput

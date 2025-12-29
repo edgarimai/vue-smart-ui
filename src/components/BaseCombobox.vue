@@ -508,17 +508,19 @@ const selectOption = (option) => {
 
   emit('update:modelValue', newModelValue)
 
-  if (props.closeOnSelect) {
-    closeDropdown()
-    handleBlur()
-  }
+  nextTick(() => {
+    if (props.closeOnSelect) {
+      closeDropdown()
+      handleBlur()
+    }
 
-  emit('select', option)
+    emit('select', option)
 
-  if (props.validateOnInput) {
-    const isValid = validate(newModelValue)
-    emit('validation', { valid: isValid, error: error.value })
-  }
+    if (props.validateOnInput) {
+      const isValid = validate(newModelValue)
+      emit('validation', { valid: isValid, error: error.value })
+    }
+  })
 }
 
 const isOptionSelected = (option) => {

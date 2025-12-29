@@ -110,6 +110,14 @@ const props = defineProps({
     default: 'YYYY-MM-DD',
     validator: (value) => ['DD/MM/YYYY', 'MM/DD/YYYY', 'YYYY-MM-DD', 'YYYY/MM/DD'].includes(value),
   },
+  uppercase: {
+    type: Boolean,
+    default: false,
+  },
+  lowercase: {
+    type: Boolean,
+    default: false,
+  },
 })
 const { autoId } = useAutoId('input', props)
 
@@ -377,28 +385,65 @@ const applyMask = (value, maskDef) => {
   return value
 }
 
+const applyCase = (str) => {
+  if (!str) return str
+  if (props.uppercase) return str.toUpperCase()
+  if (props.lowercase) return str.toLowerCase()
+  return str
+}
+
+const extractChars = (str, maskPattern) => {
+  const hasNumbers = maskPattern.includes('#')
+  const hasLetters = maskPattern.includes('A')
+  const hasAlphanumeric = maskPattern.includes('X')
+
+  let cleaned = str
+  if (hasAlphanumeric) cleaned = str.replace(/[^a-zA-Z0-9]/g, '')
+  else if (hasLetters && hasNumbers) cleaned = str.replace(/[^a-zA-Z0-9]/g, '')
+  else if (hasLetters) cleaned = str.replace(/[^a-zA-Z]/g, '')
+  else if (hasNumbers) cleaned = str.replace(/\D/g, '')
+  else cleaned = str
+
+  return applyCase(cleaned)
+}
+
 const applySimpleMask = (value, pattern) => {
   if (!pattern) return value
 
-  const numbers = value.replace(/\D/g, '')
-
-  const maxDigits = (pattern.match(/#/g) || []).length
-
-  const truncatedNumbers = numbers.slice(0, maxDigits)
-  const chars = truncatedNumbers.split('')
+  const chars = extractChars(value, pattern).split('')
 
   let output = ''
-  let patternIndex = 0
+  let charIndex = 0
 
-  for (let i = 0; i < chars.length && patternIndex < pattern.length; i++) {
-    if (pattern[patternIndex] === '#') {
-      output += chars[i]
-      patternIndex++
-    } else {
-      output += pattern[patternIndex]
-      patternIndex++
-      i--
-    }
+  for (
+    let patternIndex = 0;
+    patternIndex < pattern.length && charIndex < chars.length;
+    patternIndex++
+  ) {
+    const patternChar = pattern[patternIndex]
+
+    if (patternChar === '#') {
+      if (/\d/.test(chars[charIndex])) {
+        output += chars[charIndex]
+        charIndex++
+      } else {
+        break
+      }
+    } else if (patternChar === 'A') {
+      if (/[a-zA-Z]/.test(chars[charIndex])) {
+        output += chars[charIndex]
+        charIndex++
+      } else {
+        break
+      }
+    } else if (patternChar === 'X') {
+      if (/[a-zA-Z0-9]/.test(chars[charIndex])) {
+        output += chars[charIndex]
+        charIndex++
+      } else {
+        break
+      }
+    } else output += patternChar
   }
 
   return output
@@ -410,13 +455,30 @@ const removeMask = (value, maskDef) => {
   if (maskDef === 'currency' || maskDef?.pattern === 'currency')
     return maskPatterns.currency.parse(value)
 
+  if (typeof maskDef === 'string') {
+    const hasNumbers = maskDef.includes('#')
+    const hasLetters = maskDef.includes('A')
+    const hasAlphanumeric = maskDef.includes('X')
+
+    if (hasAlphanumeric) return value.replace(/[^a-zA-Z0-9]/g, '')
+    if (hasLetters && hasNumbers) return value.replace(/[^a-zA-Z0-9]/g, '')
+    if (hasLetters) return value.replace(/[^a-zA-Z]/g, '')
+    if (hasNumbers) return value.replace(/\D/g, '')
+  }
+
   return value.replace(/\D/g, '')
 }
 
-// Internal value to track input
 const inputValue = computed({
   get: () => {
-    if (!props.mask) return props.modelValue
+    if (!props.mask) {
+      if (props.modelValue && (props.uppercase || props.lowercase)) {
+        const strValue = String(props.modelValue)
+        if (props.uppercase) return strValue.toUpperCase()
+        if (props.lowercase) return strValue.toLowerCase()
+      }
+      return props.modelValue
+    }
     if (!props.modelValue && props.modelValue !== 0) return props.modelValue
 
     const maskDef = getMaskDefinition(props.mask)
@@ -472,6 +534,14 @@ const handleInput = (event) => {
       }
     } else {
       valueToEmit = props.rawValue ? removeMask(newValue, maskDef) : safeValue
+    }
+  } else {
+    if (props.uppercase) {
+      valueToEmit = newValue.toUpperCase()
+      if (inputRef.value) inputRef.value.value = valueToEmit
+    } else if (props.lowercase) {
+      valueToEmit = newValue.toLowerCase()
+      if (inputRef.value) inputRef.value.value = valueToEmit
     }
   }
 

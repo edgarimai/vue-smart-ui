@@ -1,4 +1,5 @@
 import './assets/base.scss'
+import type { App, Plugin } from 'vue'
 
 import BaseAccordion from './components/BaseAccordion.vue'
 import BaseAccordionItem from './components/BaseAccordionItem.vue'
@@ -24,8 +25,8 @@ import { useToast } from './composables/toast'
 import { useValidationConfig } from './composables/validationConfig'
 import { useToastConfig } from './composables/toastConfig'
 
-export default {
-  install(app) {
+const plugin: Plugin = {
+  install(app: App) {
     app.component('BaseAccordion', BaseAccordion)
     app.component('BaseAccordionItem', BaseAccordionItem)
     app.component('BaseButton', BaseButton)
@@ -48,6 +49,8 @@ export default {
     app.component('BaseSwitch', BaseSwitch)
   },
 }
+
+export default plugin
 
 export {
   BaseAccordion,
@@ -74,3 +77,7 @@ export {
   BaseAvatar,
   BaseSwitch,
 }
+
+export type { Toast, ToastOptions, ToastVariant } from './composables/toast'
+export type { ToastDefaults, ToastPosition } from './composables/toastConfig'
+export type { ValidationMessage, ValidationMessages } from './composables/validationConfig'

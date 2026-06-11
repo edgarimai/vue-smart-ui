@@ -1,27 +1,25 @@
-<script setup>
+<script setup lang="ts">
 import { provide, ref } from 'vue'
 import { useAutoId } from '../composables/autoId'
 
-const props = defineProps({
-  id: {
-    type: String,
-    default: '',
-  },
-  multiple: {
-    type: Boolean,
-    default: false,
-  },
-  variant: {
-    type: String,
-    default: 'default',
-    validator: (value) => ['default', 'bordered', 'minimal'].includes(value),
-  },
+export type AccordionVariant = 'default' | 'bordered' | 'minimal'
+
+interface Props {
+  id?: string
+  multiple?: boolean
+  variant?: AccordionVariant
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  id: '',
+  multiple: false,
+  variant: 'default',
 })
 const { autoId } = useAutoId('accordion', props)
 
-const activeItems = ref([])
+const activeItems = ref<symbol[]>([])
 
-const toggleItem = (id) => {
+const toggleItem = (id: symbol) => {
   if (props.multiple) {
     const index = activeItems.value.indexOf(id)
     if (index === -1) {

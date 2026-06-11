@@ -1,60 +1,37 @@
-<script setup>
-import { ref, onMounted, onUnmounted, computed } from 'vue'
+<script setup lang="ts">
+import { ref, onMounted, onUnmounted, computed, type Component } from 'vue'
 import SuccessIcon from './icons/IconSuccess.vue'
 import ErrorIcon from './icons/IconError.vue'
 import WarningIcon from './icons/IconWarning.vue'
 import InfoIcon from './icons/IconInfo.vue'
+import type { ToastVariant } from '../composables/toast'
+import type { ToastPosition } from '../composables/toastConfig'
 
-const props = defineProps({
-  id: {
-    type: [String, Number],
-    required: true,
-  },
-  variant: {
-    type: String,
-    default: 'default',
-    validator: (value) => ['default', 'info', 'success', 'warning', 'error'].includes(value),
-  },
-  position: {
-    type: String,
-    default: 'top-right',
-    validator: (value) =>
-      [
-        'top-right',
-        'top-left',
-        'top-center',
-        'bottom-right',
-        'bottom-left',
-        'bottom-center',
-      ].includes(value),
-  },
-  duration: {
-    type: Number,
-    default: 3000,
-  },
-  closable: {
-    type: Boolean,
-    default: true,
-  },
-  message: {
-    type: String,
-    required: true,
-  },
-  title: {
-    type: String,
-    default: '',
-  },
-  simple: {
-    type: Boolean,
-    default: false,
-  },
+interface Props {
+  id: string | number
+  variant?: ToastVariant
+  position?: ToastPosition
+  duration?: number
+  closable?: boolean
+  message: string
+  title?: string
+  simple?: boolean
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  variant: 'default',
+  position: 'top-right',
+  duration: 3000,
+  closable: true,
+  title: '',
+  simple: false,
 })
 
-const emit = defineEmits(['close'])
+const emit = defineEmits<{ close: [] }>()
 
 const isVisible = ref(false)
 
-const progressBarRef = ref(null)
+const progressBarRef = ref<HTMLElement | null>(null)
 const progressWidth = ref('100%')
 const startProgress = () => {
   if (props.duration > 0) {
@@ -86,7 +63,7 @@ const handleMouseLeave = () => {
   }
 }
 
-const icons = {
+const icons: Record<ToastVariant, Component> = {
   success: SuccessIcon,
   error: ErrorIcon,
   warning: WarningIcon,

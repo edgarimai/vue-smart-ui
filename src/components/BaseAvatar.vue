@@ -1,57 +1,44 @@
-<script setup>
+<script setup lang="ts">
 import { computed } from 'vue'
 import { useAutoId } from '../composables/autoId'
 
-const props = defineProps({
-  id: {
-    type: String,
-    default: '',
-  },
-  src: {
-    type: String,
-    default: null,
-  },
-  alt: {
-    type: String,
-    default: '',
-  },
-  name: {
-    type: String,
-    default: '',
-  },
-  variant: {
-    type: String,
-    default: 'default',
-    validator: (value) => ['default', 'filled', 'outlined'].includes(value),
-  },
-  size: {
-    type: String,
-    default: 'medium',
-    validator: (value) => ['small', 'medium', 'large', 'xlarge'].includes(value),
-  },
-  shape: {
-    type: String,
-    default: 'circle',
-    validator: (value) => ['circle', 'square', 'rounded'].includes(value),
-  },
-  status: {
-    type: String,
-    default: null,
-    validator: (value) => ['online', 'offline', 'away', 'busy'].includes(value),
-  },
-  disabled: {
-    type: Boolean,
-    default: false,
-  },
-  fallback: {
-    type: String,
-    default: null,
-  },
+export type AvatarVariant = 'default' | 'filled' | 'outlined'
+export type AvatarSize = 'small' | 'medium' | 'large' | 'xlarge'
+export type AvatarShape = 'circle' | 'square' | 'rounded'
+export type AvatarStatus = 'online' | 'offline' | 'away' | 'busy'
+
+interface Props {
+  id?: string
+  src?: string | null
+  alt?: string
+  name?: string
+  variant?: AvatarVariant
+  size?: AvatarSize
+  shape?: AvatarShape
+  status?: AvatarStatus | null
+  disabled?: boolean
+  fallback?: string | null
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  id: '',
+  src: null,
+  alt: '',
+  name: '',
+  variant: 'default',
+  size: 'medium',
+  shape: 'circle',
+  status: null,
+  disabled: false,
+  fallback: null,
 })
 
 const { autoId } = useAutoId('avatar', props)
 
-const emit = defineEmits(['error', 'load'])
+const emit = defineEmits<{
+  error: [event: Event]
+  load: [event: Event]
+}>()
 
 // Computed properties
 const hasImage = computed(() => !!props.src)
@@ -59,7 +46,7 @@ const hasImage = computed(() => !!props.src)
 const initials = computed(() => {
   if (!props.name && !props.fallback) return '?'
 
-  const text = props.name || props.fallback
+  const text = props.name || props.fallback || ''
   const parts = text.trim().split(' ')
 
   if (parts.length === 1) {
@@ -84,11 +71,11 @@ const statusClasses = computed(() => ({
 }))
 
 // Event handlers
-const handleImageError = (event) => {
+const handleImageError = (event: Event) => {
   emit('error', event)
 }
 
-const handleImageLoad = (event) => {
+const handleImageLoad = (event: Event) => {
   emit('load', event)
 }
 </script>
@@ -98,7 +85,7 @@ const handleImageLoad = (event) => {
     <!-- Avatar image -->
     <img
       v-if="hasImage"
-      :src="src"
+      :src="src ?? undefined"
       :alt="alt || name"
       class="base-avatar__image"
       @error="handleImageError"

@@ -1,97 +1,91 @@
-<script setup>
+<script setup lang="ts">
 import { computed, ref, onMounted } from 'vue'
 import { useAutoId } from '../composables/autoId'
 
-const props = defineProps({
-  id: {
-    type: String,
-    default: '',
-  },
-  modelValue: {
-    type: [String, Number, Array],
-    default: () => [],
-  },
-  options: {
-    type: Array,
-    default: () => [],
-    required: true,
-  },
-  valueKey: {
-    type: String,
-    default: 'value',
-  },
-  labelKey: {
-    type: String,
-    default: 'label',
-  },
-  variant: {
-    type: String,
-    default: 'primary',
-    validator: (value) => ['primary', 'secondary', 'gray'].includes(value),
-  },
-  size: {
-    type: String,
-    default: 'medium',
-    validator: (value) => ['small', 'medium', 'large'].includes(value),
-  },
-  disabled: {
-    type: Boolean,
-    default: false,
-  },
-  block: {
-    type: Boolean,
-    default: false,
-  },
-  multiple: {
-    type: Boolean,
-    default: false,
-  },
-  label: {
-    type: String,
-    default: null,
-  },
-  helperText: {
-    type: String,
-    default: null,
-  },
-  errorMessage: {
-    type: String,
-    default: null,
-  },
-  rules: {
-    type: Array,
-    default: () => [],
-  },
-  validateOnChange: {
-    type: Boolean,
-    default: true,
-  },
+export type SegmentedButtonsVariant = 'primary' | 'secondary' | 'gray'
+export type SegmentedButtonsSize = 'small' | 'medium' | 'large'
+
+interface ValidatorResult {
+  valid: boolean
+  message: string
+}
+
+type Validator = (value: unknown, param?: number) => ValidatorResult
+
+interface RuleObject {
+  message?: string
+  validator?: (value: unknown) => boolean
+  required?: boolean
+  [key: string]: unknown
+}
+
+type ValidationRule = string | RuleObject
+
+interface Props {
+  id?: string
+  modelValue?: string | number | unknown[] | null
+  options?: unknown[]
+  valueKey?: string
+  labelKey?: string
+  variant?: SegmentedButtonsVariant
+  size?: SegmentedButtonsSize
+  disabled?: boolean
+  block?: boolean
+  multiple?: boolean
+  label?: string | null
+  helperText?: string | null
+  errorMessage?: string | null
+  rules?: ValidationRule[]
+  validateOnChange?: boolean
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  id: '',
+  modelValue: () => [],
+  options: () => [],
+  valueKey: 'value',
+  labelKey: 'label',
+  variant: 'primary',
+  size: 'medium',
+  disabled: false,
+  block: false,
+  multiple: false,
+  label: null,
+  helperText: null,
+  errorMessage: null,
+  rules: () => [],
+  validateOnChange: true,
 })
 
 const { autoId } = useAutoId('segmented-buttons', props)
-const emit = defineEmits(['update:modelValue', 'change', 'validation', 'mounted'])
+const emit = defineEmits<{
+  'update:modelValue': [value: string | number | unknown[] | null]
+  change: [value: string | number | unknown[] | null]
+  validation: [payload: { valid: boolean; error: string }]
+  mounted: [payload: { validate: () => boolean }]
+}>()
 
 const error = ref('')
 const touched = ref(false)
 
 // Built-in validators
-const validators = {
+const validators: Record<string, Validator> = {
   required: (value) => ({
     valid: Array.isArray(value) ? value.length > 0 : !!value,
     message: 'This field is required',
   }),
   min: (value, min) => ({
-    valid: !Array.isArray(value) || value.length >= min,
-    message: `Select at least ${min} option${min > 1 ? 's' : ''}`,
+    valid: !Array.isArray(value) || value.length >= min!,
+    message: `Select at least ${min} option${min! > 1 ? 's' : ''}`,
   }),
   max: (value, max) => ({
-    valid: !Array.isArray(value) || value.length <= max,
-    message: `Select no more than ${max} option${max > 1 ? 's' : ''}`,
+    valid: !Array.isArray(value) || value.length <= max!,
+    message: `Select no more than ${max} option${max! > 1 ? 's' : ''}`,
   }),
 }
 
 // Validation logic
-const validate = (value) => {
+const validate = (value: unknown): boolean => {
   if (!props.rules.length) return true
 
   for (const rule of props.rules) {
@@ -119,7 +113,7 @@ const validate = (value) => {
 
     if (typeof rule === 'object') {
       if (rule.message) {
-        let validatorName, param
+        let validatorName: string | undefined, param: unknown
 
         for (const key in rule) {
           if (key !== 'message') {
@@ -129,9 +123,9 @@ const validate = (value) => {
           }
         }
 
-        const validator = validators[validatorName]
+        const validator = validators[validatorName as string]
         if (validator) {
-          const result = validator(value, param)
+          const result = validator(value, param as number)
           if (!result.valid) {
             error.value = rule.message || result.message
             return false
@@ -173,21 +167,22 @@ const containerClasses = computed(() => ({
   'base-segmented-buttons--error': error.value && touched.value,
 }))
 
-const getValue = (option) => {
+const getValue = (option: unknown): unknown => {
   if (typeof option === 'object' && option !== null) {
-    return option[props.valueKey]
+    return (option as Record<string, unknown>)[props.valueKey]
   }
   return option
 }
 
-const getLabel = (option) => {
+const getLabel = (option: unknown): unknown => {
   if (typeof option === 'object' && option !== null) {
-    return option[props.labelKey] || option[props.valueKey] || String(option)
+    const record = option as Record<string, unknown>
+    return record[props.labelKey] || record[props.valueKey] || String(option)
   }
   return option
 }
 
-const isSelected = (option) => {
+const isSelected = (option: unknown): boolean => {
   const optionValue = getValue(option)
 
   if (props.multiple) {
@@ -209,14 +204,16 @@ const isSelected = (option) => {
   }
 }
 
-const selectOption = (option) => {
+const selectOption = (option: unknown) => {
   if (props.disabled) return
 
   const optionValue = getValue(option)
   const isObjectOption = typeof props.options[0] === 'object' && props.options[0] !== null
 
   if (!props.multiple) {
-    selectedValue.value = isSelected(option) ? null : isObjectOption ? option : optionValue
+    selectedValue.value = (
+      isSelected(option) ? null : isObjectOption ? option : optionValue
+    ) as string | number | unknown[] | null
     return
   }
 

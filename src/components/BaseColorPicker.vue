@@ -1,79 +1,65 @@
-<script setup>
+<script setup lang="ts">
 import { ref, computed, nextTick } from 'vue'
 import { useAutoId } from '../composables/autoId'
 import BaseInput from './BaseInput.vue'
 
-const props = defineProps({
-  id: {
-    type: String,
-    default: '',
-  },
-  modelValue: {
-    type: String,
-    default: '#000000',
-  },
-  variant: {
-    type: String,
-    default: 'default',
-    validator: (value) => ['default', 'filled', 'outlined'].includes(value),
-  },
-  state: {
-    type: String,
-    default: null,
-    validator: (value) => ['success', 'error', 'warning'].includes(value),
-  },
-  label: {
-    type: String,
-    default: null,
-  },
-  disabled: {
-    type: Boolean,
-    default: false,
-  },
-  readonly: {
-    type: Boolean,
-    default: false,
-  },
-  required: {
-    type: Boolean,
-    default: false,
-  },
-  helperText: {
-    type: String,
-    default: null,
-  },
-  errorMessage: {
-    type: String,
-    default: null,
-  },
-  rules: {
-    type: Array,
-    default: () => [],
-  },
-  name: {
-    type: String,
-    default: '',
-  },
-  format: {
-    type: String,
-    default: 'hex',
-    validator: (value) => ['hex', 'rgb', 'rgba', 'hsl'].includes(value),
-  },
-  showPreview: {
-    type: Boolean,
-    default: true,
-  },
-  presets: {
-    type: Array,
-    default: () => [],
-  },
+export type ColorPickerVariant = 'default' | 'filled' | 'outlined'
+export type ColorPickerState = 'success' | 'error' | 'warning'
+export type ColorFormat = 'hex' | 'rgb' | 'rgba' | 'hsl'
+
+interface ColorInputInstance {
+  validate: () => void
+  focus: () => void
+}
+
+interface Props {
+  id?: string
+  modelValue?: string
+  variant?: ColorPickerVariant
+  state?: ColorPickerState | null
+  label?: string | null
+  disabled?: boolean
+  readonly?: boolean
+  required?: boolean
+  helperText?: string | null
+  errorMessage?: string | null
+  rules?: (string | Record<string, unknown>)[]
+  name?: string
+  format?: ColorFormat
+  showPreview?: boolean
+  presets?: string[]
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  id: '',
+  modelValue: '#000000',
+  variant: 'default',
+  state: null,
+  label: null,
+  disabled: false,
+  readonly: false,
+  required: false,
+  helperText: null,
+  errorMessage: null,
+  rules: () => [],
+  name: '',
+  format: 'hex',
+  showPreview: true,
+  presets: () => [],
 })
 
 const { autoId } = useAutoId('color-picker', props)
-const emit = defineEmits(['update:modelValue', 'focus', 'blur', 'input', 'validation', 'mounted'])
+const emit = defineEmits<{
+  'update:modelValue': [value: string]
+  focus: [event: FocusEvent]
+  blur: [event: FocusEvent]
+  input: [payload: { target: { value: string } }]
+  validation: [result: unknown]
+  mounted: [payload: { validate: () => void; focus: () => void }]
+}>()
 
-const colorPickerRef = ref(null)
-const inputRef = ref(null)
+const colorPickerRef = ref<HTMLDivElement | null>(null)
+const inputRef = ref<ColorInputInstance | null>(null)
 const showPicker = ref(false)
 
 const colorValue = computed({
@@ -87,13 +73,14 @@ const colorPickerClasses = computed(() => ({
   'base-color-picker--open': showPicker.value,
 }))
 
-const handleInput = (value) => {
-  colorValue.value = value
-  emit('input', { target: { value } })
+const handleInput = (value: string | number) => {
+  const newValue = value as string
+  colorValue.value = newValue
+  emit('input', { target: { value: newValue } })
 }
 
-const handleColorChange = (event) => {
-  const newValue = event.target.value
+const handleColorChange = (event: Event) => {
+  const newValue = (event.target as HTMLInputElement).value
 
   colorValue.value = newValue
 
@@ -106,11 +93,11 @@ const handleColorChange = (event) => {
   })
 }
 
-const handleFocus = (event) => {
+const handleFocus = (event: FocusEvent) => {
   emit('focus', event)
 }
 
-const handleBlur = (event) => {
+const handleBlur = (event: FocusEvent) => {
   // Delay blur action to handle potential picker clicks
   setTimeout(() => {
     if (showPicker.value && !colorPickerRef.value?.contains(document.activeElement)) {
@@ -131,7 +118,7 @@ const toggleColorPicker = () => {
   }
 }
 
-const selectPresetColor = (color) => {
+const selectPresetColor = (color: string) => {
   // Convert preset color to the selected format
   let formattedColor = color
 
@@ -150,8 +137,8 @@ const selectPresetColor = (color) => {
 
       const max = Math.max(r1, g1, b1)
       const min = Math.min(r1, g1, b1)
-      let h,
-        s,
+      let h = 0,
+        s = 0,
         l = (max + min) / 2
 
       if (max === min) {
@@ -195,11 +182,11 @@ const focus = () => {
   inputRef.value?.focus()
 }
 
-const handleValidation = (validationResult) => {
+const handleValidation = (validationResult: unknown) => {
   emit('validation', validationResult)
 }
 
-const handleMounted = (ref) => {
+const handleMounted = (ref: ColorInputInstance) => {
   inputRef.value = ref
 
   emit('mounted', {

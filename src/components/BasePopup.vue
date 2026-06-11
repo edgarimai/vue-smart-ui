@@ -1,47 +1,41 @@
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 
-const props = defineProps({
-  modelValue: {
-    type: Boolean,
-    default: false,
-  },
-  variant: {
-    type: String,
-    default: 'default',
-    validator: (value) => ['default', 'info', 'success', 'warning', 'error'].includes(value),
-  },
-  size: {
-    type: String,
-    default: 'medium',
-    validator: (value) => ['small', 'medium', 'large'].includes(value),
-  },
-  position: {
-    type: String,
-    default: 'center',
-    validator: (value) => ['center', 'top', 'bottom', 'left', 'right'].includes(value),
-  },
-  disableClickOutside: {
-    type: Boolean,
-    default: false,
-  },
-  closeOnEsc: {
-    type: Boolean,
-    default: true,
-  },
-  scrollContentOnly: {
-    type: Boolean,
-    default: true,
-  },
+export type PopupVariant = 'default' | 'info' | 'success' | 'warning' | 'error'
+export type PopupSize = 'small' | 'medium' | 'large'
+export type PopupPosition = 'center' | 'top' | 'bottom' | 'left' | 'right'
+
+interface Props {
+  modelValue?: boolean
+  variant?: PopupVariant
+  size?: PopupSize
+  position?: PopupPosition
+  disableClickOutside?: boolean
+  closeOnEsc?: boolean
+  scrollContentOnly?: boolean
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  modelValue: false,
+  variant: 'default',
+  size: 'medium',
+  position: 'center',
+  disableClickOutside: false,
+  closeOnEsc: true,
+  scrollContentOnly: true,
 })
 
-const emit = defineEmits(['update:modelValue', 'close'])
+const emit = defineEmits<{ 'update:modelValue': [value: boolean]; close: [] }>()
 
-const popupRef = ref(null)
+const popupRef = ref<HTMLElement | null>(null)
 
-const handleClickOutside = (event) => {
-  if (!props.disableClickOutside && popupRef.value && !popupRef.value.contains(event.target)) {
-    const clickedInAnyPopup = event.target.closest('.base-popup')
+const handleClickOutside = (event: MouseEvent) => {
+  if (
+    !props.disableClickOutside &&
+    popupRef.value &&
+    !popupRef.value.contains(event.target as Node)
+  ) {
+    const clickedInAnyPopup = (event.target as HTMLElement).closest('.base-popup')
     if (!clickedInAnyPopup) {
       emit('update:modelValue', false)
       emit('close')
@@ -49,7 +43,7 @@ const handleClickOutside = (event) => {
   }
 }
 
-const handleEscKey = (event) => {
+const handleEscKey = (event: KeyboardEvent) => {
   if (props.closeOnEsc && event.key === 'Escape') {
     emit('update:modelValue', false)
     emit('close')

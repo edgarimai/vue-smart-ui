@@ -1,12 +1,13 @@
-<script setup>
-import { useToast } from '@/composables/toast'
+<script setup lang="ts">
+import { useToast, type Toast } from '@/composables/toast'
+import { type ToastPosition } from '@/composables/toastConfig'
 import { computed } from 'vue'
 import { BaseToast } from '@/components'
 
 const { toasts, removeToast } = useToast()
 
 const groupedToasts = computed(() => {
-  const groups = {
+  const groups: Record<ToastPosition, Toast[]> = {
     'top-right': [],
     'top-left': [],
     'top-center': [],
@@ -15,7 +16,7 @@ const groupedToasts = computed(() => {
     'bottom-center': [],
   }
 
-  toasts.value.forEach((toast) => {
+  toasts.value.forEach((toast: Toast) => {
     groups[toast.position].push(toast)
   })
 

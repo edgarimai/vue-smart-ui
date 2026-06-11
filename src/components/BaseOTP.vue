@@ -1,73 +1,54 @@
-<script setup>
+<script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
 import { useAutoId } from '../composables/autoId'
 
-const props = defineProps({
-  id: {
-    type: String,
-    default: '',
-  },
-  modelValue: {
-    type: String,
-    default: '',
-  },
-  length: {
-    type: Number,
-    default: 6,
-  },
-  variant: {
-    type: String,
-    default: 'default',
-    validator: (value) => ['default', 'filled'].includes(value),
-  },
-  state: {
-    type: String,
-    default: null,
-    validator: (value) => ['success', 'error', 'warning'].includes(value),
-  },
-  label: {
-    type: String,
-    default: null,
-  },
-  disabled: {
-    type: Boolean,
-    default: false,
-  },
-  readonly: {
-    type: Boolean,
-    default: false,
-  },
-  required: {
-    type: Boolean,
-    default: false,
-  },
-  helperText: {
-    type: String,
-    default: null,
-  },
-  errorMessage: {
-    type: String,
-    default: null,
-  },
-  autoFocus: {
-    type: Boolean,
-    default: false,
-  },
-  type: {
-    type: String,
-    default: 'number',
-    validator: (value) => ['text', 'number', 'password'].includes(value),
-  },
-  instructions: {
-    type: String,
-    default: 'Press Shift+Backspace to clear all fields',
-  },
+export type OTPVariant = 'default' | 'filled'
+export type OTPState = 'success' | 'error' | 'warning'
+export type OTPType = 'text' | 'number' | 'password'
+
+interface Props {
+  id?: string
+  modelValue?: string
+  length?: number
+  variant?: OTPVariant
+  state?: OTPState | null
+  label?: string | null
+  disabled?: boolean
+  readonly?: boolean
+  required?: boolean
+  helperText?: string | null
+  errorMessage?: string | null
+  autoFocus?: boolean
+  type?: OTPType
+  instructions?: string
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  id: '',
+  modelValue: '',
+  length: 6,
+  variant: 'default',
+  state: null,
+  label: null,
+  disabled: false,
+  readonly: false,
+  required: false,
+  helperText: null,
+  errorMessage: null,
+  autoFocus: false,
+  type: 'number',
+  instructions: 'Press Shift+Backspace to clear all fields',
 })
 const { autoId } = useAutoId('otp', props)
 
-const emit = defineEmits(['update:modelValue', 'complete', 'validation', 'mounted'])
+const emit = defineEmits<{
+  'update:modelValue': [value: string]
+  complete: [value: string]
+  validation: [payload: { valid: boolean; error: string }]
+  mounted: [payload: { validate: () => boolean; focus: () => void; reset: () => void }]
+}>()
 
-const inputRefs = ref([])
+const inputRefs = ref<HTMLInputElement[]>([])
 const isFocused = ref(false)
 const hasFocus = computed(() => isFocused.value)
 const currentIndex = ref(0)
@@ -130,8 +111,8 @@ const displayMessage = computed(() => {
   return props.errorMessage || props.helperText
 })
 
-const handleInput = (index, e) => {
-  const inputChar = e.target.value.slice(-1)
+const handleInput = (index: number, e: Event) => {
+  const inputChar = (e.target as HTMLInputElement).value.slice(-1)
 
   const newValue = otpArray.value.map((val, i) => (i === index ? inputChar : val)).join('')
   otpValue.value = newValue
@@ -149,7 +130,7 @@ const handleInput = (index, e) => {
   emit('validation', { valid: !error.value, error: error.value })
 }
 
-const handleKeydown = (index, e) => {
+const handleKeydown = (index: number, e: KeyboardEvent) => {
   if (e.key === 'Backspace') {
     if (e.shiftKey) {
       otpValue.value = ''
@@ -184,9 +165,12 @@ const handleKeydown = (index, e) => {
   }
 }
 
-const handlePaste = (e) => {
+const handlePaste = (e: ClipboardEvent) => {
   e.preventDefault()
-  const pastedData = (e.clipboardData || window.clipboardData).getData('text')
+  const pastedData =
+    (e.clipboardData || (window as unknown as { clipboardData?: DataTransfer }).clipboardData)?.getData(
+      'text',
+    ) ?? ''
 
   const characters = pastedData.slice(0, props.length).split('')
 
@@ -210,7 +194,7 @@ const handlePaste = (e) => {
   }
 }
 
-const handleFocus = (index) => {
+const handleFocus = (index: number) => {
   isFocused.value = true
   currentIndex.value = index
 }
@@ -240,7 +224,7 @@ const focus = () => {
 
 watch(
   () => props.modelValue,
-  (newValue) => {
+  (newValue: string) => {
     validate()
     if (newValue === '') {
       currentIndex.value = 0
@@ -250,7 +234,7 @@ watch(
 )
 
 onMounted(() => {
-  inputRefs.value = Array.from({ length: props.length })
+  inputRefs.value = Array.from({ length: props.length }) as HTMLInputElement[]
 
   if (props.autoFocus) {
     setTimeout(() => {
@@ -276,7 +260,7 @@ onMounted(() => {
     <div class="base-otp__wrapper">
       <template v-for="(digit, index) in props.length" :key="index">
         <input
-          :ref="(el) => (inputRefs[index] = el)"
+          :ref="(el) => (inputRefs[index] = el as HTMLInputElement)"
           :id="`${autoId}-${index}`"
           :type="props.type"
           v-model="otpArray[index]"

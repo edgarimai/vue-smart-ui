@@ -1,87 +1,68 @@
-<script setup>
+<script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue'
 import { useAutoId } from '../composables/autoId'
 
-const props = defineProps({
-  id: {
-    type: String,
-    default: '',
-  },
-  modelValue: {
-    type: [Boolean, String, Number],
-    default: false,
-  },
-  onValue: {
-    type: [Boolean, String, Number],
-    default: true,
-  },
-  offValue: {
-    type: [Boolean, String, Number],
-    default: false,
-  },
-  label: {
-    type: String,
-    default: null,
-  },
-  labelPosition: {
-    type: String,
-    default: 'right',
-    validator: (value) => ['top', 'left', 'right'].includes(value),
-  },
-  disabled: {
-    type: Boolean,
-    default: false,
-  },
-  required: {
-    type: Boolean,
-    default: false,
-  },
-  helperText: {
-    type: String,
-    default: null,
-  },
-  errorMessage: {
-    type: String,
-    default: null,
-  },
-  state: {
-    type: String,
-    default: null,
-    validator: (value) => ['success', 'error', 'warning'].includes(value),
-  },
-  size: {
-    type: String,
-    default: 'medium',
-    validator: (value) => ['small', 'medium', 'large'].includes(value),
-  },
-  variant: {
-    type: String,
-    default: 'default',
-    validator: (value) => ['default', 'filled'].includes(value),
-  },
-  onLabel: {
-    type: String,
-    default: null,
-  },
-  offLabel: {
-    type: String,
-    default: null,
-  },
-  loading: {
-    type: Boolean,
-    default: false,
-  },
-  name: {
-    type: String,
-    default: '',
-  },
+export type SwitchValue = boolean | string | number
+export type SwitchLabelPosition = 'top' | 'left' | 'right'
+export type SwitchState = 'success' | 'error' | 'warning'
+export type SwitchSize = 'small' | 'medium' | 'large'
+export type SwitchVariant = 'default' | 'filled'
+
+interface SwitchMountedPayload {
+  id: string
+  getValue: () => SwitchValue
+  setValue: (val: SwitchValue) => void
+}
+
+interface Props {
+  id?: string
+  modelValue?: SwitchValue
+  onValue?: SwitchValue
+  offValue?: SwitchValue
+  label?: string | null
+  labelPosition?: SwitchLabelPosition
+  disabled?: boolean
+  required?: boolean
+  helperText?: string | null
+  errorMessage?: string | null
+  state?: SwitchState | null
+  size?: SwitchSize
+  variant?: SwitchVariant
+  onLabel?: string | null
+  offLabel?: string | null
+  loading?: boolean
+  name?: string
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  id: '',
+  modelValue: false,
+  onValue: true,
+  offValue: false,
+  label: null,
+  labelPosition: 'right',
+  disabled: false,
+  required: false,
+  helperText: null,
+  errorMessage: null,
+  state: null,
+  size: 'medium',
+  variant: 'default',
+  onLabel: null,
+  offLabel: null,
+  loading: false,
+  name: '',
 })
 
-const emit = defineEmits(['update:modelValue', 'change', 'mounted'])
+const emit = defineEmits<{
+  'update:modelValue': [value: SwitchValue]
+  change: [value: SwitchValue]
+  mounted: [payload: SwitchMountedPayload]
+}>()
 
 const { autoId } = useAutoId('switch', props)
 
-const switchValue = ref(props.modelValue)
+const switchValue = ref<SwitchValue>(props.modelValue)
 const isFocused = ref(false)
 
 const isOn = computed(() => switchValue.value === props.onValue)
@@ -117,7 +98,7 @@ const toggle = () => {
   emit('change', switchValue.value)
 }
 
-const handleKeyDown = (event) => {
+const handleKeyDown = (event: KeyboardEvent) => {
   if (props.disabled || props.loading) return
 
   if (event.key === ' ' || event.key === 'Enter') {
@@ -138,7 +119,7 @@ onMounted(() => {
   emit('mounted', {
     id: autoId.value,
     getValue: () => switchValue.value,
-    setValue: (val) => {
+    setValue: (val: SwitchValue) => {
       switchValue.value = val
       emit('update:modelValue', val)
     },

@@ -1,21 +1,25 @@
-<script setup>
-import { inject, ref, computed, onMounted, onUnmounted, watch } from 'vue'
+<script setup lang="ts">
+import { inject, ref, computed, onMounted, onUnmounted, watch, type Ref } from 'vue'
 
-const props = defineProps({
-  title: {
-    type: String,
-    required: true,
-  },
-  disabled: {
-    type: Boolean,
-    default: false,
-  },
+interface Props {
+  title: string
+  disabled?: boolean
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  disabled: false,
 })
 
-const accordion = inject('accordion')
-const id = ref(Symbol())
+interface AccordionContext {
+  activeItems: Ref<symbol[]>
+  toggleItem: (id: symbol) => void
+  variant: string
+}
+
+const accordion = inject('accordion') as AccordionContext
+const id = ref<symbol>(Symbol())
 const contentHeight = ref('0px')
-const contentRef = ref(null)
+const contentRef = ref<HTMLDivElement | null>(null)
 
 const isActive = computed(() => accordion.activeItems.value.includes(id.value))
 const variant = computed(() => accordion.variant)

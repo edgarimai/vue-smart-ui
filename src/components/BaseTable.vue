@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import { useAutoId } from '../composables/autoId'
 import BaseButton from './BaseButton.vue'
@@ -6,101 +6,115 @@ import BaseCheckbox from './BaseCheckbox.vue'
 import BaseInput from './BaseInput.vue'
 import BaseSkeleton from './BaseSkeleton.vue'
 import BaseCombobox from './BaseCombobox.vue'
+import type { ComboboxModelValue } from './BaseCombobox.vue'
 
 defineOptions({
   inheritAttrs: false,
 })
 
-const props = defineProps({
-  id: {
-    type: String,
-    default: '',
-  },
-  columns: {
-    type: Array,
-    required: true,
-    validator: (columns) => columns.every((col) => col.key && col.label),
-  },
-  data: {
-    type: Array,
-    default: () => [],
-  },
-  loading: {
-    type: Boolean,
-    default: false,
-  },
-  variant: {
-    type: String,
-    default: 'default',
-    validator: (value) => ['default', 'striped', 'bordered'].includes(value),
-  },
-  size: {
-    type: String,
-    default: 'medium',
-    validator: (value) => ['small', 'medium', 'large'].includes(value),
-  },
-  sortable: {
-    type: Boolean,
-    default: true,
-  },
-  filterable: {
-    type: Boolean,
-    default: false,
-  },
-  selectable: {
-    type: Boolean,
-    default: false,
-  },
-  pagination: {
-    type: Object,
-    default: () => ({
-      enabled: true,
-      pageSize: 10,
-      pageSizeOptions: [5, 10, 25, 50, 100],
-      showTotal: true,
-      showPageSizeSelector: true,
-      showFirstLastButtons: true,
-    }),
-  },
-  responsive: {
-    type: Boolean,
-    default: true,
-  },
-  emptyMessage: {
-    type: String,
-    default: 'No data found',
-  },
-  loadingRows: {
-    type: Number,
-    default: 5,
-  },
-  scrollOnPageChange: {
-    type: Boolean,
-    default: true,
-  },
+export type TableVariant = 'default' | 'striped' | 'bordered'
+export type TableSize = 'small' | 'medium' | 'large'
+export type SortDirection = 'asc' | 'desc' | null
+
+export interface TableColumn {
+  key: string
+  label: string
+  sortable?: boolean
+  filterable?: boolean
+  class?: string
+  formatter?: (value: unknown, row: Record<string, unknown>) => unknown
+  [k: string]: unknown
+}
+
+export interface TablePagination {
+  enabled?: boolean
+  pageSize?: number
+  pageSizeOptions?: number[]
+  showTotal?: boolean
+  showPageSizeSelector?: boolean
+  showFirstLastButtons?: boolean
+}
+
+interface Props {
+  id?: string
+  columns: TableColumn[]
+  data?: Record<string, unknown>[]
+  loading?: boolean
+  variant?: TableVariant
+  size?: TableSize
+  sortable?: boolean
+  filterable?: boolean
+  selectable?: boolean
+  pagination?: TablePagination
+  responsive?: boolean
+  emptyMessage?: string
+  loadingRows?: number
+  scrollOnPageChange?: boolean
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  id: '',
+  data: () => [],
+  loading: false,
+  variant: 'default',
+  size: 'medium',
+  sortable: true,
+  filterable: false,
+  selectable: false,
+  pagination: () => ({
+    enabled: true,
+    pageSize: 10,
+    pageSizeOptions: [5, 10, 25, 50, 100],
+    showTotal: true,
+    showPageSizeSelector: true,
+    showFirstLastButtons: true,
+  }),
+  responsive: true,
+  emptyMessage: 'No data found',
+  loadingRows: 5,
+  scrollOnPageChange: true,
 })
 
 const { autoId } = useAutoId('table', props)
 
-const emit = defineEmits([
-  'sort',
-  'filter',
-  'select',
-  'select-all',
-  'page-change',
-  'page-size-change',
-  'row-click',
-  'action-click',
-])
+const emit = defineEmits<{
+  sort: [payload: { column: string; direction: SortDirection }]
+  filter: [payload: { column: string; value: string | number }]
+  select: [payload: { row: Record<string, unknown>; selected: boolean; selectedRows: unknown[] }]
+  'select-all': [payload: { selected: boolean; selectedRows: unknown[] }]
+  'page-change': [page: number]
+  'page-size-change': [size: number]
+  'row-click': [payload: { row: Record<string, unknown>; index: number }]
+  'action-click': [payload: { action: unknown; row: Record<string, unknown>; index: number }]
+}>()
+
+defineSlots<{
+  header?: () => unknown
+  empty?: () => unknown
+  actions?: (props: {
+    row: Record<string, unknown>
+    index: number
+    handleAction: (action: unknown) => void
+  }) => unknown
+  [name: `cell-${string}`]: (props: {
+    row: Record<string, unknown>
+    column: TableColumn
+    value: unknown
+    index: number
+  }) => unknown
+}>()
 
 // table state
-const sortState = ref({ column: null, direction: null })
-const filterState = ref({})
-const selectedRows = ref(new Set())
+const sortState = ref<{ column: string | null; direction: SortDirection }>({
+  column: null,
+  direction: null,
+})
+const filterState = ref<Record<string, string | number>>({})
+const selectedRows = ref<Set<unknown>>(new Set())
 const currentPage = ref(1)
-const pageSize = ref(props.pagination.pageSize)
+const pageSize = ref<number>(props.pagination.pageSize as number)
 const searchQuery = ref('')
-const tableRef = ref(null)
+const tableRef = ref<HTMLDivElement | null>(null)
 
 // filtered data
 const filteredData = computed(() => {
@@ -130,12 +144,12 @@ const filteredData = computed(() => {
   // apply sorting
   if (sortState.value.column) {
     result.sort((a, b) => {
-      const aValue = getNestedValue(a, sortState.value.column)
-      const bValue = getNestedValue(b, sortState.value.column)
+      const aValue = getNestedValue(a, sortState.value.column as string)
+      const bValue = getNestedValue(b, sortState.value.column as string)
 
       if (aValue === bValue) return 0
 
-      const comparison = aValue > bValue ? 1 : -1
+      const comparison = (aValue as number) > (bValue as number) ? 1 : -1
       return sortState.value.direction === 'desc' ? -comparison : comparison
     })
   }
@@ -157,8 +171,6 @@ const paginatedData = computed(() => {
 })
 
 const paginationInfo = computed(() => {
-  if (!props.pagination.enabled) return null
-
   const start = Math.min((currentPage.value - 1) * pageSize.value + 1, filteredData.value.length)
   const end = Math.min(currentPage.value * pageSize.value, filteredData.value.length)
   const total = filteredData.value.length
@@ -175,13 +187,18 @@ const isAllSelected = computed(
 
 const isIndeterminate = computed(() => selectedRows.value.size > 0 && !isAllSelected.value)
 
-const getNestedValue = (obj, path) => {
-  return path.split('.').reduce((o, p) => o?.[p], obj) ?? ''
+const getNestedValue = (obj: Record<string, unknown>, path: string): unknown => {
+  return (
+    path
+      .split('.')
+      .reduce<unknown>((o, p) => (o as Record<string, unknown> | null | undefined)?.[p], obj) ?? ''
+  )
 }
 
-const getRowId = (row, index) => row.id ?? index
+const getRowId = (row: Record<string, unknown>, index?: number): string | number =>
+  (row.id ?? index) as string | number
 
-const scrollToTable = () => {
+const scrollToTable = (): void => {
   if (props.scrollOnPageChange && tableRef.value) {
     tableRef.value.scrollIntoView({
       behavior: 'smooth',
@@ -190,7 +207,7 @@ const scrollToTable = () => {
   }
 }
 
-const scrollToTableWithDelay = () => {
+const scrollToTableWithDelay = (): void => {
   if (props.scrollOnPageChange) {
     setTimeout(() => {
       scrollToTable()
@@ -198,7 +215,7 @@ const scrollToTableWithDelay = () => {
   }
 }
 
-const handleSort = (column) => {
+const handleSort = (column: TableColumn): void => {
   if (!props.sortable || column.sortable === false) return
 
   if (sortState.value.column === column.key) {
@@ -211,13 +228,13 @@ const handleSort = (column) => {
   emit('sort', { column: column.key, direction: sortState.value.direction })
 }
 
-const handleFilter = (columnKey, value) => {
+const handleFilter = (columnKey: string, value: string | number): void => {
   filterState.value[columnKey] = value
   currentPage.value = 1
   emit('filter', { column: columnKey, value })
 }
 
-const handleRowSelect = (row, index) => {
+const handleRowSelect = (row: Record<string, unknown>, index: number): void => {
   const rowId = getRowId(row, index)
 
   if (selectedRows.value.has(rowId)) {
@@ -233,7 +250,7 @@ const handleRowSelect = (row, index) => {
   })
 }
 
-const handleSelectAll = () => {
+const handleSelectAll = (): void => {
   if (isAllSelected.value) {
     paginatedData.value.forEach((row, index) => {
       selectedRows.value.delete(getRowId(row, index))
@@ -250,30 +267,30 @@ const handleSelectAll = () => {
   })
 }
 
-const handlePageChange = (page) => {
+const handlePageChange = (page: number): void => {
   currentPage.value = page
   emit('page-change', page)
 
   // Scroll to table top after page change
   scrollToTableWithDelay()
 }
-const handlePageSizeChange = (size) => {
-  pageSize.value = size
+const handlePageSizeChange = (size: ComboboxModelValue): void => {
+  pageSize.value = size as number
   currentPage.value = 1
-  emit('page-size-change', size)
+  emit('page-size-change', size as number)
 
   // Scroll to table top after page size change
   scrollToTableWithDelay()
 }
-const handleRowClick = (row, index) => {
+const handleRowClick = (row: Record<string, unknown>, index: number): void => {
   emit('row-click', { row, index })
 }
 
-const handleActionClick = (action, row, index) => {
+const handleActionClick = (action: unknown, row: Record<string, unknown>, index: number): void => {
   emit('action-click', { action, row, index })
 }
 
-const getSortIcon = (column) => {
+const getSortIcon = (column: TableColumn): string => {
   if (sortState.value.column !== column.key) return '↕️'
   return sortState.value.direction === 'asc' ? '↑' : '↓'
 }

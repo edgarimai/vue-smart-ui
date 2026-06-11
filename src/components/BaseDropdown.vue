@@ -1,40 +1,32 @@
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { useAutoId } from '../composables/autoId'
 
-const props = defineProps({
-  id: {
-    type: String,
-    default: '',
-  },
-  modelValue: {
-    type: Boolean,
-    default: false,
-  },
-  variant: {
-    type: String,
-    default: 'default',
-    validator: (value) => ['default', 'white', 'dark'].includes(value),
-  },
-  width: {
-    type: String,
-    default: 'auto',
-  },
-  closeOnClick: {
-    type: Boolean,
-    default: true,
-  },
-  closeOnClickOutside: {
-    type: Boolean,
-    default: true,
-  },
+export type DropdownVariant = 'default' | 'white' | 'dark'
+
+interface Props {
+  id?: string
+  modelValue?: boolean
+  variant?: DropdownVariant
+  width?: string
+  closeOnClick?: boolean
+  closeOnClickOutside?: boolean
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  id: '',
+  modelValue: false,
+  variant: 'default',
+  width: 'auto',
+  closeOnClick: true,
+  closeOnClickOutside: true,
 })
 const { autoId } = useAutoId('dropdown', props)
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits<{ 'update:modelValue': [value: boolean] }>()
 
-const dropdownRef = ref(null)
-const menuRef = ref(null)
+const dropdownRef = ref<HTMLElement | null>(null)
+const menuRef = ref<HTMLElement | null>(null)
 const isVisible = ref(props.modelValue)
 
 const updatePosition = () => {
@@ -76,7 +68,7 @@ const updatePosition = () => {
 
 watch(
   () => props.modelValue,
-  (newValue) => {
+  (newValue: boolean) => {
     isVisible.value = newValue
     if (newValue) {
       document.addEventListener('click', handleClickOutside)
@@ -90,14 +82,18 @@ watch(
   },
 )
 
-const handleClickOutside = (event) => {
-  if (props.closeOnClickOutside && dropdownRef.value && !dropdownRef.value.contains(event.target)) {
+const handleClickOutside = (event: MouseEvent) => {
+  if (
+    props.closeOnClickOutside &&
+    dropdownRef.value &&
+    !dropdownRef.value.contains(event.target as Node)
+  ) {
     emit('update:modelValue', false)
   }
 }
 
-const handleItemClick = (event) => {
-  if (props.closeOnClick && !event.target.closest('[data-prevent-close]')) {
+const handleItemClick = (event: MouseEvent) => {
+  if (props.closeOnClick && !(event.target as HTMLElement).closest('[data-prevent-close]')) {
     emit('update:modelValue', false)
   }
 }

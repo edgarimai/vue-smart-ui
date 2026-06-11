@@ -1,84 +1,75 @@
-<script setup>
+<script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue'
 import { useAutoId } from '../composables/autoId'
 
-const props = defineProps({
-  id: {
-    type: String,
-    default: '',
-  },
-  modelValue: {
-    type: [Number, Array],
-    default: 0,
-  },
-  min: {
-    type: Number,
-    default: 0,
-  },
-  max: {
-    type: Number,
-    default: 100,
-  },
-  step: {
-    type: Number,
-    default: 1,
-  },
-  label: {
-    type: String,
-    default: null,
-  },
-  disabled: {
-    type: Boolean,
-    default: false,
-  },
-  required: {
-    type: Boolean,
-    default: false,
-  },
-  helperText: {
-    type: String,
-    default: null,
-  },
-  errorMessage: {
-    type: String,
-    default: null,
-  },
-  state: {
-    type: String,
-    default: null,
-    validator: (value) => ['success', 'error', 'warning'].includes(value),
-  },
-  showValue: {
-    type: Boolean,
-    default: true,
-  },
-  range: {
-    type: Boolean,
-    default: false,
-  },
-  variant: {
-    type: String,
-    default: 'default',
-    validator: (value) => ['default', 'filled'].includes(value),
-  },
-  marks: {
-    type: Array,
-    default: () => [],
-  },
-  formatValue: {
-    type: Function,
-    default: null,
-  },
+export type SliderState = 'success' | 'error' | 'warning'
+export type SliderVariant = 'default' | 'filled'
+
+interface SliderMark {
+  value: number
+  label?: string
+}
+
+interface Props {
+  id?: string
+  modelValue?: number | number[]
+  min?: number
+  max?: number
+  step?: number
+  label?: string | null
+  disabled?: boolean
+  required?: boolean
+  helperText?: string | null
+  errorMessage?: string | null
+  state?: SliderState | null
+  showValue?: boolean
+  range?: boolean
+  variant?: SliderVariant
+  marks?: SliderMark[]
+  formatValue?: ((value: number) => string) | null
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  id: '',
+  modelValue: 0,
+  min: 0,
+  max: 100,
+  step: 1,
+  label: null,
+  disabled: false,
+  required: false,
+  helperText: null,
+  errorMessage: null,
+  state: null,
+  showValue: true,
+  range: false,
+  variant: 'default',
+  marks: () => [],
+  formatValue: null,
 })
 
-const emit = defineEmits(['update:modelValue', 'change', 'mounted'])
+const emit = defineEmits<{
+  'update:modelValue': [value: number | number[]]
+  change: [value: number | number[]]
+  mounted: [
+    payload: {
+      id: string
+      getValue: () => number | number[]
+      setValue: (val: number | number[]) => void
+    },
+  ]
+}>()
 
 const { autoId } = useAutoId('slider', props)
 
-const sliderValue = ref(props.modelValue)
+// Holds either a single number or a [start, end] pair. The template accesses it both as a
+// scalar and indexed (guarded at runtime by `isRange`), which a strict union cannot express,
+// so the internal ref stays loosely typed while the public `modelValue` prop remains precise.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const sliderValue = ref<any>(props.modelValue)
 const isDragging = ref(false)
-const sliderTrack = ref(null)
-const thumbRefs = ref([])
+const sliderTrack = ref<HTMLElement | null>(null)
+const thumbRefs = ref<HTMLElement[]>([])
 
 // Computed properties for styling and functionality
 const isRange = computed(() => props.range && Array.isArray(props.modelValue))
@@ -86,15 +77,15 @@ const isRange = computed(() => props.range && Array.isArray(props.modelValue))
 const displayValue = computed(() => {
   if (props.formatValue) {
     return isRange.value
-      ? sliderValue.value.map((v) => props.formatValue(v))
-      : props.formatValue(sliderValue.value)
+      ? (sliderValue.value as number[]).map((v) => props.formatValue!(v))
+      : props.formatValue(sliderValue.value as number)
   }
   return sliderValue.value
 })
 
 const trackFillStyle = computed(() => {
   if (isRange.value) {
-    const [start, end] = sliderValue.value
+    const [start, end] = sliderValue.value as number[]
     const startPercent = ((start - props.min) / (props.max - props.min)) * 100
     const endPercent = ((end - props.min) / (props.max - props.min)) * 100
     return {
@@ -102,7 +93,7 @@ const trackFillStyle = computed(() => {
       width: `${endPercent - startPercent}%`,
     }
   } else {
-    const percent = ((sliderValue.value - props.min) / (props.max - props.min)) * 100
+    const percent = (((sliderValue.value as number) - props.min) / (props.max - props.min)) * 100
     return {
       width: `${percent}%`,
     }
@@ -111,12 +102,12 @@ const trackFillStyle = computed(() => {
 
 const thumbPositions = computed(() => {
   if (isRange.value) {
-    return sliderValue.value.map((val) => {
+    return (sliderValue.value as number[]).map((val) => {
       const percent = ((val - props.min) / (props.max - props.min)) * 100
       return `${percent}%`
     })
   } else {
-    const percent = ((sliderValue.value - props.min) / (props.max - props.min)) * 100
+    const percent = (((sliderValue.value as number) - props.min) / (props.max - props.min)) * 100
     return [`${percent}%`]
   }
 })
@@ -134,21 +125,21 @@ const sliderClasses = computed(() => {
 // Watch for external changes to modelValue
 watch(
   () => props.modelValue,
-  (newValue) => {
+  (newValue: number | number[]) => {
     sliderValue.value = newValue
   },
 )
 
 // Watch for internal changes to update the model
-watch(sliderValue, (newValue) => {
+watch(sliderValue, (newValue: number | number[]) => {
   emit('update:modelValue', newValue)
 })
 
 // Methods
-const updateValue = (event, thumbIndex = 0) => {
+const updateValue = (event: MouseEvent | Touch, thumbIndex = 0) => {
   if (props.disabled) return
 
-  const rect = sliderTrack.value.getBoundingClientRect()
+  const rect = sliderTrack.value!.getBoundingClientRect()
   const offsetX = event.clientX - rect.left
   const percentage = Math.min(Math.max(offsetX / rect.width, 0), 1)
   const rawValue = props.min + percentage * (props.max - props.min)
@@ -156,7 +147,7 @@ const updateValue = (event, thumbIndex = 0) => {
   const clampedValue = Math.min(Math.max(steppedValue, props.min), props.max)
 
   if (isRange.value) {
-    const newValues = [...sliderValue.value]
+    const newValues = [...(sliderValue.value as number[])]
     newValues[thumbIndex] = clampedValue
 
     if (thumbIndex === 0 && newValues[0] > newValues[1]) {
@@ -173,13 +164,13 @@ const updateValue = (event, thumbIndex = 0) => {
   emit('change', sliderValue.value)
 }
 
-const startDrag = (event, thumbIndex = 0) => {
+const startDrag = (event: MouseEvent | Touch, thumbIndex = 0) => {
   if (props.disabled) return
 
   isDragging.value = true
   updateValue(event, thumbIndex)
 
-  const handleMove = (e) => updateValue(e, thumbIndex)
+  const handleMove = (e: Event) => updateValue(e as MouseEvent | Touch, thumbIndex)
   const handleEnd = () => {
     isDragging.value = false
     document.removeEventListener('mousemove', handleMove)
@@ -194,10 +185,12 @@ const startDrag = (event, thumbIndex = 0) => {
   document.addEventListener('touchend', handleEnd)
 }
 
-const handleKeyDown = (event, thumbIndex = 0) => {
+const handleKeyDown = (event: KeyboardEvent, thumbIndex = 0) => {
   if (props.disabled) return
 
-  const currentValue = isRange.value ? sliderValue.value[thumbIndex] : sliderValue.value
+  const currentValue = isRange.value
+    ? (sliderValue.value as number[])[thumbIndex]
+    : (sliderValue.value as number)
   let newValue = currentValue
 
   switch (event.key) {
@@ -220,7 +213,7 @@ const handleKeyDown = (event, thumbIndex = 0) => {
   }
 
   if (isRange.value) {
-    const newValues = [...sliderValue.value]
+    const newValues = [...(sliderValue.value as number[])]
     newValues[thumbIndex] = newValue
 
     if (thumbIndex === 0 && newValues[0] > newValues[1]) {
@@ -248,7 +241,7 @@ onMounted(() => {
   emit('mounted', {
     id: autoId.value,
     getValue: () => sliderValue.value,
-    setValue: (val) => {
+    setValue: (val: number | number[]) => {
       sliderValue.value = val
     },
   })

@@ -1,101 +1,78 @@
-<script setup>
+<script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useAutoId } from '../composables/autoId'
 
-const props = defineProps({
-  id: {
-    type: String,
-    default: '',
-  },
-  modelValue: {
-    type: String,
-    default: '',
-  },
-  transparentBg: {
-    type: Boolean,
-    default: false,
-  },
-  variant: {
-    type: String,
-    default: 'default',
-    validator: (value) => ['default', 'filled', 'outlined'].includes(value),
-  },
-  state: {
-    type: String,
-    default: null,
-    validator: (value) => ['success', 'error', 'warning'].includes(value),
-  },
-  label: {
-    type: String,
-    default: null,
-  },
-  placeholder: {
-    type: String,
-    default: '',
-  },
-  rows: {
-    type: [String, Number],
-    default: 3,
-  },
-  maxRows: {
-    type: [String, Number],
-    default: null,
-  },
-  disabled: {
-    type: Boolean,
-    default: false,
-  },
-  block: {
-    type: Boolean,
-    default: false,
-  },
-  readonly: {
-    type: Boolean,
-    default: false,
-  },
-  required: {
-    type: Boolean,
-    default: false,
-  },
-  helperText: {
-    type: String,
-    default: null,
-  },
-  errorMessage: {
-    type: String,
-    default: null,
-  },
-  rules: {
-    type: Array,
-    default: () => [],
-  },
-  validateOnBlur: {
-    type: Boolean,
-    default: true,
-  },
-  validateOnInput: {
-    type: Boolean,
-    default: false,
-  },
-  name: {
-    type: String,
-    default: '',
-  },
-  resize: {
-    type: String,
-    default: 'vertical',
-    validator: (value) => ['none', 'both', 'horizontal', 'vertical'].includes(value),
-  },
-  autoResize: {
-    type: Boolean,
-    default: false,
-  },
+export type TextareaVariant = 'default' | 'filled' | 'outlined'
+export type TextareaState = 'success' | 'error' | 'warning'
+export type TextareaResize = 'none' | 'both' | 'horizontal' | 'vertical'
+
+export interface TextareaRuleObject {
+  message?: string
+  validator?: (value: string) => boolean
+  required?: boolean
+  [key: string]: unknown
+}
+export type TextareaRule = string | TextareaRuleObject
+
+interface Props {
+  id?: string
+  modelValue?: string
+  transparentBg?: boolean
+  variant?: TextareaVariant
+  state?: TextareaState | null
+  label?: string | null
+  placeholder?: string
+  rows?: string | number
+  maxRows?: string | number | null
+  disabled?: boolean
+  block?: boolean
+  readonly?: boolean
+  required?: boolean
+  helperText?: string | null
+  errorMessage?: string | null
+  rules?: TextareaRule[]
+  validateOnBlur?: boolean
+  validateOnInput?: boolean
+  name?: string
+  resize?: TextareaResize
+  autoResize?: boolean
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  id: '',
+  modelValue: '',
+  transparentBg: false,
+  variant: 'default',
+  state: null,
+  label: null,
+  placeholder: '',
+  rows: 3,
+  maxRows: null,
+  disabled: false,
+  block: false,
+  readonly: false,
+  required: false,
+  helperText: null,
+  errorMessage: null,
+  rules: () => [],
+  validateOnBlur: true,
+  validateOnInput: false,
+  name: '',
+  resize: 'vertical',
+  autoResize: false,
 })
 const { autoId } = useAutoId('textarea', props)
 
-const emit = defineEmits(['update:modelValue', 'focus', 'blur', 'input', 'validation', 'mounted'])
+const emit = defineEmits<{
+  'update:modelValue': [value: string]
+  focus: [event: FocusEvent]
+  blur: [event: FocusEvent]
+  input: [event: Event]
+  validation: [payload: { valid: boolean; error: string; name?: string }]
+  mounted: [handlers: { validate: () => boolean; focus: () => void }]
+}>()
 
-const textareaRef = ref(null)
+const textareaRef = ref<HTMLTextAreaElement | null>(null)
 const isFocused = ref(false)
 const error = ref('')
 
@@ -109,28 +86,30 @@ const textareaClasses = computed(() => ({
   [`base-textarea--resize-${props.resize}`]: true,
 }))
 
-const validators = {
+type ValidatorResult = { valid: boolean; message: string }
+
+const validators: Record<string, (value: string, arg?: number) => ValidatorResult> = {
   required: (value) => ({
     valid: !!value?.toString().trim(),
     message: 'This field is required',
   }),
   min: (value, min) => ({
-    valid: !value || value.toString().length >= min,
+    valid: !value || value.toString().length >= (min as number),
     message: `Must be at least ${min} characters`,
   }),
   max: (value, max) => ({
-    valid: !value || value.toString().length <= max,
+    valid: !value || value.toString().length <= (max as number),
     message: `Must be no more than ${max} characters`,
   }),
 }
 
-const validateField = () => {
+const validateField = (): boolean => {
   const isValid = validate(props.modelValue)
   emit('validation', { valid: isValid, error: error.value, name: props.name })
   return isValid
 }
 
-const validate = (value) => {
+const validate = (value: string): boolean => {
   if (!props.rules.length) return true
 
   // console.log('Validating value:', value)
@@ -154,7 +133,7 @@ const validate = (value) => {
       const validator = validators[validatorName]
 
       if (validator) {
-        const result = validator(value, config)
+        const result = validator(value, config as number)
         if (!result.valid) {
           error.value = rule.message || result.message
           return false
@@ -175,12 +154,13 @@ const validate = (value) => {
   return true
 }
 
-const handleInput = (event) => {
-  emit('update:modelValue', event.target.value)
+const handleInput = (event: Event) => {
+  const target = event.target as HTMLTextAreaElement
+  emit('update:modelValue', target.value)
   emit('input', event)
 
   if (props.validateOnInput) {
-    const isValid = validate(event.target.value)
+    const isValid = validate(target.value)
     emit('validation', { valid: isValid, error: error.value })
   }
 
@@ -189,17 +169,17 @@ const handleInput = (event) => {
   }
 }
 
-const handleFocus = (event) => {
+const handleFocus = (event: FocusEvent) => {
   isFocused.value = true
   emit('focus', event)
 }
 
-const handleBlur = (event) => {
+const handleBlur = (event: FocusEvent) => {
   isFocused.value = false
   emit('blur', event)
 
   if (props.validateOnBlur) {
-    const isValid = validate(event.target.value)
+    const isValid = validate((event.target as HTMLTextAreaElement).value)
     emit('validation', { valid: isValid, error: error.value })
   }
 }
@@ -212,7 +192,7 @@ const autoResize = () => {
 
   if (props.maxRows) {
     const lineHeight = parseInt(getComputedStyle(textareaRef.value).lineHeight)
-    const maxHeight = lineHeight * props.maxRows
+    const maxHeight = lineHeight * Number(props.maxRows)
     newHeight = Math.min(newHeight, maxHeight)
   }
 

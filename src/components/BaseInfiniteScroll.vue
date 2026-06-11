@@ -1,37 +1,28 @@
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch } from 'vue'
 
-const props = defineProps({
-  loading: {
-    type: Boolean,
-    default: false,
-  },
-  disabled: {
-    type: Boolean,
-    default: false,
-  },
-  threshold: {
-    type: Number,
-    default: 20, // pixels before the end to trigger
-  },
-  container: {
-    type: String,
-    default: null, // If null, uses window
-  },
-  loadingText: {
-    type: String,
-    default: 'Loading more items...',
-  },
-  endText: {
-    type: String,
-    default: 'There are no more items to load',
-  },
+interface Props {
+  loading?: boolean
+  disabled?: boolean
+  threshold?: number
+  container?: string | null
+  loadingText?: string
+  endText?: string
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  loading: false,
+  disabled: false,
+  threshold: 20, // pixels before the end to trigger
+  container: null, // If null, uses window
+  loadingText: 'Loading more items...',
+  endText: 'There are no more items to load',
 })
 
-const emit = defineEmits(['load-more'])
+const emit = defineEmits<{ 'load-more': [] }>()
 
-const observer = ref(null)
-const bottomElement = ref(null)
+const observer = ref<IntersectionObserver | null>(null)
+const bottomElement = ref<HTMLDivElement | null>(null)
 
 const createObserver = () => {
   if (observer.value) {
@@ -39,7 +30,7 @@ const createObserver = () => {
   }
 
   observer.value = new IntersectionObserver(
-    (entries) => {
+    (entries: IntersectionObserverEntry[]) => {
       const first = entries[0]
       if (first.isIntersecting && !props.loading && !props.disabled) {
         emit('load-more')

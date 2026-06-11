@@ -1,56 +1,50 @@
-<script setup>
+<script setup lang="ts">
 import { useAutoId } from '../composables/autoId'
 
 defineOptions({
   inheritAttrs: false,
 })
 
-const props = defineProps({
-  id: {
-    type: String,
-    default: '',
-  },
-  type: {
-    type: String,
-    default: 'button',
-    validator: (value) => ['button', 'submit', 'reset'].includes(value),
-  },
-  variant: {
-    type: String,
-    default: 'primary',
-    validator: (value) =>
-      ['primary', 'secondary', 'gray', 'white', 'outline', 'outline-red', 'ghost'].includes(value),
-  },
-  size: {
-    type: String,
-    default: 'medium',
-    validator: (value) => ['small', 'medium', 'large', 'auto'].includes(value),
-  },
-  block: {
-    type: Boolean,
-    default: false,
-  },
-  disabled: {
-    type: Boolean,
-    default: false,
-  },
-  loading: {
-    type: Boolean,
-    default: false,
-  },
-  iconOnly: {
-    type: Boolean,
-    default: false,
-  },
-  hideFocusOutline: {
-    type: Boolean,
-    default: false,
-  },
+export type ButtonType = 'button' | 'submit' | 'reset'
+export type ButtonVariant =
+  | 'primary'
+  | 'secondary'
+  | 'gray'
+  | 'white'
+  | 'outline'
+  | 'outline-red'
+  | 'ghost'
+export type ButtonSize = 'small' | 'medium' | 'large' | 'auto'
+
+interface Props {
+  id?: string
+  type?: ButtonType
+  variant?: ButtonVariant
+  size?: ButtonSize
+  block?: boolean
+  disabled?: boolean
+  loading?: boolean
+  iconOnly?: boolean
+  hideFocusOutline?: boolean
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  id: '',
+  type: 'button',
+  variant: 'primary',
+  size: 'medium',
+  block: false,
+  disabled: false,
+  loading: false,
+  iconOnly: false,
+  hideFocusOutline: false,
 })
 
 const { autoId } = useAutoId('button', props)
 
-defineEmits(['click'])
+defineEmits<{
+  click: [event: MouseEvent]
+}>()
 </script>
 
 <template>

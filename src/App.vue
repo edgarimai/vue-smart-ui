@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { reactive, ref, computed, onMounted } from 'vue'
 import {
   BaseButton,
@@ -8,21 +8,199 @@ import {
   BaseInfiniteScroll,
   BaseAccordion,
   BaseAccordionItem,
-  BaseInput,
+  BaseInput as BaseInputComponent,
   BaseCheckbox,
   BaseTextarea,
   BaseSlider,
   BaseSegmentedButtons,
   BaseColorPicker,
-  BaseCombobox,
+  BaseCombobox as BaseComboboxComponent,
   BaseOTP,
   BaseTable,
   BaseAvatar,
   BaseSwitch,
 } from './components'
-import { useToast } from '@/composables/toast'
+import type { PopupVariant, PopupSize, PopupPosition } from './components/BasePopup.vue'
+import type { TableColumn, SortDirection } from './components/BaseTable.vue'
+import type { ComboboxModelValue, ComboboxOptionItem } from './components/BaseCombobox.vue'
+import { useToast, type ToastVariant } from '@/composables/toast'
+import type { ToastPosition } from '@/composables/toastConfig'
 
-const pageState = reactive({
+declare module 'vue' {
+  interface ComponentCustomProperties {
+    alert: typeof globalThis.alert
+  }
+}
+
+// The template contains inline expressions whose parameter types come from these components
+// and cannot be annotated from <script>: BaseInput's custom `:rules` validators (where the
+// library types the rule `value` as `unknown`) and BaseCombobox's custom `#option` slot
+// (where `option` is the `ComboboxOptionItem` union). Since neither the template nor the
+// library types can be edited, both bindings are re-typed locally with looser-but-explicit
+// shapes so those demo expressions type-check while keeping v-model/event payloads typed.
+type LooseBaseInput = new () => {
+  $props: {
+    [key: string]: unknown
+    modelValue?: string | number
+    'onUpdate:modelValue'?: (value: string | number) => void
+    rules?: Array<
+      | string
+      | Record<string, unknown>
+      | { validator?: (value: string) => boolean; message?: string }
+    >
+    onMounted?: (payload: InputInstance) => void
+  }
+}
+
+type LooseBaseCombobox = new () => {
+  $props: {
+    [key: string]: unknown
+    modelValue?: ComboboxModelValue
+    'onUpdate:modelValue'?: (value: ComboboxModelValue) => void
+  }
+  $slots: {
+    [name: string]: unknown
+    option?: (props: {
+      option: { name: string; email: string; [key: string]: unknown }
+      selected: boolean
+    }) => unknown
+  }
+}
+
+const BaseInput = BaseInputComponent as unknown as LooseBaseInput
+const BaseCombobox = BaseComboboxComponent as unknown as LooseBaseCombobox
+
+interface ScrollItem {
+  id: number
+  title: string
+}
+
+interface TableRow {
+  id: number
+  name: string
+  email: string
+  age: number
+  status: string
+  role: string
+}
+
+interface FruitOption {
+  name: string
+  value: string
+}
+
+interface InputInstance {
+  validate: () => boolean
+  focus: () => void
+}
+
+interface PageState {
+  isDarkMode: boolean
+  isLoading: boolean
+  isLoadingEnabled: boolean
+  popup: {
+    variant: PopupVariant
+    size: PopupSize
+    position: PopupPosition
+    show: boolean
+    disableClickOutside: boolean
+  }
+  toast: {
+    variant: ToastVariant
+    position: ToastPosition
+    duration: number
+    message: string
+    simple: boolean
+  }
+  dropdown: {
+    show: boolean
+    variant: string
+  }
+  accordion: {
+    show: boolean
+    variant: string
+  }
+  input: {
+    username: string
+    password: string
+    email: string
+    price: string
+    phone: string
+    birthdate: string
+    alphanumericMask: string
+    letterMask: string
+    name?: string
+    uppercase?: string
+    lowercase?: string
+  }
+  textarea: {
+    content1: string
+    content2: string
+    content3: string
+    content4: string
+    content5: string
+  }
+  checkbox: {
+    checked: boolean
+    selectedFruits: string[]
+    selectAll: boolean
+    someSelected: boolean
+  }
+  switch: {
+    customValue: number
+    notifications: boolean
+    size: boolean
+    mode: boolean
+    state: boolean
+    loading: boolean
+    disabled: boolean
+  }
+  slider: {
+    value: number
+    range: number[]
+  }
+  segmentedButtons: {
+    selectedFruit: string | number | unknown[] | null
+    selectedFruits: string | number | unknown[] | null
+    selectedFruitsObjects: string | number | unknown[] | null
+  }
+  colorPicker: {
+    color: string
+    themeColor: string
+    brandColor: string
+    accentColor: string
+    backgroundColor: string
+  }
+  otp: {
+    value: string
+    value4: string
+  }
+  combobox: {
+    selectedCountry: ComboboxModelValue
+    selectedCountries: ComboboxModelValue
+    selectedCountriesNoTags: ComboboxModelValue
+    selectedUser: ComboboxModelValue
+    selectedUsers: ComboboxModelValue
+    searchableValue: ComboboxModelValue
+    loadingValue: ComboboxModelValue
+  }
+  infiniteScroll: {
+    items: ScrollItem[]
+    page: number
+    loading: boolean
+    hasMore: boolean
+  }
+  table: {
+    loading: boolean
+    selectedRows: unknown[]
+    data: TableRow[]
+    columns: TableColumn[]
+  }
+  fruits: FruitOption[]
+  selectedFruits?: unknown
+}
+
+const pageState = reactive<PageState>({
   isDarkMode: false,
   isLoading: false,
   isLoadingEnabled: false,
@@ -274,7 +452,7 @@ const countryOptions = [
   'Central African Republic',
 ]
 
-const userOptions = [
+const userOptions: ComboboxOptionItem[] = [
   { id: 1, name: 'John Silva', email: 'john@email.com' },
   { id: 2, name: 'Mary Santos', email: 'mary@email.com' },
   { id: 3, name: 'Peter Oliveira', email: 'peter@email.com' },
@@ -285,7 +463,7 @@ const userOptions = [
   { id: 8, name: 'Fernanda Alves', email: 'fernanda@email.com' },
   { id: 9, name: 'Antonio Pereira', email: 'antonio@email.com' },
   { id: 10, name: 'Juliana Martins', email: 'juliana@email.com' },
-]
+] as unknown as ComboboxOptionItem[]
 
 const toast = useToast()
 const showToast = () => {
@@ -336,9 +514,9 @@ const loadMore = async () => {
   }
 }
 
-const formRefs = ref({})
+const formRefs = ref<Record<string, InputInstance>>({})
 
-const validateForm = () => {
+const validateForm = (): boolean => {
   let isValid = true
   // Validate all registered inputs
   Object.values(formRefs.value).forEach((input) => {
@@ -361,7 +539,7 @@ const handleSubmit = () => {
   }
 }
 
-const registerInput = (name, ref) => {
+const registerInput = (name: string, ref: InputInstance | null) => {
   console.log(name, ref)
   if (ref) {
     formRefs.value[name] = ref
@@ -377,29 +555,37 @@ const someSelected = computed(() => {
 })
 
 // Table functions
-const handleTableSort = (event) => {
+const handleTableSort = (event: { column: string; direction: SortDirection }) => {
   console.log('Table sorted:', event)
 }
 
-const handleTableFilter = (event) => {
+const handleTableFilter = (event: { column: string; value: string | number }) => {
   console.log('Table filtered:', event)
 }
 
-const handleTableSelect = (event) => {
+const handleTableSelect = (event: {
+  row: Record<string, unknown>
+  selected: boolean
+  selectedRows: unknown[]
+}) => {
   console.log('Row selected:', event)
   pageState.table.selectedRows = event.selectedRows
 }
 
-const handleTableSelectAll = (event) => {
+const handleTableSelectAll = (event: { selected: boolean; selectedRows: unknown[] }) => {
   console.log('Select all:', event)
   pageState.table.selectedRows = event.selectedRows
 }
 
-const handleTableRowClick = (event) => {
+const handleTableRowClick = (event: { row: Record<string, unknown>; index: number }) => {
   console.log('Row clicked:', event)
 }
 
-const handleTableAction = (event) => {
+const handleTableAction = (event: {
+  action: unknown
+  row: Record<string, unknown>
+  index: number
+}) => {
   console.log('Action clicked:', event)
   const { action, row } = event
 
@@ -428,11 +614,11 @@ const toggleTableLoading = () => {
   }
 }
 
-const formatStatus = (status) => {
+const formatStatus = (status: unknown) => {
   return status === 'Active' ? '✅ Active' : '❌ Inactive'
 }
 
-const handleSelectAll = (checked) => {
+const handleSelectAll = (checked: boolean | unknown[]) => {
   if (!checked) return (pageState.checkbox.selectedFruits = [])
 
   pageState.fruits.forEach((fruit) => {
@@ -442,11 +628,11 @@ const handleSelectAll = (checked) => {
   })
 }
 
-const toggleDarkMode = (value) => {
-  document.documentElement.classList.toggle('dark', value)
+const toggleDarkMode = (value: boolean | unknown[]) => {
+  document.documentElement.classList.toggle('dark', Boolean(value))
   const vsuiRoot = document.querySelector('.vsui')
   if (vsuiRoot) {
-    vsuiRoot.classList.toggle('dark', value)
+    vsuiRoot.classList.toggle('dark', Boolean(value))
   }
 }
 

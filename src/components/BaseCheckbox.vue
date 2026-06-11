@@ -1,45 +1,33 @@
-<script setup>
+<script setup lang="ts">
 import { computed } from 'vue'
 import { useAutoId } from '../composables/autoId'
 
-const props = defineProps({
-  id: {
-    type: String,
-    default: '',
-  },
-  modelValue: {
-    type: [Boolean, Array],
-    default: false,
-  },
-  value: {
-    type: [String, Number, Boolean, Object],
-    default: null,
-  },
-  label: {
-    type: String,
-    default: '',
-  },
-  size: {
-    type: String,
-    default: 'medium',
-    validator: (value) => ['small', 'medium', 'large'].includes(value),
-  },
-  disabled: {
-    type: Boolean,
-    default: false,
-  },
-  error: {
-    type: Boolean,
-    default: false,
-  },
-  indeterminate: {
-    type: Boolean,
-    default: false,
-  },
+export type CheckboxSize = 'small' | 'medium' | 'large'
+
+interface Props {
+  id?: string
+  modelValue?: boolean | unknown[]
+  value?: string | number | boolean | Record<string, unknown> | null
+  label?: string
+  size?: CheckboxSize
+  disabled?: boolean
+  error?: boolean
+  indeterminate?: boolean
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  id: '',
+  modelValue: false,
+  value: null,
+  label: '',
+  size: 'medium',
+  disabled: false,
+  error: false,
+  indeterminate: false,
 })
 const { autoId } = useAutoId('checkbox', props)
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits<{ 'update:modelValue': [value: boolean | unknown[]] }>()
 
 const isChecked = computed(() => {
   if (Array.isArray(props.modelValue)) {
@@ -48,10 +36,11 @@ const isChecked = computed(() => {
   return props.modelValue
 })
 
-const handleChange = (event) => {
+const handleChange = (event: Event) => {
+  const target = event.target as HTMLInputElement
   if (Array.isArray(props.modelValue)) {
     const newValue = [...props.modelValue]
-    if (event.target.checked) {
+    if (target.checked) {
       newValue.push(props.value)
     } else {
       const index = newValue.indexOf(props.value)
@@ -59,7 +48,7 @@ const handleChange = (event) => {
     }
     emit('update:modelValue', newValue)
   } else {
-    emit('update:modelValue', event.target.checked)
+    emit('update:modelValue', target.checked)
   }
 }
 </script>

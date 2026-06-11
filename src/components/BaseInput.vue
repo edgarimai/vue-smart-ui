@@ -1,137 +1,94 @@
-<script setup>
+<script setup lang="ts">
 import { ref, computed, useSlots, onMounted, watch, nextTick } from 'vue'
 import { useAutoId } from '../composables/autoId'
 import { useValidationConfig } from '../composables/validationConfig'
 
+export type InputVariant = 'default' | 'filled' | 'outlined'
+export type InputState = 'success' | 'error' | 'warning'
+export type DateFormat = 'DD/MM/YYYY' | 'MM/DD/YYYY' | 'YYYY-MM-DD' | 'YYYY/MM/DD'
+
+export type ValidationRule =
+  | string
+  | Record<string, unknown>
+  | { validator: (value: unknown) => boolean; message: string }
+
+type MaskDefinition =
+  | string
+  | { patterns: string[]; match: (value: string) => number }
+  | { pattern: string; format: (value: string | number) => string; parse: (value: string) => number }
+
+interface Props {
+  id?: string
+  modelValue?: string | number
+  transparentBg?: boolean
+  variant?: InputVariant
+  state?: InputState | null
+  type?: string
+  label?: string | null
+  placeholder?: string
+  disabled?: boolean
+  readonly?: boolean
+  required?: boolean
+  helperText?: string | null
+  errorMessage?: string | null
+  prefixIcon?: string | null
+  suffixIcon?: string | null
+  rules?: ValidationRule[]
+  validateOnBlur?: boolean
+  validateOnInput?: boolean
+  name?: string
+  min?: number | string
+  max?: number | string
+  mask?: MaskDefinition | null
+  rawValue?: boolean
+  dateDisplayFormat?: DateFormat
+  dateValueFormat?: DateFormat
+  uppercase?: boolean
+  lowercase?: boolean
+}
+
 const slots = useSlots()
 const { getValidationMessage } = useValidationConfig()
-const props = defineProps({
-  id: {
-    type: String,
-    default: '',
-  },
-  modelValue: {
-    type: [String, Number],
-    default: '',
-  },
-  transparentBg: {
-    type: Boolean,
-    default: false,
-  },
-  variant: {
-    type: String,
-    default: 'default',
-    validator: (value) => ['default', 'filled', 'outlined'].includes(value),
-  },
-  state: {
-    type: String,
-    default: null,
-    validator: (value) => ['success', 'error', 'warning'].includes(value),
-  },
-  type: {
-    type: String,
-    default: 'text',
-  },
-  label: {
-    type: String,
-    default: null,
-  },
-  placeholder: {
-    type: String,
-    default: '',
-  },
-  disabled: {
-    type: Boolean,
-    default: false,
-  },
-  readonly: {
-    type: Boolean,
-    default: false,
-  },
-  required: {
-    type: Boolean,
-    default: false,
-  },
-  helperText: {
-    type: String,
-    default: null,
-  },
-  errorMessage: {
-    type: String,
-    default: null,
-  },
-  prefixIcon: {
-    type: String,
-    default: null,
-  },
-  suffixIcon: {
-    type: String,
-    default: null,
-  },
-  rules: {
-    type: Array,
-    default: () => [],
-  },
-  validateOnBlur: {
-    type: Boolean,
-    default: true,
-  },
-  validateOnInput: {
-    type: Boolean,
-    default: false,
-  },
-  name: {
-    type: String,
-    default: '',
-  },
-  min: {
-    type: [Number, String],
-    default: null,
-  },
-  max: {
-    type: [Number, String],
-    default: null,
-  },
-  mask: {
-    type: [String, Object],
-    default: null,
-  },
-  rawValue: {
-    type: Boolean,
-    default: true,
-  },
-  dateDisplayFormat: {
-    type: String,
-    default: 'DD/MM/YYYY',
-    validator: (value) => ['DD/MM/YYYY', 'MM/DD/YYYY', 'YYYY-MM-DD', 'YYYY/MM/DD'].includes(value),
-  },
-  dateValueFormat: {
-    type: String,
-    default: 'YYYY-MM-DD',
-    validator: (value) => ['DD/MM/YYYY', 'MM/DD/YYYY', 'YYYY-MM-DD', 'YYYY/MM/DD'].includes(value),
-  },
-  uppercase: {
-    type: Boolean,
-    default: false,
-  },
-  lowercase: {
-    type: Boolean,
-    default: false,
-  },
+const props = withDefaults(defineProps<Props>(), {
+  id: '',
+  modelValue: '',
+  transparentBg: false,
+  variant: 'default',
+  state: null,
+  type: 'text',
+  label: null,
+  placeholder: '',
+  disabled: false,
+  readonly: false,
+  required: false,
+  helperText: null,
+  errorMessage: null,
+  prefixIcon: null,
+  suffixIcon: null,
+  rules: () => [],
+  validateOnBlur: true,
+  validateOnInput: false,
+  name: '',
+  mask: null,
+  rawValue: true,
+  dateDisplayFormat: 'DD/MM/YYYY',
+  dateValueFormat: 'YYYY-MM-DD',
+  uppercase: false,
+  lowercase: false,
 })
 const { autoId } = useAutoId('input', props)
 
-const emit = defineEmits([
-  'update:modelValue',
-  'focus',
-  'blur',
-  'input',
-  'enter',
-  'validation',
-  'mounted',
-])
+const emit = defineEmits<{
+  'update:modelValue': [value: string | number]
+  focus: [event: FocusEvent]
+  blur: [event: FocusEvent]
+  input: [event: unknown]
+  enter: [event: KeyboardEvent]
+  validation: [payload: { valid: boolean; error: string; name?: string }]
+  mounted: [payload: { validate: () => boolean; focus: () => void }]
+}>()
 
-const inputRef = ref(null)
+const inputRef = ref<HTMLInputElement | null>(null)
 const isFocused = ref(false)
 const error = ref('')
 const hasBeenValidated = ref(false)
@@ -152,72 +109,75 @@ const inputType = computed(() => {
   return props.type
 })
 
-const togglePasswordVisibility = () => {
+const togglePasswordVisibility = (): void => {
   const cursorPosition = inputRef.value?.selectionStart
 
   showPassword.value = !showPassword.value
 
   if (cursorPosition !== undefined) {
     setTimeout(() => {
-      inputRef.value?.setSelectionRange(cursorPosition, cursorPosition)
+      inputRef.value?.setSelectionRange(cursorPosition as number, cursorPosition as number)
     }, 50)
   }
 }
 
+type ValidatorResult = { valid: boolean; message: string }
+type ValidatorFn = (value: string | number, param?: string | number) => ValidatorResult
+
 // Built-in validators
-const validators = {
+const validators: Record<string, ValidatorFn> = {
   required: (value) => ({
     valid: !!value?.toString().trim(),
     message: getValidationMessage('required'),
   }),
   email: (value) => ({
-    valid: !value || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
+    valid: !value || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value as string),
     message: getValidationMessage('email'),
   }),
   min: (value, min) => ({
-    valid: !value || value.length >= min,
+    valid: !value || (value as string).length >= (min as number),
     message: getValidationMessage('min', min),
   }),
   max: (value, max) => ({
-    valid: !value || value.length <= max,
+    valid: !value || (value as string).length <= (max as number),
     message: getValidationMessage('max', max),
   }),
   pattern: (value, pattern) => ({
-    valid: !value || new RegExp(pattern).test(value),
+    valid: !value || new RegExp(pattern as string).test(value as string),
     message: getValidationMessage('pattern'),
   }),
   minValue: (value, min) => ({
-    valid: !value || Number(value) >= min,
+    valid: !value || Number(value) >= (min as number),
     message: getValidationMessage('minValue', min),
   }),
   maxValue: (value, max) => ({
-    valid: !value || Number(value) <= max,
+    valid: !value || Number(value) <= (max as number),
     message: getValidationMessage('maxValue', max),
   }),
   hexColor: (value) => ({
-    valid: !value || /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(value),
+    valid: !value || /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(value as string),
     message: getValidationMessage('hexColor'),
   }),
   rgbColor: (value) => ({
-    valid: !value || /^rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)$/.test(value),
+    valid: !value || /^rgb\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)$/.test(value as string),
     message: getValidationMessage('rgbColor'),
   }),
   rgbaColor: (value) => ({
     valid:
       !value ||
       /^rgba\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(0|0?\.\d+|1(\.0)?)\s*\)$/.test(
-        value,
+        value as string,
       ),
     message: getValidationMessage('rgbaColor'),
   }),
   hslColor: (value) => ({
-    valid: !value || /^hsl\(\s*(\d{1,3})\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%\s*\)$/.test(value),
+    valid: !value || /^hsl\(\s*(\d{1,3})\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%\s*\)$/.test(value as string),
     message: getValidationMessage('hslColor'),
   }),
 }
 
 // Validation logic
-const validate = (value) => {
+const validate = (value: string | number): boolean => {
   if (!props.rules.length) return true
 
   hasBeenValidated.value = true
@@ -239,17 +199,17 @@ const validate = (value) => {
       const validator = validators[validatorName]
 
       if (validator) {
-        const result = validator(value, config)
+        const result = validator(value, config as string | number)
         if (!result.valid) {
-          error.value = rule.message || result.message
+          error.value = (rule.message as string) || result.message
           return false
         }
       }
 
       if (typeof rule.validator === 'function') {
-        const isValid = rule.validator(value)
+        const isValid = (rule.validator as (value: unknown) => boolean)(value)
         if (!isValid) {
-          error.value = rule.message || 'Invalid value'
+          error.value = (rule.message as string) || 'Invalid value'
           return false
         }
       }
@@ -261,13 +221,16 @@ const validate = (value) => {
 }
 
 // Date format utilities
-const parseDateByFormat = (dateString, format) => {
+const parseDateByFormat = (
+  dateString: string,
+  format: string,
+): { day: string | undefined; month: string | undefined; year: string | undefined } | null => {
   if (!dateString) return null
 
   const numbers = dateString.replace(/\D/g, '').substring(0, 8)
   if (numbers.length < 8) return null
 
-  let day, month, year
+  let day: string | undefined, month: string | undefined, year: string | undefined
 
   if (format === 'DD/MM/YYYY') {
     day = numbers.substring(0, 2)
@@ -286,7 +249,12 @@ const parseDateByFormat = (dateString, format) => {
   return { day, month, year }
 }
 
-const formatDateByFormat = (day, month, year, format) => {
+const formatDateByFormat = (
+  day: string | undefined,
+  month: string | undefined,
+  year: string | undefined,
+  format: string,
+): string => {
   if (!day || !month || !year) return ''
 
   if (format === 'DD/MM/YYYY') return `${day}/${month}/${year}`
@@ -297,7 +265,7 @@ const formatDateByFormat = (day, month, year, format) => {
   return ''
 }
 
-const convertDateFormat = (dateString, fromFormat, toFormat) => {
+const convertDateFormat = (dateString: string, fromFormat: string, toFormat: string): string => {
   if (!dateString) return ''
 
   const numbers = dateString.replace(/\D/g, '').substring(0, 8)
@@ -313,14 +281,14 @@ const convertDateFormat = (dateString, fromFormat, toFormat) => {
 const maskPatterns = {
   phone: {
     patterns: ['(##) ####-####', '(##) #####-####'],
-    match: (value) => {
+    match: (value: string) => {
       const numbers = value.replace(/\D/g, '')
       return numbers.length <= 10 ? 0 : 1
     },
   },
   currency: {
     pattern: 'currency',
-    format: (value) => {
+    format: (value: string | number) => {
       if (!value && value !== 0) return ''
 
       const number = typeof value === 'string' ? parseFloat(value.replace(/\D/g, '')) / 100 : value
@@ -334,7 +302,7 @@ const maskPatterns = {
         maximumFractionDigits: 2,
       }).format(number)
     },
-    parse: (value) => {
+    parse: (value: string) => {
       if (!value) return 0
 
       const numericValue = value.replace(/[^\d]/g, '')
@@ -350,7 +318,7 @@ const maskPatterns = {
   cep: '#####-###',
 }
 
-const getMaskDefinition = (mask) => {
+const getMaskDefinition = (mask: MaskDefinition | null): MaskDefinition | null => {
   if (typeof mask === 'string') {
     if (mask === 'date') {
       const format = props.dateDisplayFormat
@@ -359,16 +327,16 @@ const getMaskDefinition = (mask) => {
       if (format === 'YYYY-MM-DD') return '####-##-##'
       if (format === 'YYYY/MM/DD') return '####/##/##'
     }
-    return maskPatterns[mask] || mask
+    return (maskPatterns as Record<string, MaskDefinition>)[mask] || mask
   }
   return mask
 }
 
-const applyMask = (value, maskDef) => {
+const applyMask = (value: string, maskDef: MaskDefinition | null): string => {
   if (!value) return value
 
   // Handle currency mask
-  if (maskDef === 'currency' || maskDef?.pattern === 'currency') {
+  if (maskDef === 'currency' || (maskDef as { pattern?: string } | null)?.pattern === 'currency') {
     const parsedValue = maskPatterns.currency.parse(value)
     return maskPatterns.currency.format(parsedValue)
   }
@@ -377,22 +345,23 @@ const applyMask = (value, maskDef) => {
   if (typeof maskDef === 'string') return applySimpleMask(value, maskDef)
 
   // Handle multiple patterns
-  if (maskDef?.patterns) {
-    const patternIndex = maskDef.match(value)
-    return applySimpleMask(value, maskDef.patterns[patternIndex])
+  if ((maskDef as { patterns?: string[] } | null)?.patterns) {
+    const multi = maskDef as { patterns: string[]; match: (value: string) => number }
+    const patternIndex = multi.match(value)
+    return applySimpleMask(value, multi.patterns[patternIndex])
   }
 
   return value
 }
 
-const applyCase = (str) => {
+const applyCase = (str: string): string => {
   if (!str) return str
   if (props.uppercase) return str.toUpperCase()
   if (props.lowercase) return str.toLowerCase()
   return str
 }
 
-const extractChars = (str, maskPattern) => {
+const extractChars = (str: string, maskPattern: string): string => {
   const hasNumbers = maskPattern.includes('#')
   const hasLetters = maskPattern.includes('A')
   const hasAlphanumeric = maskPattern.includes('X')
@@ -407,7 +376,7 @@ const extractChars = (str, maskPattern) => {
   return applyCase(cleaned)
 }
 
-const applySimpleMask = (value, pattern) => {
+const applySimpleMask = (value: string, pattern: string): string => {
   if (!pattern) return value
 
   const chars = extractChars(value, pattern).split('')
@@ -449,10 +418,10 @@ const applySimpleMask = (value, pattern) => {
   return output
 }
 
-const removeMask = (value, maskDef) => {
+const removeMask = (value: string, maskDef: MaskDefinition | null): string | number => {
   if (!value) return value
 
-  if (maskDef === 'currency' || maskDef?.pattern === 'currency')
+  if (maskDef === 'currency' || (maskDef as { pattern?: string } | null)?.pattern === 'currency')
     return maskPatterns.currency.parse(value)
 
   if (typeof maskDef === 'string') {
@@ -469,7 +438,7 @@ const removeMask = (value, maskDef) => {
   return value.replace(/\D/g, '')
 }
 
-const inputValue = computed({
+const inputValue = computed<string | number>({
   get: () => {
     if (!props.mask) {
       if (props.modelValue && (props.uppercase || props.lowercase)) {
@@ -489,7 +458,7 @@ const inputValue = computed({
       const numbers = String(props.modelValue).replace(/\D/g, '')
       if (numbers.length >= 8) {
         const displayValue = convertDateFormat(
-          props.modelValue,
+          props.modelValue as string,
           props.dateValueFormat,
           props.dateDisplayFormat,
         )
@@ -505,12 +474,12 @@ const inputValue = computed({
 
     return props.modelValue
   },
-  set: (value) => emit('update:modelValue', value),
+  set: (value: string | number) => emit('update:modelValue', value),
 })
 
-const handleInput = (event) => {
-  let newValue = event.target.value
-  let valueToEmit = newValue
+const handleInput = (event: Event): void => {
+  const newValue = (event.target as HTMLInputElement).value
+  let valueToEmit: string | number = newValue
 
   if (props.mask) {
     const maskDef = getMaskDefinition(props.mask)
@@ -545,7 +514,7 @@ const handleInput = (event) => {
     }
   }
 
-  if (props.type === 'email' && valueToEmit) valueToEmit = valueToEmit.toLowerCase()
+  if (props.type === 'email' && valueToEmit) valueToEmit = (valueToEmit as string).toLowerCase()
 
   emit('update:modelValue', valueToEmit)
   emit('input', { ...event, target: { ...event.target, value: newValue } })
@@ -556,16 +525,16 @@ const handleInput = (event) => {
   }
 }
 
-const handleEnter = (event) => {
+const handleEnter = (event: KeyboardEvent): void => {
   emit('enter', event)
 }
 
-const handleFocus = (event) => {
+const handleFocus = (event: FocusEvent): void => {
   isFocused.value = true
   emit('focus', event)
 }
 
-const handleBlur = (event) => {
+const handleBlur = (event: FocusEvent): void => {
   isFocused.value = false
   emit('blur', event)
 
@@ -575,7 +544,7 @@ const handleBlur = (event) => {
   }
 }
 
-const focus = () => {
+const focus = (): void => {
   inputRef.value?.focus()
 }
 
@@ -589,7 +558,7 @@ const displayMessage = computed(() => {
   return props.errorMessage || props.helperText
 })
 
-const validateField = () => {
+const validateField = (): boolean => {
   const isValid = validate(inputValue.value)
   emit('validation', { valid: isValid, error: error.value, name: props.name })
   return isValid
@@ -601,38 +570,41 @@ const isRequired = computed(() => {
   return props.rules.some((rule) => {
     if (rule === 'required') return true
     if (typeof rule === 'object') {
-      return rule.required || Object.keys(rule)[0] === 'required'
+      return (rule as Record<string, unknown>).required || Object.keys(rule)[0] === 'required'
     }
     return false
   })
 })
 
-const maxLength = computed(() => {
+const maxLength = computed<number | undefined>(() => {
   if (!props.mask) return undefined
 
   const maskDef = getMaskDefinition(props.mask)
 
   if (typeof maskDef === 'string') return maskDef.length
 
-  if (maskDef?.patterns) return Math.max(...maskDef.patterns.map((pattern) => pattern.length))
+  if ((maskDef as { patterns?: string[] } | null)?.patterns) {
+    const multi = maskDef as { patterns: string[] }
+    return Math.max(...multi.patterns.map((pattern) => pattern.length))
+  }
 
   return undefined
 })
 
-const applyMaskToInput = () => {
+const applyMaskToInput = (): void => {
   if (!props.mask || !inputRef.value) return
   if (!props.modelValue && props.modelValue !== 0) return
 
   const maskDef = getMaskDefinition(props.mask)
 
-  let maskedValue
+  let maskedValue: string
   if (props.mask === 'currency') {
     maskedValue = maskPatterns.currency.format(props.modelValue)
   } else if (props.mask === 'date' && props.rawValue) {
     const numbers = String(props.modelValue).replace(/\D/g, '')
     if (numbers.length >= 8) {
       maskedValue = convertDateFormat(
-        props.modelValue,
+        props.modelValue as string,
         props.dateValueFormat,
         props.dateDisplayFormat,
       )

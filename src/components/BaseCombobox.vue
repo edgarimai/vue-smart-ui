@@ -1,194 +1,172 @@
-<script setup>
+<script setup lang="ts">
 import { ref, computed, useSlots, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { useAutoId } from '../composables/autoId'
 import { useValidationConfig } from '../composables/validationConfig'
 
+export type ComboboxVariant = 'default' | 'filled' | 'outlined'
+export type ComboboxState = 'success' | 'error' | 'warning'
+
+export interface ComboboxOption {
+  label: string
+  value: string | number
+  [k: string]: unknown
+}
+
+export type ComboboxOptionItem = ComboboxOption | string | number
+
+export type ComboboxModelValue =
+  | string
+  | number
+  | ComboboxOption
+  | Array<string | number | ComboboxOption>
+  | null
+
+export type SelectedMultipleText = string | ((count: number) => string)
+
+interface ValidationRuleObject {
+  message?: string
+  validator?: (value: unknown) => boolean
+  required?: boolean
+  [key: string]: unknown
+}
+
+type ValidationRule = string | ValidationRuleObject
+
+interface ValidationResult {
+  valid: boolean
+  message: string
+}
+
+type Validator = (value: unknown, param?: number) => ValidationResult
+
+interface Props {
+  id?: string
+  modelValue?: ComboboxModelValue
+  options?: ComboboxOptionItem[]
+  variant?: ComboboxVariant
+  state?: ComboboxState | null
+  label?: string | null
+  placeholder?: string
+  disabled?: boolean
+  readonly?: boolean
+  required?: boolean
+  helperText?: string | null
+  errorMessage?: string | null
+  prefixIcon?: string | null
+  suffixIcon?: string | null
+  rules?: ValidationRule[]
+  validateOnBlur?: boolean
+  validateOnInput?: boolean
+  name?: string
+  multiple?: boolean
+  searchable?: boolean
+  clearable?: boolean
+  valueKey?: string
+  labelKey?: string
+  noDataText?: string
+  maxHeight?: string
+  minDropdownWidth?: string | number
+  wrapOptionText?: boolean
+  closeOnSelect?: boolean
+  loading?: boolean
+  showTags?: boolean
+  removeSpecialChars?: boolean
+  selectedSingleText?: string
+  selectedMultipleText?: SelectedMultipleText | null
+}
+
 const slots = useSlots()
 const { getValidationMessage } = useValidationConfig()
-const props = defineProps({
-  id: {
-    type: String,
-    default: '',
-  },
-  modelValue: {
-    type: [String, Number, Object, Array],
-    default: null,
-  },
-  options: {
-    type: Array,
-    default: () => [],
-  },
-  variant: {
-    type: String,
-    default: 'default',
-    validator: (value) => ['default', 'filled', 'outlined'].includes(value),
-  },
-  state: {
-    type: String,
-    default: null,
-    validator: (value) => ['success', 'error', 'warning'].includes(value),
-  },
-  label: {
-    type: String,
-    default: null,
-  },
-  placeholder: {
-    type: String,
-    default: 'Select an option...',
-  },
-  disabled: {
-    type: Boolean,
-    default: false,
-  },
-  readonly: {
-    type: Boolean,
-    default: false,
-  },
-  required: {
-    type: Boolean,
-    default: false,
-  },
-  helperText: {
-    type: String,
-    default: null,
-  },
-  errorMessage: {
-    type: String,
-    default: null,
-  },
-  prefixIcon: {
-    type: String,
-    default: null,
-  },
-  suffixIcon: {
-    type: String,
-    default: null,
-  },
-  rules: {
-    type: Array,
-    default: () => [],
-  },
-  validateOnBlur: {
-    type: Boolean,
-    default: true,
-  },
-  validateOnInput: {
-    type: Boolean,
-    default: false,
-  },
-  name: {
-    type: String,
-    default: '',
-  },
-  multiple: {
-    type: Boolean,
-    default: false,
-  },
-  searchable: {
-    type: Boolean,
-    default: false,
-  },
-  clearable: {
-    type: Boolean,
-    default: false,
-  },
-  valueKey: {
-    type: String,
-    default: 'value',
-  },
-  labelKey: {
-    type: String,
-    default: 'label',
-  },
-  noDataText: {
-    type: String,
-    default: 'No options found',
-  },
-  maxHeight: {
-    type: String,
-    default: '200px',
-  },
-  minDropdownWidth: {
-    type: [String, Number],
-    default: 200,
-  },
-  wrapOptionText: {
-    type: Boolean,
-    default: true,
-  },
-  closeOnSelect: {
-    type: Boolean,
-    default: true,
-  },
-  loading: {
-    type: Boolean,
-    default: false,
-  },
-  showTags: {
-    type: Boolean,
-    default: false,
-  },
-  removeSpecialChars: {
-    type: Boolean,
-    default: false,
-  },
-  selectedSingleText: {
-    type: String,
-    default: '1 item selected',
-  },
-  selectedMultipleText: {
-    type: [String, Function],
-    default: null,
-  },
+const props = withDefaults(defineProps<Props>(), {
+  id: '',
+  modelValue: null,
+  options: () => [],
+  variant: 'default',
+  state: null,
+  label: null,
+  placeholder: 'Select an option...',
+  disabled: false,
+  readonly: false,
+  required: false,
+  helperText: null,
+  errorMessage: null,
+  prefixIcon: null,
+  suffixIcon: null,
+  rules: () => [],
+  validateOnBlur: true,
+  validateOnInput: false,
+  name: '',
+  multiple: false,
+  searchable: false,
+  clearable: false,
+  valueKey: 'value',
+  labelKey: 'label',
+  noDataText: 'No options found',
+  maxHeight: '200px',
+  minDropdownWidth: 200,
+  wrapOptionText: true,
+  closeOnSelect: true,
+  loading: false,
+  showTags: false,
+  removeSpecialChars: false,
+  selectedSingleText: '1 item selected',
+  selectedMultipleText: null,
 })
 
 const { autoId } = useAutoId('combobox', props)
 
-const emit = defineEmits([
-  'update:modelValue',
-  'focus',
-  'blur',
-  'input',
-  'validation',
-  'mounted',
-  'search',
-  'clear',
-  'select',
-])
+const emit = defineEmits<{
+  'update:modelValue': [value: ComboboxModelValue]
+  focus: [event: FocusEvent]
+  blur: [event?: FocusEvent]
+  input: [event: Event]
+  validation: [result: { valid: boolean; error: string; name?: string }]
+  mounted: [
+    api: {
+      validate: () => boolean
+      focus: () => void
+      open: () => void
+      close: () => void
+    },
+  ]
+  search: [query: string]
+  clear: []
+  select: [option: ComboboxOptionItem]
+}>()
 
-const comboboxRef = ref(null)
-const inputRef = ref(null)
-const menuRef = ref(null)
+const comboboxRef = ref<HTMLDivElement | null>(null)
+const inputRef = ref<HTMLInputElement | null>(null)
+const menuRef = ref<HTMLDivElement | null>(null)
 const isFocused = ref(false)
 const isOpen = ref(false)
 const error = ref('')
 const searchQuery = ref('')
 const highlightedIndex = ref(-1)
 
-const validators = {
+const validators: Record<string, Validator> = {
   required: (value) => ({
     valid: !!value || (Array.isArray(value) && value.length > 0),
     message: getValidationMessage('required'),
   }),
   min: (value, min) => ({
-    valid: !value || value.length >= min,
+    valid: !value || (value as string | unknown[]).length >= (min as number),
     message: getValidationMessage('min', min),
   }),
   max: (value, max) => ({
-    valid: !value || value.length <= max,
+    valid: !value || (value as string | unknown[]).length <= (max as number),
     message: getValidationMessage('max', max),
   }),
   minValue: (value, min) => ({
-    valid: !value || Number(value) >= min,
+    valid: !value || Number(value) >= (min as number),
     message: getValidationMessage('minValue', min),
   }),
   maxValue: (value, max) => ({
-    valid: !value || Number(value) <= max,
+    valid: !value || Number(value) <= (max as number),
     message: getValidationMessage('maxValue', max),
   }),
 }
 
-const validate = (value) => {
+const validate = (value: ComboboxModelValue) => {
   if (!props.rules.length) return true
 
   for (const rule of props.rules) {
@@ -209,7 +187,7 @@ const validate = (value) => {
       const validator = validators[validatorName]
 
       if (validator) {
-        const result = validator(value, config)
+        const result = validator(value, config as number)
         if (!result.valid) {
           error.value = rule.message || result.message
           return false
@@ -231,21 +209,23 @@ const validate = (value) => {
 }
 
 // Helper functions for options
-const getValue = (option) => {
+const getValue = (option: ComboboxOptionItem): string | number => {
   if (typeof option === 'object' && option !== null) {
-    return option[props.valueKey]
+    return option[props.valueKey] as string | number
   }
   return option
 }
 
-const getLabel = (option) => {
+const getLabel = (option: ComboboxOptionItem): string => {
   if (typeof option === 'object' && option !== null) {
-    return option[props.labelKey] || option[props.valueKey] || String(option)
+    return (
+      (option[props.labelKey] as string) || (option[props.valueKey] as string) || String(option)
+    )
   }
   return String(option)
 }
 
-const stripSpecialChars = (text) => {
+const stripSpecialChars = (text: string): string => {
   return text
     .replace(/[^\w\s]/g, '')
     .toLowerCase()
@@ -268,7 +248,7 @@ const filteredOptions = computed(() => {
   })
 })
 
-const selectedOptions = computed(() => {
+const selectedOptions = computed<ComboboxOptionItem[]>(() => {
   if (!props.modelValue) return []
 
   if (props.multiple) {
@@ -278,7 +258,7 @@ const selectedOptions = computed(() => {
       return props.options.find((opt) => getValue(opt) === value) || value
     })
   } else {
-    if (typeof props.modelValue === 'object') return [props.modelValue]
+    if (typeof props.modelValue === 'object') return [props.modelValue as ComboboxOption]
     const option = props.options.find((opt) => getValue(opt) === props.modelValue)
     return option ? [option] : []
   }
@@ -301,7 +281,10 @@ const displayText = computed(() => {
         return props.selectedMultipleText(selectedOptions.value.length)
 
       if (props.selectedMultipleText)
-        return props.selectedMultipleText.replace('{count}', selectedOptions.value.length)
+        return props.selectedMultipleText.replace(
+          '{count}',
+          selectedOptions.value.length as unknown as string,
+        )
 
       return `${selectedOptions.value.length} items selected`
     }
@@ -353,8 +336,8 @@ const showClearButton = computed(() => {
   )
 })
 
-let cachedViewport = null
-let positionUpdateTimeout = null
+let cachedViewport: { width: number; height: number } | null = null
+let positionUpdateTimeout: ReturnType<typeof setTimeout> | null = null
 
 const throttledUpdatePosition = () => {
   if (positionUpdateTimeout) return
@@ -434,12 +417,12 @@ const closeDropdown = () => {
   document.removeEventListener('click', handleClickOutside)
 }
 
-const handleClickOutside = (event) => {
+const handleClickOutside = (event: MouseEvent) => {
   if (
     comboboxRef.value &&
-    !comboboxRef.value.contains(event.target) &&
+    !comboboxRef.value.contains(event.target as Node) &&
     menuRef.value &&
-    !menuRef.value.contains(event.target)
+    !menuRef.value.contains(event.target as Node)
   ) {
     closeDropdown()
     handleBlur()
@@ -456,12 +439,12 @@ const handleInputClick = () => {
   }
 }
 
-const handleFocus = (event) => {
+const handleFocus = (event: FocusEvent) => {
   isFocused.value = true
   emit('focus', event)
 }
 
-const handleBlur = (event) => {
+const handleBlur = (event?: FocusEvent) => {
   if (!isOpen.value) {
     isFocused.value = false
     emit('blur', event)
@@ -473,8 +456,8 @@ const handleBlur = (event) => {
   }
 }
 
-const handleInput = (event) => {
-  searchQuery.value = event.target.value
+const handleInput = (event: Event) => {
+  searchQuery.value = (event.target as HTMLInputElement).value
   highlightedIndex.value = -1
   emit('search', searchQuery.value)
   emit('input', event)
@@ -485,9 +468,9 @@ const handleInput = (event) => {
   }
 }
 
-const selectOption = (option) => {
+const selectOption = (option: ComboboxOptionItem) => {
   const value = getValue(option)
-  let newModelValue
+  let newModelValue: ComboboxModelValue
 
   if (props.multiple) {
     const currentValues = Array.isArray(props.modelValue) ? [...props.modelValue] : []
@@ -523,7 +506,7 @@ const selectOption = (option) => {
   })
 }
 
-const isOptionSelected = (option) => {
+const isOptionSelected = (option: ComboboxOptionItem) => {
   const value = getValue(option)
 
   if (props.multiple) {
@@ -533,7 +516,7 @@ const isOptionSelected = (option) => {
     )
   } else {
     if (typeof props.modelValue === 'object') {
-      return getValue(props.modelValue) === value
+      return getValue(props.modelValue as ComboboxOption) === value
     }
     return props.modelValue === value
   }
@@ -549,7 +532,7 @@ const clearSelection = () => {
   }
 }
 
-const removeOption = (option) => {
+const removeOption = (option: ComboboxOptionItem) => {
   if (!props.multiple) return
 
   const currentValues = Array.isArray(props.modelValue) ? [...props.modelValue] : []
@@ -564,7 +547,7 @@ const removeOption = (option) => {
   }
 }
 
-const handleKeydown = (event) => {
+const handleKeydown = (event: KeyboardEvent) => {
   if (props.disabled || props.readonly) return
 
   switch (event.key) {

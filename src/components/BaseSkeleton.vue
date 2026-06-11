@@ -1,26 +1,20 @@
-<script setup>
-defineProps({
-  variant: {
-    type: String,
-    default: 'rectangle',
-    validator: (value) => ['rectangle', 'circle', 'text', 'heading', 'button'].includes(value),
-  },
-  width: {
-    type: String,
-    default: '100%',
-  },
-  height: {
-    type: String,
-    default: null,
-  },
-  animated: {
-    type: Boolean,
-    default: true,
-  },
-  rounded: {
-    type: Boolean,
-    default: false,
-  },
+<script setup lang="ts">
+export type SkeletonVariant = 'rectangle' | 'circle' | 'text' | 'heading' | 'button'
+
+interface Props {
+  variant?: SkeletonVariant
+  width?: string
+  height?: string | null
+  animated?: boolean
+  rounded?: boolean
+}
+
+withDefaults(defineProps<Props>(), {
+  variant: 'rectangle',
+  width: '100%',
+  height: null,
+  animated: true,
+  rounded: false,
 })
 </script>
 
@@ -36,7 +30,7 @@ defineProps({
     ]"
     :style="{
       width,
-      height: height || null,
+      height: height || undefined,
     }"
   >
     <slot />

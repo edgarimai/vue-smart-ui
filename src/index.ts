@@ -52,6 +52,33 @@ const plugin: Plugin = {
 
 export default plugin
 
+// Enables template IntelliSense (props, events, slots) in consumer projects
+// when components are registered globally via app.use(VueSmartUI).
+declare module 'vue' {
+  export interface GlobalComponents {
+    BaseAccordion: typeof BaseAccordion
+    BaseAccordionItem: typeof BaseAccordionItem
+    BaseButton: typeof BaseButton
+    BaseCheckbox: typeof BaseCheckbox
+    BaseDropdown: typeof BaseDropdown
+    BaseInfiniteScroll: typeof BaseInfiniteScroll
+    BaseInput: typeof BaseInput
+    BasePopup: typeof BasePopup
+    BaseSkeleton: typeof BaseSkeleton
+    BaseSlider: typeof BaseSlider
+    BaseTextarea: typeof BaseTextarea
+    BaseToast: typeof BaseToast
+    ToastsContainer: typeof ToastsContainer
+    BaseSegmentedButtons: typeof BaseSegmentedButtons
+    BaseColorPicker: typeof BaseColorPicker
+    BaseCombobox: typeof BaseCombobox
+    BaseOTP: typeof BaseOTP
+    BaseTable: typeof BaseTable
+    BaseAvatar: typeof BaseAvatar
+    BaseSwitch: typeof BaseSwitch
+  }
+}
+
 export {
   BaseAccordion,
   BaseAccordionItem,

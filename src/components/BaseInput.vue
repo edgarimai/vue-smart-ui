@@ -755,7 +755,7 @@ onMounted(() => {
     position: relative;
     display: flex;
     align-items: center;
-    width: 100%;
+    // width: 100%;
     border-radius: 0.375rem;
     border: 1px solid var(--vsui-input-border-color, #d1d5db);
     background-color: var(--vsui-input-bg, white);

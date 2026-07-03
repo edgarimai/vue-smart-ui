@@ -325,6 +325,10 @@ const computedRules = computed(() => {
   &__container {
     position: relative;
     width: 100%;
+
+    .base-input__wrapper {
+      padding-inline: 1rem;
+    }
   }
 
   // Color preview

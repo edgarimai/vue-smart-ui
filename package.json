@@ -1,6 +1,6 @@
 {
   "name": "vue-smart-ui",
-  "version": "1.0.0-beta.2",
+  "version": "1.0.0-beta.3",
   "private": false,
   "publishConfig": {
     "access": "public"
@@ -32,12 +32,13 @@
   "license": "MIT",
   "type": "module",
   "main": "./dist/vue-smart-ui.umd.js",
-  "module": "./dist/vue-smart-ui.es.js",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "sideEffects": ["**/*.css", "**/*.scss"],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/vue-smart-ui.es.js",
+      "import": "./dist/index.js",
       "require": "./dist/vue-smart-ui.umd.js"
     },
     "./style.css": "./dist/vue-smart-ui.css"
@@ -47,7 +48,7 @@
   ],
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc --build && vite build",
+    "build": "vue-tsc --build && vite build && vite build --config vite.umd.config.ts",
     "type-check": "vue-tsc --build",
     "preview": "vite preview",
     "lint": "eslint . --fix",

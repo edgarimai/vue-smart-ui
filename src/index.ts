@@ -1,4 +1,3 @@
-import './assets/base.scss'
 import type { App, Plugin } from 'vue'
 
 import BaseAccordion from './components/BaseAccordion.vue'

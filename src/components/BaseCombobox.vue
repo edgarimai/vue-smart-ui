@@ -2,6 +2,7 @@
 import { ref, computed, useSlots, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { useAutoId } from '../composables/autoId'
 import { useValidationConfig } from '../composables/validationConfig'
+import { useFloatingMenu } from '../composables/floatingMenu'
 
 export type ComboboxVariant = 'default' | 'filled' | 'outlined'
 export type ComboboxState = 'success' | 'error' | 'warning'
@@ -73,6 +74,8 @@ interface Props {
   removeSpecialChars?: boolean
   selectedSingleText?: string
   selectedMultipleText?: SelectedMultipleText | null
+  teleport?: boolean
+  teleportTo?: string
 }
 
 const slots = useSlots()
@@ -111,6 +114,8 @@ const props = withDefaults(defineProps<Props>(), {
   removeSpecialChars: false,
   selectedSingleText: '1 item selected',
   selectedMultipleText: null,
+  teleport: true,
+  teleportTo: 'body',
 })
 
 const { autoId } = useAutoId('combobox', props)
@@ -336,63 +341,19 @@ const showClearButton = computed(() => {
   )
 })
 
-let cachedViewport: { width: number; height: number } | null = null
-let positionUpdateTimeout: ReturnType<typeof setTimeout> | null = null
-
-const throttledUpdatePosition = () => {
-  if (positionUpdateTimeout) return
-
-  positionUpdateTimeout = setTimeout(() => {
-    updatePosition()
-    positionUpdateTimeout = null
-  }, 16) // ~60fps
-}
-
-const updatePosition = () => {
-  if (!menuRef.value || !comboboxRef.value) return
-
-  const comboboxRect = comboboxRef.value.getBoundingClientRect()
-  const viewport = {
-    width: window.innerWidth,
-    height: window.innerHeight,
-  }
-
-  if (
-    !cachedViewport ||
-    cachedViewport.width !== viewport.width ||
-    cachedViewport.height !== viewport.height
-  ) {
-    cachedViewport = viewport
-  }
-
-  const minDropdownWidth =
+const { floatingStyle, updatePosition, startTracking, stopTracking } = useFloatingMenu({
+  anchorRef: comboboxRef,
+  menuRef,
+  align: 'start',
+  offset: 4,
+  matchAnchorWidth: true,
+  minWidth: () =>
     typeof props.minDropdownWidth === 'string'
       ? parseInt(props.minDropdownWidth)
-      : props.minDropdownWidth
-  const dropdownWidth = Math.max(comboboxRect.width, minDropdownWidth)
-
-  menuRef.value.style.width = `${dropdownWidth}px`
-
-  menuRef.value.style.top = '100%'
-  menuRef.value.style.bottom = 'auto'
-  menuRef.value.style.left = '0'
-  menuRef.value.style.right = 'auto'
-  menuRef.value.style.marginTop = '0.25rem'
-  menuRef.value.style.marginBottom = '0'
-
-  if (comboboxRect.left + dropdownWidth > cachedViewport.width) {
-    menuRef.value.style.right = '0'
-    menuRef.value.style.left = 'auto'
-  }
-
-  const menuHeight = menuRef.value.offsetHeight
-  if (comboboxRect.bottom + menuHeight > cachedViewport.height) {
-    menuRef.value.style.bottom = '100%'
-    menuRef.value.style.top = 'auto'
-    menuRef.value.style.marginTop = '0'
-    menuRef.value.style.marginBottom = '0.25rem'
-  }
-}
+      : props.minDropdownWidth,
+  maxHeight: () => props.maxHeight,
+  enabled: () => props.teleport,
+})
 
 const openDropdown = () => {
   if (props.disabled || props.readonly) return
@@ -406,6 +367,7 @@ const openDropdown = () => {
       inputRef.value?.focus()
     }
     updatePosition()
+    startTracking()
     document.addEventListener('click', handleClickOutside)
   })
 }
@@ -414,6 +376,7 @@ const closeDropdown = () => {
   isOpen.value = false
   highlightedIndex.value = -1
   searchQuery.value = ''
+  stopTracking()
   document.removeEventListener('click', handleClickOutside)
 }
 
@@ -617,9 +580,6 @@ watch(
 )
 
 onMounted(() => {
-  window.addEventListener('scroll', throttledUpdatePosition, true)
-  window.addEventListener('resize', throttledUpdatePosition)
-
   emit('mounted', {
     validate: validateField,
     focus,
@@ -630,13 +590,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside)
-  window.removeEventListener('scroll', throttledUpdatePosition, true)
-  window.removeEventListener('resize', throttledUpdatePosition)
-
-  if (positionUpdateTimeout) {
-    clearTimeout(positionUpdateTimeout)
-    positionUpdateTimeout = null
-  }
+  stopTracking()
 })
 </script>
 
@@ -739,57 +693,66 @@ onUnmounted(() => {
     </div>
 
     <!-- Dropdown menu -->
-    <Transition name="combobox-dropdown">
-      <div v-show="isOpen" ref="menuRef" class="base-combobox__menu" :style="{ maxHeight }">
-        <div v-if="loading" class="base-combobox__loading">
-          <div class="spinner"></div>
-          <span>Loading...</span>
-        </div>
+    <Teleport :to="teleportTo" :disabled="!teleport">
+      <Transition name="combobox-dropdown">
+        <div
+          v-show="isOpen"
+          ref="menuRef"
+          class="base-combobox__menu"
+          :class="{ vsui: teleport, 'base-combobox__menu--floating': teleport }"
+          :data-vsui-floating="teleport ? '' : null"
+          :style="[{ maxHeight }, floatingStyle]"
+        >
+          <div v-if="loading" class="base-combobox__loading">
+            <div class="spinner"></div>
+            <span>Loading...</span>
+          </div>
 
-        <div v-else-if="filteredOptions.length === 0" class="base-combobox__no-data">
-          {{ noDataText }}
-        </div>
+          <div v-else-if="filteredOptions.length === 0" class="base-combobox__no-data">
+            {{ noDataText }}
+          </div>
 
-        <div v-else class="base-combobox__options">
-          <div
-            v-for="(option, index) in filteredOptions"
-            :key="getValue(option)"
-            class="base-combobox__option"
-            :class="{
-              'base-combobox__option--selected': isOptionSelected(option),
-              'base-combobox__option--highlighted': highlightedIndex === index,
-            }"
-            @click.stop="selectOption(option)"
-            @mouseenter="highlightedIndex = index"
-          >
-            <slot name="option" :option="option" :selected="isOptionSelected(option)">
-              <span
-                class="base-combobox__option-label"
-                :class="{ 'base-combobox__option-label--wrap': wrapOptionText }"
-              >
-                {{ getLabel(option) }}
-              </span>
-              <!-- <span v-if="isOptionSelected(option)" class="base-combobox__option-check">✓</span> -->
-              <svg
-                v-if="isOptionSelected(option)"
-                class="base-combobox__option-check"
-                viewBox="0 0 14 14"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M11.6666 3.5L5.24992 9.91667L2.33325 7"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </slot>
+          <div v-else class="base-combobox__options">
+            <div
+              v-for="(option, index) in filteredOptions"
+              :key="getValue(option)"
+              class="base-combobox__option"
+              :class="{
+                'base-combobox__option--selected': isOptionSelected(option),
+                'base-combobox__option--highlighted': highlightedIndex === index,
+              }"
+              @click.stop="selectOption(option)"
+              @mouseenter="highlightedIndex = index"
+            >
+              <slot name="option" :option="option" :selected="isOptionSelected(option)">
+                <span
+                  class="base-combobox__option-label"
+                  :class="{ 'base-combobox__option-label--wrap': wrapOptionText }"
+                >
+                  {{ getLabel(option) }}
+                </span>
+                <!-- <span v-if="isOptionSelected(option)" class="base-combobox__option-check">✓</span> -->
+                <svg
+                  v-if="isOptionSelected(option)"
+                  class="base-combobox__option-check"
+                  viewBox="0 0 14 14"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M11.6666 3.5L5.24992 9.91667L2.33325 7"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </slot>
+            </div>
           </div>
         </div>
-      </div>
-    </Transition>
+      </Transition>
+    </Teleport>
 
     <div
       v-if="displayMessage"
@@ -1014,6 +977,18 @@ onUnmounted(() => {
       0 2px 4px -1px rgba(0, 0, 0, 0.06);
     overflow-y: auto;
     min-width: 100%;
+
+    &--floating {
+      position: fixed;
+      top: auto;
+      left: auto;
+      right: auto;
+      bottom: auto;
+      margin-top: 0;
+      margin-bottom: 0;
+      min-width: 0;
+      z-index: var(--vsui-floating-z-index, 1100);
+    }
   }
 
   &__options {

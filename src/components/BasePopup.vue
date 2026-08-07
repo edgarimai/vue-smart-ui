@@ -35,7 +35,9 @@ const handleClickOutside = (event: MouseEvent) => {
     popupRef.value &&
     !popupRef.value.contains(event.target as Node)
   ) {
-    const clickedInAnyPopup = (event.target as HTMLElement).closest('.base-popup')
+    const clickedInAnyPopup = (event.target as HTMLElement).closest(
+      '.base-popup, [data-vsui-floating]',
+    )
     if (!clickedInAnyPopup) {
       emit('update:modelValue', false)
       emit('close')

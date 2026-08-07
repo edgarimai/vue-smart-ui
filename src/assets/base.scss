@@ -248,6 +248,9 @@
   --vsui-dropdown-dark-border-color: #4b5563;
   --vsui-dropdown-dark-item-hover-bg: #4b5563;
 
+  // Floating menus (teleported dropdowns/comboboxes) - above popups (z-index 1000)
+  --vsui-floating-z-index: 1100;
+
   // Skeletons variables
   --vsui-skeleton-bg: var(--bg-emphasized);
   --vsui-skeleton-rectangle-height: 1.5rem;

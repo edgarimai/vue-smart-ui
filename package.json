@@ -31,7 +31,7 @@
   ],
   "license": "MIT",
   "type": "module",
-  "main": "./dist/vue-smart-ui.umd.js",
+  "main": "./dist/vue-smart-ui.umd.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "sideEffects": ["**/*.css", "**/*.scss"],
@@ -39,7 +39,7 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
-      "require": "./dist/vue-smart-ui.umd.js"
+      "require": "./dist/vue-smart-ui.umd.cjs"
     },
     "./style.css": "./dist/vue-smart-ui.css"
   },
@@ -70,6 +70,7 @@
     "eslint": "^9.18.0",
     "eslint-plugin-vue": "^9.32.0",
     "jsdom": "^27.4.0",
+    "postcss": "^8.5.32",
     "prettier": "^3.4.2",
     "sass-embedded": "^1.83.4",
     "typescript": "^6.0.3",

@@ -474,8 +474,7 @@ describe('BaseSlider', () => {
       expect(wrapper.findAll('.base-slider__thumb')).toHaveLength(2)
     })
 
-    // BUG: a track click in range mode always moves thumb 0, even near the right end
-    it.fails('moves the end thumb when the track is clicked near the right end', async () => {
+    it('moves the end thumb when the track is clicked near the right end', async () => {
       const wrapper = mountSlider({ range: true, modelValue: [20, 80] })
 
       await wrapper.find('.base-slider__track').trigger('mousedown', { clientX: 95 })
@@ -536,8 +535,7 @@ describe('BaseSlider', () => {
       expect((wrapper.find('.base-slider__thumb').element as HTMLElement).style.left).toBe('100%')
     })
 
-    // BUG: an external prop change is echoed back as update:modelValue
-    it.fails('does not emit update:modelValue on a pure prop change', async () => {
+    it('does not emit update:modelValue on a pure prop change', async () => {
       const wrapper = mountSlider({ modelValue: 10 })
 
       await wrapper.setProps({ modelValue: 40 })
@@ -545,8 +543,7 @@ describe('BaseSlider', () => {
       expect(wrapper.emitted('update:modelValue')).toBeUndefined()
     })
 
-    // BUG: label `for` points at an id that no element carries
-    it.fails('links the label to an existing element', () => {
+    it('links the label to an existing element', () => {
       const wrapper = mountSlider({ label: 'Volume' }, true)
       const target = wrapper.find('.base-slider__label').attributes('for')
 

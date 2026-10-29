@@ -112,26 +112,24 @@ const validate = (value: unknown): boolean => {
     }
 
     if (typeof rule === 'object') {
-      if (rule.message) {
-        let validatorName: string | undefined, param: unknown
+      // Every key is a rule ({ required: true, min: 2 }), whatever its position; `message` and
+      // `validator` are not, and `false` switches a rule off. A custom `validator` runs
+      // whether or not the rule also has a `message`.
+      for (const [validatorName, param] of Object.entries(rule)) {
+        if (validatorName === 'message' || validatorName === 'validator' || param === false)
+          continue
 
-        for (const key in rule) {
-          if (key !== 'message') {
-            validatorName = key
-            param = rule[key]
-            break
-          }
-        }
+        const validator = validators[validatorName]
+        if (!validator) continue
 
-        const validator = validators[validatorName as string]
-        if (validator) {
-          const result = validator(value, param as number)
-          if (!result.valid) {
-            error.value = rule.message || result.message
-            return false
-          }
+        const result = validator(value, param as number)
+        if (!result.valid) {
+          error.value = rule.message || result.message
+          return false
         }
-      } else if (typeof rule.validator === 'function') {
+      }
+
+      if (typeof rule.validator === 'function') {
         const isValid = rule.validator(value)
         if (!isValid) {
           error.value = rule.message || 'Invalid selection'
@@ -223,15 +221,17 @@ const selectOption = (option: unknown) => {
 
   const newValue = Array.isArray(props.modelValue) ? [...props.modelValue] : []
   const isAlreadySelected = isSelected(option)
+  // A model that already holds primitives keeps holding primitives, even with object options.
+  const modelHoldsPrimitives =
+    newValue.length > 0 && (typeof newValue[0] !== 'object' || newValue[0] === null)
 
   if (isAlreadySelected) {
-    if (typeof newValue[0] === 'object' && newValue[0] !== null)
-      newValue.splice(
-        newValue.findIndex((item) => getValue(item) === optionValue),
-        1,
-      )
-    else newValue.splice(newValue.indexOf(optionValue), 1)
-  } else newValue.push(isObjectOption ? option : optionValue)
+    const index =
+      typeof newValue[0] === 'object' && newValue[0] !== null
+        ? newValue.findIndex((item) => getValue(item) === optionValue)
+        : newValue.indexOf(optionValue)
+    if (index >= 0) newValue.splice(index, 1)
+  } else newValue.push(isObjectOption && !modelHoldsPrimitives ? option : optionValue)
 
   selectedValue.value = newValue
 }
@@ -240,7 +240,7 @@ const isRequired = computed(() => {
   return props.rules.some((rule) => {
     if (rule === 'required') return true
     if (typeof rule === 'object') {
-      return rule.required || Object.keys(rule)[0] === 'required'
+      return !!rule.required
     }
     return false
   })

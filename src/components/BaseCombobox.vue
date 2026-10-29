@@ -195,13 +195,15 @@ const validate = (value: ComboboxModelValue) => {
     }
 
     if (typeof rule === 'object') {
-      const entry = Object.entries(rule)[0]
-      if (!entry) continue
+      // Every key is a rule ({ min: 1, max: 3 }), whatever its position; `message` and
+      // `validator` are not, and `false` switches a rule off ({ required: false }).
+      for (const [validatorName, config] of Object.entries(rule)) {
+        if (validatorName === 'message' || validatorName === 'validator' || config === false)
+          continue
 
-      const [validatorName, config] = entry
-      const validator = validators[validatorName]
+        const validator = validators[validatorName]
+        if (!validator) continue
 
-      if (validator) {
         const result = validator(value, config as number)
         if (!result.valid) {
           error.value = rule.message || result.message
@@ -336,7 +338,7 @@ const isRequired = computed(() => {
   return props.rules.some((rule) => {
     if (rule === 'required') return true
     if (typeof rule === 'object') {
-      return rule.required || Object.keys(rule)[0] === 'required'
+      return !!rule.required
     }
     return false
   })
@@ -352,16 +354,34 @@ const showClearButton = computed(() => {
   )
 })
 
+// The floating menu works in pixels: '20rem' used to be read as 20px by parseInt, and an
+// unparsable value became NaN. Units px (or none), rem and em are supported; anything else
+// means "no minimum".
+const resolveMinWidth = (value: string | number): number => {
+  if (typeof value === 'number') return value
+
+  const match = value.trim().match(/^(\d*\.?\d+)\s*(px|rem|em)?$/i)
+  if (!match) return 0
+
+  const amount = parseFloat(match[1])
+  const unit = match[2]?.toLowerCase()
+  if (unit === 'rem' || unit === 'em') {
+    const rootFontSize =
+      typeof document !== 'undefined'
+        ? parseFloat(getComputedStyle(document.documentElement).fontSize)
+        : NaN
+    return amount * (rootFontSize || 16)
+  }
+  return amount
+}
+
 const { floatingStyle, updatePosition, startTracking, stopTracking } = useFloatingMenu({
   anchorRef: comboboxRef,
   menuRef,
   align: 'start',
   offset: 4,
   matchAnchorWidth: true,
-  minWidth: () =>
-    typeof props.minDropdownWidth === 'string'
-      ? parseInt(props.minDropdownWidth)
-      : props.minDropdownWidth,
+  minWidth: () => resolveMinWidth(props.minDropdownWidth),
   maxHeight: () => props.maxHeight,
   enabled: () => props.teleport,
 })
@@ -1184,18 +1204,21 @@ onUnmounted(() => {
 }
 
 // Spinner animation
-.spinner {
+// Scoped to the combobox (the menu is teleported out of it): an unscoped .spinner restyled
+// every element with that class in the consumer's page.
+.base-combobox .spinner,
+.base-combobox__menu .spinner {
   width: 1rem;
   height: 1rem;
   border: 2px solid currentColor;
   border-bottom-color: transparent;
   border-radius: 50%;
   display: inline-block;
-  animation: rotation 1s linear infinite;
+  animation: vsui-rotation 1s linear infinite;
   color: var(--vsui-input-placeholder-color, #9ca3af);
 }
 
-@keyframes rotation {
+@keyframes vsui-rotation {
   0% {
     transform: rotate(0deg);
   }

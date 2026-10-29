@@ -199,10 +199,15 @@ const validate = (value: string | number): boolean => {
     }
 
     if (typeof rule === 'object') {
-      const [validatorName, config] = Object.entries(rule)[0]
-      const validator = validators[validatorName]
+      // Every key is a rule ({ min: 3, max: 10 }), whatever its position; `message` and
+      // `validator` are not, and `false` switches a rule off ({ required: false }).
+      for (const [validatorName, config] of Object.entries(rule)) {
+        if (validatorName === 'message' || validatorName === 'validator' || config === false)
+          continue
 
-      if (validator) {
+        const validator = validators[validatorName]
+        if (!validator) continue
+
         const result = validator(value, config as string | number)
         if (!result.valid) {
           error.value = (rule.message as string) || result.message
@@ -543,10 +548,15 @@ const handleBlur = (event: FocusEvent): void => {
   emit('blur', event)
 
   if (props.validateOnBlur) {
-    const isValid = validate(inputValue.value)
+    const isValid = validate(valueForValidation())
     emit('validation', { valid: isValid, error: error.value })
   }
 }
+
+// The display value of a currency input is formatted text ("R$ 1.000,00"), which
+// minValue/maxValue turn into NaN; validate the numeric model value instead.
+const valueForValidation = (): string | number =>
+  props.mask === 'currency' ? ((props.modelValue ?? '') as string | number) : inputValue.value
 
 const focus = (): void => {
   inputRef.value?.focus()
@@ -563,7 +573,7 @@ const displayMessage = computed(() => {
 })
 
 const validateField = (): boolean => {
-  const isValid = validate(inputValue.value)
+  const isValid = validate(valueForValidation())
   emit('validation', { valid: isValid, error: error.value, name: props.name })
   return isValid
 }
@@ -574,7 +584,7 @@ const isRequired = computed(() => {
   return props.rules.some((rule) => {
     if (rule === 'required') return true
     if (typeof rule === 'object') {
-      return (rule as Record<string, unknown>).required || Object.keys(rule)[0] === 'required'
+      return !!(rule as Record<string, unknown>).required
     }
     return false
   })

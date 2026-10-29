@@ -874,8 +874,7 @@ describe('BaseTable pagination', () => {
     })
   })
 
-  // BUG: a partial pagination object replaces the defaults, so { pageSize } leaves enabled undefined
-  it.fails('keeps pagination on when only pageSize is provided', () => {
+  it('keeps pagination on when only pageSize is provided', () => {
     const wrapper = mountTable({ data: makeRows(30), pagination: { pageSize: 20 } })
 
     expect(bodyRows(wrapper)).toHaveLength(20)
@@ -1058,8 +1057,7 @@ describe('BaseTable selection', () => {
       expect(wrapper.emitted('select')).toHaveLength(1)
     })
 
-    // BUG: the select-all state looks rows up without their index, so it never reads as checked
-    it.fails('checks the header checkbox after select-all', async () => {
+    it('checks the header checkbox after select-all', async () => {
       const wrapper = mountTable({ selectable: true, data: makeRows(3, false) })
 
       await headerCheckbox(wrapper).setValue(true)
@@ -1068,8 +1066,7 @@ describe('BaseTable selection', () => {
       expect(isHeaderChecked(wrapper)).toBe(true)
     })
 
-    // BUG: because the header never reads as checked, the second select-all click cannot deselect
-    it.fails('deselects every row when select-all is toggled twice', async () => {
+    it('deselects every row when select-all is toggled twice', async () => {
       const wrapper = mountTable({ selectable: true, data: makeRows(3, false) })
 
       await headerCheckbox(wrapper).setValue(true)
@@ -1087,5 +1084,36 @@ describe('BaseTable selection', () => {
 
       expect(isRowChecked(wrapper, 0)).toBe(false)
     })
+  })
+})
+
+describe('BaseTable partial pagination object', () => {
+  it('shows the optional parts only when the pagination object asks for them', () => {
+    const wrapper = mountTable({ data: makeRows(30), pagination: { enabled: true } })
+
+    expect(wrapper.find('.base-table__pagination').exists()).toBe(true)
+    expect(wrapper.find('.base-table__pagination-info').exists()).toBe(false)
+    expect(wrapper.find('.base-table__page-size').exists()).toBe(false)
+  })
+
+  it('turns pagination on when only the page size is given, without adding the optional parts', () => {
+    const wrapper = mountTable({ data: makeRows(30), pagination: { pageSize: 20 } })
+
+    expect(wrapper.find('.base-table__pagination').exists()).toBe(true)
+    expect(wrapper.find('.base-table__pagination-info').exists()).toBe(false)
+  })
+
+  it('still shows everything for the default pagination', () => {
+    const wrapper = mountTable({ data: makeRows(30) })
+
+    expect(wrapper.find('.base-table__pagination-info').exists()).toBe(true)
+    expect(wrapper.find('.base-table__page-size').exists()).toBe(true)
+  })
+
+  it('lets a partial object switch pagination off explicitly', () => {
+    const wrapper = mountTable({ data: makeRows(30), pagination: { enabled: false } })
+
+    expect(wrapper.find('.base-table__pagination').exists()).toBe(false)
+    expect(bodyRows(wrapper)).toHaveLength(30)
   })
 })

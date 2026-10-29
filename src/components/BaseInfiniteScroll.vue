@@ -118,7 +118,9 @@ onUnmounted(() => {
       border-bottom-color: transparent;
       border-radius: 50%;
       display: inline-block;
-      animation: rotation 1s linear infinite;
+      animation: vsui-rotation 1s linear infinite;
+      // Same colour as before the combobox spinner rule was scoped (it used to leak into this one).
+      color: var(--vsui-input-placeholder-color, #9ca3af);
     }
   }
 
@@ -128,7 +130,7 @@ onUnmounted(() => {
     color: #6b7280;
   }
 
-  @keyframes rotation {
+  @keyframes vsui-rotation {
     0% {
       transform: rotate(0deg);
     }

@@ -76,6 +76,9 @@ const emit = defineEmits<{
 const textareaRef = ref<HTMLTextAreaElement | null>(null)
 const isFocused = ref(false)
 const error = ref('')
+// Once a value has been validated (e.g. on blur), later input is re-validated so a stale
+// error clears as soon as the value is fixed. BaseInput behaves the same way.
+const hasBeenValidated = ref(false)
 
 const textareaClasses = computed(() => ({
   'vsui base-textarea': true,
@@ -115,6 +118,8 @@ const validateField = (): boolean => {
 const validate = (value: string): boolean => {
   if (!props.rules.length) return true
 
+  hasBeenValidated.value = true
+
   // console.log('Validating value:', value)
   // console.log('Rules:', props.rules)
 
@@ -132,10 +137,15 @@ const validate = (value: string): boolean => {
     }
 
     if (typeof rule === 'object') {
-      const [validatorName, config] = Object.entries(rule)[0]
-      const validator = validators[validatorName]
+      // Every key is a rule ({ min: 3, max: 10 }), whatever its position; `message` and
+      // `validator` are not, and `false` switches a rule off ({ required: false }).
+      for (const [validatorName, config] of Object.entries(rule)) {
+        if (validatorName === 'message' || validatorName === 'validator' || config === false)
+          continue
 
-      if (validator) {
+        const validator = validators[validatorName]
+        if (!validator) continue
+
         const result = validator(value, config as number)
         if (!result.valid) {
           error.value = rule.message || result.message
@@ -162,7 +172,7 @@ const handleInput = (event: Event) => {
   emit('update:modelValue', target.value)
   emit('input', event)
 
-  if (props.validateOnInput) {
+  if (props.validateOnInput || hasBeenValidated.value) {
     const isValid = validate(target.value)
     emit('validation', { valid: isValid, error: error.value })
   }

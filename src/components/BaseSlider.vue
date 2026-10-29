@@ -141,24 +141,49 @@ watch(
   },
 )
 
-// Watch for internal changes to update the model
-watch(sliderValue, (newValue: number | number[]) => {
-  emit('update:modelValue', newValue)
-})
+// Emits only the changes the component makes itself (user input, setValue, mount
+// normalization). A model change that comes from the parent is not echoed back.
+const commitValue = (value: number | number[]) => {
+  // Ranges are always a new array; a number is only a change when it differs.
+  const changed = Array.isArray(value) || sliderValue.value !== value
+  sliderValue.value = value
+  if (changed) emit('update:modelValue', value)
+}
 
 // Methods
-const updateValue = (event: MouseEvent | Touch, thumbIndex = 0) => {
-  if (props.disabled) return
-
+const valueFromClientX = (clientX: number): number => {
   const rect = sliderTrack.value!.getBoundingClientRect()
-  const offsetX = event.clientX - rect.left
+  const offsetX = clientX - rect.left
   const percentage = Math.min(Math.max(offsetX / rect.width, 0), 1)
   const rawValue = props.min + percentage * (props.max - props.min)
   // Snap to a grid that starts at `min`, so min=1 and step=5 gives 1, 6, 11.
   const steppedValue = roundToStepPrecision(
     props.min + Math.round((rawValue - props.min) / props.step) * props.step,
   )
-  const clampedValue = Math.min(Math.max(steppedValue, props.min), props.max)
+  return Math.min(Math.max(steppedValue, props.min), props.max)
+}
+
+// In range mode a press on the track moves the thumb closest to the pressed value.
+const nearestThumbIndex = (clientX: number): number => {
+  if (!isRange.value) return 0
+
+  const [start, end] = sliderValue.value as number[]
+  const value = valueFromClientX(clientX)
+  const distanceToStart = Math.abs(value - start)
+  const distanceToEnd = Math.abs(value - end)
+
+  if (distanceToStart === distanceToEnd) return value > end ? 1 : 0
+  return distanceToStart < distanceToEnd ? 0 : 1
+}
+
+const handleTrackPress = (event: MouseEvent | Touch) => {
+  updateValue(event, nearestThumbIndex(event.clientX))
+}
+
+const updateValue = (event: MouseEvent | Touch, thumbIndex = 0) => {
+  if (props.disabled) return
+
+  const clampedValue = valueFromClientX(event.clientX)
 
   if (isRange.value) {
     const newValues = [...(sliderValue.value as number[])]
@@ -170,9 +195,9 @@ const updateValue = (event: MouseEvent | Touch, thumbIndex = 0) => {
       newValues[1] = newValues[0]
     }
 
-    sliderValue.value = newValues
+    commitValue(newValues)
   } else {
-    sliderValue.value = clampedValue
+    commitValue(clampedValue)
   }
 
   emit('change', sliderValue.value)
@@ -238,9 +263,9 @@ const handleKeyDown = (event: KeyboardEvent, thumbIndex = 0) => {
       newValues[1] = newValues[0]
     }
 
-    sliderValue.value = newValues
+    commitValue(newValues)
   } else {
-    sliderValue.value = newValue
+    commitValue(newValue)
   }
 
   emit('change', sliderValue.value)
@@ -249,16 +274,16 @@ const handleKeyDown = (event: KeyboardEvent, thumbIndex = 0) => {
 
 onMounted(() => {
   if (isRange.value && (!Array.isArray(sliderValue.value) || sliderValue.value.length !== 2)) {
-    sliderValue.value = [props.min, props.max]
+    commitValue([props.min, props.max])
   } else if (!isRange.value && Array.isArray(sliderValue.value)) {
-    sliderValue.value = props.min
+    commitValue(props.min)
   }
 
   emit('mounted', {
     id: autoId.value,
     getValue: () => sliderValue.value,
     setValue: (val: number | number[]) => {
-      sliderValue.value = val
+      commitValue(val)
     },
   })
 })
@@ -279,8 +304,8 @@ onMounted(() => {
       <div
         ref="sliderTrack"
         class="base-slider__track"
-        @mousedown="updateValue($event)"
-        @touchstart.prevent="updateValue($event.touches[0])"
+        @mousedown="handleTrackPress($event)"
+        @touchstart.prevent="handleTrackPress($event.touches[0])"
       >
         <div class="base-slider__track-fill" :style="trackFillStyle"></div>
 
@@ -303,6 +328,7 @@ onMounted(() => {
           v-for="(position, index) in thumbPositions"
           :key="index"
           ref="thumbRefs"
+          :id="index === 0 ? autoId : undefined"
           class="base-slider__thumb"
           :style="{ left: position }"
           @mousedown.stop="startDrag($event, index)"

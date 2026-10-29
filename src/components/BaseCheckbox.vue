@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, nextTick } from 'vue'
 import { useAutoId } from '../composables/autoId'
 
 export type CheckboxSize = 'small' | 'medium' | 'large'
@@ -29,9 +29,26 @@ const { autoId } = useAutoId('checkbox', props)
 
 const emit = defineEmits<{ 'update:modelValue': [value: boolean | unknown[]] }>()
 
+// Same value, not only same reference: an object reloaded from an API is a different
+// reference with the same content. Primitives behave as they did with includes/indexOf.
+const isSameValue = (a: unknown, b: unknown): boolean => {
+  if (a === b || (a !== a && b !== b)) return true
+  if (typeof a !== 'object' || typeof b !== 'object' || a === null || b === null) return false
+  if (Array.isArray(a) !== Array.isArray(b)) return false
+
+  const keysA = Object.keys(a)
+  const keysB = Object.keys(b)
+  return (
+    keysA.length === keysB.length &&
+    keysA.every((key) =>
+      isSameValue((a as Record<string, unknown>)[key], (b as Record<string, unknown>)[key]),
+    )
+  )
+}
+
 const isChecked = computed(() => {
   if (Array.isArray(props.modelValue)) {
-    return props.modelValue.includes(props.value)
+    return props.modelValue.some((item) => isSameValue(item, props.value))
   }
   return props.modelValue
 })
@@ -43,13 +60,18 @@ const handleChange = (event: Event) => {
     if (target.checked) {
       newValue.push(props.value)
     } else {
-      const index = newValue.indexOf(props.value)
+      const index = newValue.findIndex((item) => isSameValue(item, props.value))
       if (index > -1) newValue.splice(index, 1)
     }
     emit('update:modelValue', newValue)
   } else {
     emit('update:modelValue', target.checked)
   }
+
+  // A click clears the native indeterminate state, but the prop stays in charge of it.
+  nextTick(() => {
+    target.indeterminate = props.indeterminate
+  })
 }
 </script>
 

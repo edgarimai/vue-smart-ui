@@ -38,9 +38,18 @@ const props = withDefaults(defineProps<Props>(), {
 
 const { autoId } = useAutoId('button', props)
 
-defineEmits<{
+const emit = defineEmits<{
   click: [event: MouseEvent]
 }>()
+
+const handleClick = (event: MouseEvent) => {
+  // `loading` only blocked the pointer (CSS), so Enter/Space and a submit button still fired.
+  if (props.loading) {
+    event.preventDefault()
+    return
+  }
+  emit('click', event)
+}
 </script>
 
 <template>
@@ -59,7 +68,8 @@ defineEmits<{
       },
     ]"
     :disabled="disabled"
-    @click="$emit('click', $event)"
+    :aria-busy="loading || undefined"
+    @click="handleClick"
   >
     <div class="button-content" :class="[{ hidden: loading }]">
       <template v-if="$slots.prefix">
@@ -251,11 +261,13 @@ defineEmits<{
     border-bottom-color: transparent;
     border-radius: 50%;
     display: inline-block;
-    animation: rotation 1s linear infinite;
+    animation: vsui-rotation 1s linear infinite;
     position: absolute;
+    // Same colour as before the combobox spinner rule was scoped (it used to leak into this one).
+    color: var(--vsui-input-placeholder-color, #9ca3af);
   }
 
-  @keyframes rotation {
+  @keyframes vsui-rotation {
     0% {
       transform: rotate(0deg);
     }

@@ -211,8 +211,7 @@ describe('BaseCheckbox', () => {
   })
 
   describe('known defects', () => {
-    // BUG: the browser clears `indeterminate` on click but the prop stays true, so the DOM desyncs
-    it.fails('keeps the DOM indeterminate state in sync with the prop after a click', async () => {
+    it('keeps the DOM indeterminate state in sync with the prop after a click', async () => {
       const wrapper = mountCheckbox({ indeterminate: true }, {}, true)
 
       box(wrapper).click()
@@ -222,8 +221,7 @@ describe('BaseCheckbox', () => {
       expect(box(wrapper).indeterminate).toBe(true)
     })
 
-    // BUG: array models compare values by identity, so a structurally equal clone is not checked
-    it.fails('treats a clone of an object value as checked', () => {
+    it('treats a clone of an object value as checked', () => {
       const wrapper = mountCheckbox({ modelValue: [{ id: 1 }], value: { id: 1 } })
 
       expect(box(wrapper).checked).toBe(true)

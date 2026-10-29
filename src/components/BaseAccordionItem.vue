@@ -32,6 +32,7 @@ const accordion = inject<AccordionContext>('accordion', createStandaloneContext,
 const id = ref<symbol>(Symbol())
 const contentHeight = ref('0px')
 const contentRef = ref<HTMLDivElement | null>(null)
+const bodyRef = ref<HTMLDivElement | null>(null)
 
 const isActive = computed(() => accordion.activeItems.value.includes(id.value))
 const variant = computed(() => unref(accordion.variant))
@@ -49,14 +50,15 @@ const updateHeight = () => {
 }
 
 // Update height when the content changes. Created on mount: ResizeObserver does not exist
-// during server-side rendering.
+// during server-side rendering. It watches the body, not the content wrapper: the wrapper's
+// height is the inline `height` set here, so it never changes when the content grows.
 let observer: ResizeObserver | null = null
 
 onMounted(() => {
   if (contentRef.value) {
-    if (typeof ResizeObserver !== 'undefined') {
+    if (typeof ResizeObserver !== 'undefined' && bodyRef.value) {
       observer = new ResizeObserver(updateHeight)
-      observer.observe(contentRef.value)
+      observer.observe(bodyRef.value)
     }
     updateHeight()
   }
@@ -102,7 +104,7 @@ watch(isActive, updateHeight)
     </button>
 
     <div class="base-accordion-item__content" ref="contentRef" :style="{ height: contentHeight }">
-      <div class="base-accordion-item__body">
+      <div ref="bodyRef" class="base-accordion-item__body">
         <slot />
       </div>
     </div>

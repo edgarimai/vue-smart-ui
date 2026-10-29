@@ -350,8 +350,7 @@ describe('BaseSegmentedButtons multiple selection', () => {
     expect(selectedLabels(wrapper)).toEqual([])
   })
 
-  // BUG: with a primitive model and object options, clicking pushes the option OBJECT into the array
-  it.fails('keeps a primitive model consistent when object options are clicked', async () => {
+  it('keeps a primitive model consistent when object options are clicked', async () => {
     const wrapper = mount(BaseSegmentedButtons, {
       props: { options: OBJECTS, multiple: true, modelValue: [1] },
     })
@@ -361,8 +360,7 @@ describe('BaseSegmentedButtons multiple selection', () => {
     expect(wrapper.emitted('update:modelValue')).toEqual([[[1, 2]]])
   })
 
-  // BUG: with a primitive model and object options, a second click does not deselect the option
-  it.fails('deselects on the second click with a primitive model and object options', async () => {
+  it('deselects on the second click with a primitive model and object options', async () => {
     const wrapper = mountModel({ options: OBJECTS, multiple: true, modelValue: [1] })
 
     await buttons(wrapper)[1].trigger('click')
@@ -543,8 +541,7 @@ describe('BaseSegmentedButtons validation', () => {
     expect(lastEmitted(wrapper, 'validation')).toEqual({ valid: true, error: '' })
   })
 
-  // BUG: a { validator, message } rule never runs the validator (it is treated as a built-in name)
-  it.fails('runs a custom validator rule that also has a message', async () => {
+  it('runs a custom validator rule that also has a message', async () => {
     const wrapper = mount(BaseSegmentedButtons, {
       props: {
         options: PRIMITIVES,

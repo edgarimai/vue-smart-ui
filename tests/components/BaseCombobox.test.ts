@@ -1384,8 +1384,7 @@ describe('BaseCombobox validation', () => {
     expect(getApi(wrapper).validate()).toBe(false)
   })
 
-  // BUG: an object rule is only evaluated by its first key, so { message, required } is not enforced
-  it.fails('enforces { message, required: true } when message is the first key', () => {
+  it('enforces { message, required: true } when message is the first key', () => {
     const wrapper = mountCombobox({ rules: [{ message: 'Pick one', required: true }] })
 
     expect(getApi(wrapper).validate()).toBe(false)
@@ -1528,8 +1527,7 @@ describe('BaseCombobox teleport and menu sizing', () => {
     expect(getMenu()?.style.width).toBe('250px')
   })
 
-  // BUG: a minDropdownWidth in rem is parsed with parseInt, so '20rem' becomes 20px
-  it.fails('does not treat minDropdownWidth "20rem" as 20px', async () => {
+  it('does not treat minDropdownWidth "20rem" as 20px', async () => {
     const wrapper = mountCombobox({ minDropdownWidth: '20rem' })
 
     await openCombobox(wrapper)
@@ -1625,5 +1623,29 @@ describe('BaseCombobox v-model flow with a parent', () => {
 
     expect(errors).not.toHaveBeenCalled()
     expect(warnings).not.toHaveBeenCalled()
+  })
+})
+
+describe('BaseCombobox minDropdownWidth units', () => {
+  it.each<[string | number, string]>([
+    ['20rem', '320px'],
+    ['2.5em', '40px'],
+    ['300px', '300px'],
+    ['300', '300px'],
+    [260, '260px'],
+  ])('resolves %s to a %s minimum width', async (value, expected) => {
+    const wrapper = mountCombobox({ minDropdownWidth: value })
+
+    await openCombobox(wrapper)
+
+    expect(getMenu()?.style.width).toBe(expected)
+  })
+
+  it('ignores an unparsable value instead of producing NaN', async () => {
+    const wrapper = mountCombobox({ minDropdownWidth: 'wide' })
+
+    await openCombobox(wrapper)
+
+    expect(getMenu()?.getAttribute('style') ?? '').not.toContain('NaN')
   })
 })

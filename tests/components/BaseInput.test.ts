@@ -1035,8 +1035,7 @@ describe('BaseInput known bugs', () => {
     expect(lastValidation(wrapper)).toStrictEqual({ valid: true, error: '' })
   })
 
-  // BUG: blur runs Number('R$ 1.000,00') which is NaN, so minValue always fails on a currency mask
-  it.fails('accepts a currency value above minValue on blur', async () => {
+  it('accepts a currency value above minValue on blur', async () => {
     const wrapper = mountVModel({ mask: 'currency', modelValue: 1000, rules: [{ minValue: 100 }] })
 
     await blur(wrapper)
@@ -1044,8 +1043,7 @@ describe('BaseInput known bugs', () => {
     expect(lastValidation(wrapper)).toStrictEqual({ valid: true, error: '' })
   })
 
-  // BUG: blur runs Number('R$ 1.000,00') which is NaN, so maxValue always fails on a currency mask
-  it.fails('accepts a currency value below maxValue on blur', async () => {
+  it('accepts a currency value below maxValue on blur', async () => {
     const wrapper = mountVModel({ mask: 'currency', modelValue: 1000, rules: [{ maxValue: 5000 }] })
 
     await blur(wrapper)
@@ -1080,8 +1078,7 @@ describe('BaseInput known bugs', () => {
     })
   })
 
-  // BUG: only the first key of a rule object is read, so { message, min } never runs min
-  it.fails('runs min when the message key comes first in the rule object', async () => {
+  it('runs min when the message key comes first in the rule object', async () => {
     const wrapper = mountVModel({ rules: [{ message: 'Too short', min: 3 }] })
 
     await typeInto(wrapper, 'ab')
@@ -1090,8 +1087,7 @@ describe('BaseInput known bugs', () => {
     expect(lastValidation(wrapper)).toStrictEqual({ valid: false, error: 'Too short' })
   })
 
-  // BUG: { required: false } still enforces the required validator
-  it.fails('does not enforce { required: false }', async () => {
+  it('does not enforce { required: false }', async () => {
     const wrapper = mountVModel({ rules: [{ required: false }] })
 
     await blur(wrapper)
@@ -1099,8 +1095,7 @@ describe('BaseInput known bugs', () => {
     expect(lastValidation(wrapper)).toStrictEqual({ valid: true, error: '' })
   })
 
-  // BUG: { required: false } still marks the field as required in the label
-  it.fails('does not mark { required: false } as required', () => {
+  it('does not mark { required: false } as required', () => {
     const wrapper = mountInput({ label: 'Name', rules: [{ required: false }] })
 
     expect(wrapper.find('.base-input__required').exists()).toBe(false)

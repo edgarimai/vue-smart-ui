@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { h } from 'vue'
 import { mount, type VueWrapper } from '@vue/test-utils'
 import BaseAccordion from '../../src/components/BaseAccordion.vue'
@@ -265,5 +265,55 @@ describe('BaseAccordionItem', () => {
     const wrapper = mountAccordion()
 
     expect(headers(wrapper)[0].attributes('type')).toBe('button')
+  })
+})
+
+describe('BaseAccordionItem content resize tracking', () => {
+  const observed: Element[] = []
+  let notify: () => void = () => undefined
+
+  class RecordingResizeObserver {
+    constructor(callback: () => void) {
+      notify = callback
+    }
+    observe(target: Element) {
+      observed.push(target)
+    }
+    unobserve() {}
+    disconnect() {}
+  }
+
+  afterEach(() => {
+    observed.length = 0
+    notify = () => undefined
+    vi.unstubAllGlobals()
+  })
+
+  it('observes the item body, whose size follows the content', () => {
+    vi.stubGlobal('ResizeObserver', RecordingResizeObserver)
+
+    const wrapper = mountAccordion({}, [{ title: 'Only', body: 'Body' }])
+
+    expect(observed).toHaveLength(1)
+    expect(observed[0].classList.contains('base-accordion-item__body')).toBe(true)
+    wrapper.unmount()
+  })
+
+  it('re-measures an open item when the observed content resizes', async () => {
+    vi.stubGlobal('ResizeObserver', RecordingResizeObserver)
+    let scrollHeight = 40
+    vi.spyOn(HTMLElement.prototype, 'scrollHeight', 'get').mockImplementation(() => scrollHeight)
+
+    const wrapper = mountAccordion({}, [{ title: 'Only', body: 'Body' }])
+    await wrapper.find('.base-accordion-item__header').trigger('click')
+    const content = wrapper.find('.base-accordion-item__content')
+    expect(content.attributes('style')).toContain('height: 40px')
+
+    scrollHeight = 120
+    notify()
+    await wrapper.vm.$nextTick()
+
+    expect(content.attributes('style')).toContain('height: 120px')
+    wrapper.unmount()
   })
 })

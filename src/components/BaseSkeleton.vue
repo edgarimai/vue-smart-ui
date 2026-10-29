@@ -93,12 +93,12 @@ withDefaults(defineProps<Props>(), {
         var(--vsui-skeleton-shine, rgba(255, 255, 255, 0.3)),
         transparent
       );
-      animation: skeleton-shine 1.5s infinite;
+      animation: vsui-skeleton-shine 1.5s infinite;
     }
   }
 }
 
-@keyframes skeleton-shine {
+@keyframes vsui-skeleton-shine {
   0% {
     transform: translateX(-100%);
   }

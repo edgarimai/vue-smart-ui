@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import { useAutoId } from '../composables/autoId'
+import { DEFAULT_PAGINATION } from './tablePagination'
 import BaseButton from './BaseButton.vue'
 import BaseCheckbox from './BaseCheckbox.vue'
 import BaseInput from './BaseInput.vue'
@@ -58,12 +59,8 @@ const props = withDefaults(defineProps<Props>(), {
   filterable: false,
   selectable: false,
   pagination: () => ({
-    enabled: true,
-    pageSize: 10,
-    pageSizeOptions: [5, 10, 25, 50, 100],
-    showTotal: true,
-    showPageSizeSelector: true,
-    showFirstLastButtons: true,
+    ...DEFAULT_PAGINATION,
+    pageSizeOptions: [...DEFAULT_PAGINATION.pageSizeOptions],
   }),
   responsive: true,
   emptyMessage: 'No data found',
@@ -108,7 +105,22 @@ const sortState = ref<{ column: string | null; direction: SortDirection }>({
 const filterState = ref<Record<string, string | number>>({})
 const selectedRows = ref<Set<unknown>>(new Set())
 const currentPage = ref(1)
-const pageSize = ref<number>(props.pagination.pageSize ?? 10)
+// A partial `pagination` ({ pageSize: 20 }) keeps the defaults for `enabled`, `pageSize` and
+// `pageSizeOptions`. The optional parts (total, page-size selector, first/last buttons) stay
+// opt-in: a partial object that already enabled pagination never showed them.
+const paginationConfig = computed<Required<TablePagination>>(() => {
+  const merged = {
+    ...DEFAULT_PAGINATION,
+    showTotal: false,
+    showPageSizeSelector: false,
+    showFirstLastButtons: false,
+  }
+  for (const [key, value] of Object.entries(props.pagination)) {
+    if (value !== undefined) (merged as Record<string, unknown>)[key] = value
+  }
+  return merged
+})
+const pageSize = ref<number>(paginationConfig.value.pageSize)
 const searchQuery = ref('')
 
 // A new search can leave the current page past the last one, which renders an empty table.
@@ -160,11 +172,11 @@ const filteredData = computed(() => {
 
 // pagination
 const totalPages = computed(() =>
-  props.pagination.enabled ? Math.ceil(filteredData.value.length / pageSize.value) : 1,
+  paginationConfig.value.enabled ? Math.ceil(filteredData.value.length / pageSize.value) : 1,
 )
 
 const paginatedData = computed(() => {
-  if (!props.pagination.enabled) return filteredData.value
+  if (!paginationConfig.value.enabled) return filteredData.value
 
   const start = (currentPage.value - 1) * pageSize.value
   const end = start + pageSize.value
@@ -183,7 +195,8 @@ const paginationInfo = computed(() => {
 const isAllSelected = computed(
   () =>
     paginatedData.value.length > 0 &&
-    paginatedData.value.every((row) => selectedRows.value.has(getRowId(row))),
+    // Same key as handleRowSelect/handleSelectAll: rows without an `id` are keyed by index.
+    paginatedData.value.every((row, index) => selectedRows.value.has(getRowId(row, index))),
 )
 
 const isIndeterminate = computed(() => selectedRows.value.size > 0 && !isAllSelected.value)
@@ -493,21 +506,21 @@ watch(
 
     <!-- Pagination -->
     <div
-      v-if="pagination.enabled && !loading && paginatedData.length > 0"
+      v-if="paginationConfig.enabled && !loading && paginatedData.length > 0"
       class="base-table__pagination"
     >
       <!-- Pagination info -->
-      <div v-if="pagination.showTotal" class="base-table__pagination-info">
+      <div v-if="paginationConfig.showTotal" class="base-table__pagination-info">
         Showing {{ paginationInfo.start }} - {{ paginationInfo.end }} of
         {{ paginationInfo.total }} results
       </div>
 
       <!-- Page size selector -->
-      <div v-if="pagination.showPageSizeSelector" class="base-table__page-size">
+      <div v-if="paginationConfig.showPageSizeSelector" class="base-table__page-size">
         <label>Items per page:</label>
         <BaseCombobox
           :model-value="pageSize"
-          :options="pagination.pageSizeOptions"
+          :options="paginationConfig.pageSizeOptions"
           @update:model-value="handlePageSizeChange"
           class="base-table__page-size-select"
         />
@@ -517,7 +530,7 @@ watch(
       <div class="base-table__pagination-nav">
         <!-- First page -->
         <BaseButton
-          v-if="pagination.showFirstLastButtons && totalPages > 2"
+          v-if="paginationConfig.showFirstLastButtons && totalPages > 2"
           variant="outline"
           size="small"
           :disabled="currentPage === 1"
@@ -589,7 +602,7 @@ watch(
 
         <!-- Last page -->
         <BaseButton
-          v-if="pagination.showFirstLastButtons && totalPages > 2"
+          v-if="paginationConfig.showFirstLastButtons && totalPages > 2"
           variant="outline"
           size="small"
           :disabled="currentPage === totalPages"

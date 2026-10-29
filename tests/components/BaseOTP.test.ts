@@ -358,8 +358,7 @@ describe('BaseOTP', () => {
       expect(emittedValues(wrapper, 'update:modelValue')).toEqual(['993456'])
     })
 
-    // BUG: pasted text is not sanitized, so '123 456' keeps the space instead of giving '123456'
-    it.fails('strips whitespace from pasted text', async () => {
+    it('strips whitespace from pasted text', async () => {
       const wrapper = mountOtp()
       await focusField(wrapper, 0)
 
@@ -435,8 +434,7 @@ describe('BaseOTP', () => {
       expect(wrapper.classes()).not.toContain('base-otp--error')
     })
 
-    // BUG: with `required`, an error is shown as soon as the first digit is typed
-    it.fails('does not show a validation error while the user is still typing', async () => {
+    it('does not show a validation error while the user is still typing', async () => {
       const wrapper = mountOtp({ required: true, length: 4 })
       await focusField(wrapper, 0)
 
@@ -532,8 +530,7 @@ describe('BaseOTP', () => {
       expect(values(wrapper)).toEqual(['', '', '5', ''])
     })
 
-    // BUG: Shift+Backspace still clears the code while the field is readonly
-    it.fails('does not clear the code with Shift+Backspace when readonly', async () => {
+    it('does not clear the code with Shift+Backspace when readonly', async () => {
       const wrapper = mountOtp({ modelValue: '1234', length: 4, readonly: true })
 
       await fields(wrapper)[0].trigger('keydown', { key: 'Backspace', shiftKey: true })
@@ -541,8 +538,7 @@ describe('BaseOTP', () => {
       expect(wrapper.emitted('update:modelValue')).toBeUndefined()
     })
 
-    // BUG: pasting is accepted while the field is readonly
-    it.fails('ignores paste when readonly', async () => {
+    it('ignores paste when readonly', async () => {
       const wrapper = mountOtp({ length: 4, readonly: true })
 
       paste(fields(wrapper)[0].element, '1234')
@@ -559,5 +555,57 @@ describe('BaseOTP', () => {
       expect(first.attributes('type')).toBe('text')
       expect(first.attributes('inputmode')).toBe('numeric')
     })
+  })
+})
+
+describe('BaseOTP when the validation error is shown', () => {
+  it('still reports an incomplete code through the validation event while typing', async () => {
+    const wrapper = mountOtp({ required: true, length: 4 })
+    await focusField(wrapper, 0)
+
+    await fields(wrapper)[0].setValue('1')
+
+    expect(wrapper.emitted('validation')?.at(-1)).toEqual([
+      { valid: false, error: 'Please enter the complete code' },
+    ])
+    expect(wrapper.classes()).not.toContain('base-otp--error')
+  })
+
+  it('does not validate when focus only moves to another box of the same field', async () => {
+    const wrapper = mountOtp({ required: true, length: 4 })
+    await focusField(wrapper, 0)
+    await fields(wrapper)[0].setValue('1')
+
+    fields(wrapper)[0].element.dispatchEvent(
+      new FocusEvent('blur', { relatedTarget: fields(wrapper)[1].element }),
+    )
+    await nextTick()
+
+    expect(wrapper.classes()).not.toContain('base-otp--error')
+  })
+
+  it('shows the error when focus leaves the field with an incomplete code', async () => {
+    const wrapper = mountOtp({ required: true, length: 4 })
+    await focusField(wrapper, 0)
+    await fields(wrapper)[0].setValue('1')
+
+    await fields(wrapper)[0].trigger('blur')
+
+    expect(wrapper.classes()).toContain('base-otp--error')
+  })
+
+  it('keeps an error that is already shown up to date while the user keeps typing', async () => {
+    const wrapper = mountOtp({ required: true, length: 4 })
+    await focusField(wrapper, 0)
+    await fields(wrapper)[0].setValue('1')
+    await fields(wrapper)[0].trigger('blur')
+    expect(wrapper.classes()).toContain('base-otp--error')
+
+    await focusField(wrapper, 1)
+    for (const [index, digit] of ['2', '3', '4'].entries()) {
+      await fields(wrapper)[index + 1].setValue(digit)
+    }
+
+    expect(wrapper.classes()).not.toContain('base-otp--error')
   })
 })

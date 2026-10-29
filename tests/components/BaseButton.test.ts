@@ -98,8 +98,7 @@ describe('BaseButton loading', () => {
     expect(wrapper.find('.button-content').classes()).not.toContain('hidden')
   })
 
-  // BUG: loading only blocks pointer events via CSS; a click is still emitted (keyboard/programmatic)
-  it.fails('does not emit click while loading', async () => {
+  it('does not emit click while loading', async () => {
     const wrapper = mount(BaseButton, { props: { loading: true } })
 
     await wrapper.trigger('click')

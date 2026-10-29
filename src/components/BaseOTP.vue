@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, nextTick, onMounted, watch } from 'vue'
 import { useAutoId } from '../composables/autoId'
 
 export type OTPVariant = 'default' | 'filled'
@@ -101,6 +101,32 @@ const validate = () => {
   return true
 }
 
+// Last value this component emitted from user input (typing or paste), to tell it apart from a
+// change made by the parent when the model changes.
+let lastTypedValue: string | null = null
+
+const markTyped = (value: string) => {
+  lastTypedValue = value
+  // Cleared after the watcher below has run, so a model that did not change (and so never
+  // triggers the watcher) cannot leave a stale marker behind.
+  nextTick(() => {
+    lastTypedValue = null
+  })
+}
+
+// While the code is still being typed an incomplete value is not an error yet: the result is
+// reported (so a consumer can still react to it), but the message is only shown once the code
+// is complete, the user leaves the field, or an error is already on screen.
+const validateWhileTyping = (): { valid: boolean; error: string } => {
+  const wasShowingError = !!error.value
+  const valid = validate()
+  const message = error.value
+
+  if (!valid && !wasShowingError && otpValue.value.length < props.length) error.value = ''
+
+  return { valid, error: message }
+}
+
 const inputState = computed(() => {
   if (error.value) return 'error'
   return props.state
@@ -116,6 +142,7 @@ const handleInput = (index: number, e: Event) => {
 
   const newValue = otpArray.value.map((val, i) => (i === index ? inputChar : val)).join('')
   otpValue.value = newValue
+  markTyped(newValue)
 
   if (inputChar && index < props.length - 1) {
     inputRefs.value[index + 1].focus()
@@ -126,13 +153,14 @@ const handleInput = (index: number, e: Event) => {
     emit('complete', newValue)
   }
 
-  validate()
-  emit('validation', { valid: !error.value, error: error.value })
+  emit('validation', validateWhileTyping())
 }
 
 const handleKeydown = (index: number, e: KeyboardEvent) => {
   if (e.key === 'Backspace') {
     if (e.shiftKey) {
+      // Shift+Backspace clears the whole code, which a readonly field must not allow.
+      if (props.readonly) return
       otpValue.value = ''
       currentIndex.value = 0
       if (inputRefs.value[0]) {
@@ -148,6 +176,7 @@ const handleKeydown = (index: number, e: KeyboardEvent) => {
       currentIndex.value = index - 1
     }
   } else if (e.key === 'Delete' && e.shiftKey) {
+    if (props.readonly) return
     otpValue.value = ''
     currentIndex.value = 0
     if (inputRefs.value[0]) {
@@ -167,18 +196,22 @@ const handleKeydown = (index: number, e: KeyboardEvent) => {
 
 const handlePaste = (e: ClipboardEvent) => {
   e.preventDefault()
+  if (props.readonly) return
+
   const pastedData =
     (e.clipboardData || (window as unknown as { clipboardData?: DataTransfer }).clipboardData)?.getData(
       'text',
     ) ?? ''
 
-  const characters = pastedData.slice(0, props.length).split('')
+  // Codes are often copied with surrounding or inner spaces ("123 456").
+  const characters = pastedData.replace(/\s+/g, '').slice(0, props.length).split('')
 
   const newValue = Array.from(
     { length: props.length },
     (_, i) => characters[i] || otpArray.value[i] || '',
   ).join('')
   otpValue.value = newValue
+  markTyped(newValue)
 
   const nextEmptyIndex = newValue.length < props.length ? newValue.length : props.length - 1
   if (inputRefs.value[nextEmptyIndex]) {
@@ -186,8 +219,7 @@ const handlePaste = (e: ClipboardEvent) => {
     currentIndex.value = nextEmptyIndex
   }
 
-  validate()
-  emit('validation', { valid: !error.value, error: error.value })
+  emit('validation', validateWhileTyping())
 
   if (newValue.length === props.length) {
     emit('complete', newValue)
@@ -199,8 +231,13 @@ const handleFocus = (index: number) => {
   currentIndex.value = index
 }
 
-const handleBlur = () => {
+const handleBlur = (event?: FocusEvent) => {
   isFocused.value = false
+
+  // Moving from one box to the next also blurs a box; that is not leaving the field.
+  const next = event?.relatedTarget as Node | null | undefined
+  const root = (event?.currentTarget as HTMLElement | null | undefined)?.closest('.base-otp')
+  if (next && root?.contains(next)) return
 
   validate()
   emit('validation', { valid: !error.value, error: error.value })
@@ -225,7 +262,14 @@ const focus = () => {
 watch(
   () => props.modelValue,
   (newValue: string) => {
-    validate()
+    // The value the user just typed comes back through v-model: that is still typing. Any
+    // other change comes from the parent and is validated as before.
+    if (newValue === lastTypedValue) {
+      lastTypedValue = null
+      validateWhileTyping()
+    } else {
+      validate()
+    }
     if (newValue === '') {
       currentIndex.value = 0
       error.value = ''

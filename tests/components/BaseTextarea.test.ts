@@ -652,8 +652,7 @@ describe('BaseTextarea exposed API', () => {
 })
 
 describe('BaseTextarea known bugs', () => {
-  // BUG: only the first key of a rule object is read, so { message, min } never runs min
-  it.fails('runs min when the message key comes first in the rule object', async () => {
+  it('runs min when the message key comes first in the rule object', async () => {
     const wrapper = mountVModel({ rules: [{ message: 'Too short', min: 3 }] })
 
     await typeInto(wrapper, 'ab')
@@ -662,8 +661,7 @@ describe('BaseTextarea known bugs', () => {
     expect(lastValidation(wrapper)).toStrictEqual({ valid: false, error: 'Too short' })
   })
 
-  // BUG: { required: false } still enforces the required validator
-  it.fails('does not enforce { required: false }', async () => {
+  it('does not enforce { required: false }', async () => {
     const wrapper = mountVModel({ rules: [{ required: false }] })
 
     await blur(wrapper)
@@ -696,8 +694,7 @@ describe('BaseTextarea known bugs', () => {
     expect(lastValidation(wrapper)?.error).toBe('Mínimo de 3 caracteres')
   })
 
-  // BUG: after a blur error, typing a valid value does not clear the error until the next blur
-  it.fails('clears a blur error as soon as a valid value is typed', async () => {
+  it('clears a blur error as soon as a valid value is typed', async () => {
     const wrapper = mountVModel({ rules: ['required'] })
 
     await blur(wrapper)

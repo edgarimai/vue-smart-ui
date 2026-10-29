@@ -255,7 +255,7 @@ onUnmounted(() => {
     width: 100%;
     height: 3px;
     transform-origin: left;
-    animation: progress linear forwards;
+    animation: vsui-toast-progress linear forwards;
 
     &--default {
       background-color: var(--vsui-toast-default-color, #9ca3af);
@@ -292,7 +292,7 @@ onUnmounted(() => {
   }
 }
 
-@keyframes progress {
+@keyframes vsui-toast-progress {
   from {
     transform: scaleX(1);
   }

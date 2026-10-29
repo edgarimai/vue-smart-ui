@@ -16,6 +16,7 @@ const COMPONENT_NAMES = [
   'BaseInput',
   'BaseOTP',
   'BasePopup',
+  'BaseRichTextEditor',
   'BaseSegmentedButtons',
   'BaseSkeleton',
   'BaseSlider',

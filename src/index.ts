@@ -11,6 +11,7 @@ import BasePopup from './components/BasePopup.vue'
 import BaseSkeleton from './components/BaseSkeleton.vue'
 import BaseSlider from './components/BaseSlider.vue'
 import BaseTextarea from './components/BaseTextarea.vue'
+import BaseRichTextEditor from './components/BaseRichTextEditor.vue'
 import BaseToast from './components/BaseToast.vue'
 import ToastsContainer from './components/ToastsContainer.vue'
 import BaseSegmentedButtons from './components/BaseSegmentedButtons.vue'
@@ -37,6 +38,7 @@ const plugin: Plugin = {
     app.component('BaseSkeleton', BaseSkeleton)
     app.component('BaseSlider', BaseSlider)
     app.component('BaseTextarea', BaseTextarea)
+    app.component('BaseRichTextEditor', BaseRichTextEditor)
     app.component('BaseToast', BaseToast)
     app.component('ToastsContainer', ToastsContainer)
     app.component('BaseSegmentedButtons', BaseSegmentedButtons)
@@ -66,6 +68,7 @@ declare module 'vue' {
     BaseSkeleton: typeof BaseSkeleton
     BaseSlider: typeof BaseSlider
     BaseTextarea: typeof BaseTextarea
+    BaseRichTextEditor: typeof BaseRichTextEditor
     BaseToast: typeof BaseToast
     ToastsContainer: typeof ToastsContainer
     BaseSegmentedButtons: typeof BaseSegmentedButtons
@@ -90,6 +93,7 @@ export {
   BaseSkeleton,
   BaseSlider,
   BaseTextarea,
+  BaseRichTextEditor,
   BaseToast,
   ToastsContainer,
   BaseSegmentedButtons,

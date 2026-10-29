@@ -34,6 +34,7 @@ const EXPECTED_EXPORTS = [
   'BaseInput',
   'BaseOTP',
   'BasePopup',
+  'BaseRichTextEditor',
   'BaseSegmentedButtons',
   'BaseSkeleton',
   'BaseSlider',

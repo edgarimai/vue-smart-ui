@@ -112,6 +112,6 @@ describe('public API', () => {
   it('exports every component, so the snapshot covers all of them', () => {
     const covered = Object.keys(library).filter(isComponent)
 
-    expect(covered).toHaveLength(20)
+    expect(covered).toHaveLength(21)
   })
 })

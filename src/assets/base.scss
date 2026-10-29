@@ -337,6 +337,35 @@
   --vsui-textarea-helper-font-size: 0.75rem;
   --vsui-textarea-label-font-size: 0.875rem;
 
+  // Rich text editor variables
+  --vsui-rte-line-height: 1.6;
+  --vsui-rte-padding: 0.75rem 1rem;
+  --vsui-rte-border-radius: 0.5rem;
+
+  --vsui-rte-bg: var(--vsui-bg-subtle);
+  --vsui-rte-text-color: var(--vsui-text-default);
+  --vsui-rte-border-color: var(--vsui-border-strong);
+  --vsui-rte-focus-border-color: var(--vsui-color-primary);
+  --vsui-rte-link-color: var(--vsui-color-primary);
+
+  --vsui-rte-toolbar-border-color: var(--vsui-border-strong);
+  --vsui-rte-button-color: var(--vsui-text-default);
+  --vsui-rte-button-active-bg: var(--vsui-bg-emphasized);
+  --vsui-rte-button-active-color: var(--vsui-text-default);
+  --vsui-rte-option-active-bg: var(--vsui-color-primary-light);
+  --vsui-rte-option-active-color: var(--vsui-color-primary);
+
+  --vsui-rte-success-color: var(--vsui-color-success);
+  --vsui-rte-error-color: var(--vsui-color-error);
+  --vsui-rte-warning-color: var(--vsui-color-warning);
+
+  --vsui-rte-filled-bg: var(--vsui-bg-muted);
+  --vsui-rte-filled-hover-bg: var(--vsui-bg-emphasized);
+  --vsui-rte-filled-focus-bg: var(--vsui-bg-subtle);
+
+  --vsui-rte-helper-font-size: 0.75rem;
+  --vsui-rte-label-font-size: 0.875rem;
+
   // Slider variables
   --vsui-slider-track-height: 6px;
   --vsui-slider-track-bg: var(--vsui-surface-active);

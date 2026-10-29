@@ -12,6 +12,7 @@
     "BaseInput",
     "BaseOTP",
     "BasePopup",
+    "BaseRichTextEditor",
     "BaseSegmentedButtons",
     "BaseSkeleton",
     "BaseSlider",
@@ -891,6 +892,196 @@
       "emits": [
         "close",
         "update:modelValue"
+      ]
+    },
+    "BaseRichTextEditor": {
+      "props": {
+        "block": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "colors": {
+          "type": "Array",
+          "required": false,
+          "default": [
+            "#000000",
+            "#595959",
+            "#8c8c8c",
+            "#d9d9d9",
+            "#e03131",
+            "#f76707",
+            "#f59f00",
+            "#2f9e44",
+            "#0c8599",
+            "#1971c2",
+            "#7048e8",
+            "#c2255c"
+          ]
+        },
+        "disabled": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "errorMessage": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "fonts": {
+          "type": "Array",
+          "required": false,
+          "default": [
+            {
+              "label": "Arial",
+              "value": "Arial, Helvetica, sans-serif"
+            },
+            {
+              "label": "Verdana",
+              "value": "Verdana, Geneva, sans-serif"
+            },
+            {
+              "label": "Tahoma",
+              "value": "Tahoma, Geneva, sans-serif"
+            },
+            {
+              "label": "Trebuchet MS",
+              "value": "'Trebuchet MS', Helvetica, sans-serif"
+            },
+            {
+              "label": "Georgia",
+              "value": "Georgia, serif"
+            },
+            {
+              "label": "Times New Roman",
+              "value": "'Times New Roman', Times, serif"
+            },
+            {
+              "label": "Courier New",
+              "value": "'Courier New', Courier, monospace"
+            }
+          ]
+        },
+        "helperText": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "id": {
+          "type": "String",
+          "required": false,
+          "default": ""
+        },
+        "label": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "labels": {
+          "type": "Object",
+          "required": false,
+          "default": {}
+        },
+        "maxHeight": {
+          "type": "String | Number | any",
+          "required": false,
+          "default": null
+        },
+        "minHeight": {
+          "type": "String | Number",
+          "required": false,
+          "default": "10rem"
+        },
+        "modelValue": {
+          "type": "String",
+          "required": false,
+          "default": ""
+        },
+        "name": {
+          "type": "String",
+          "required": false,
+          "default": ""
+        },
+        "placeholder": {
+          "type": "String",
+          "required": false,
+          "default": ""
+        },
+        "readonly": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "required": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "rules": {
+          "type": "Array",
+          "required": false,
+          "default": []
+        },
+        "state": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "toolbar": {
+          "type": "Array",
+          "required": false,
+          "default": [
+            "undo",
+            "redo",
+            "separator",
+            "blockType",
+            "font",
+            "separator",
+            "bold",
+            "italic",
+            "underline",
+            "strike",
+            "color",
+            "separator",
+            "alignLeft",
+            "alignCenter",
+            "alignRight",
+            "alignJustify",
+            "separator",
+            "bulletList",
+            "orderedList",
+            "link"
+          ]
+        },
+        "transparentBg": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "validateOnBlur": {
+          "type": "Boolean",
+          "required": false,
+          "default": true
+        },
+        "validateOnInput": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "variant": {
+          "type": "String",
+          "required": false,
+          "default": "default"
+        }
+      },
+      "emits": [
+        "blur",
+        "focus",
+        "input",
+        "mounted",
+        "update:modelValue",
+        "validation"
       ]
     },
     "BaseSegmentedButtons": {

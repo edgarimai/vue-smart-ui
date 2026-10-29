@@ -424,8 +424,7 @@ describe('BaseColorPicker', () => {
   })
 
   describe('known defects', () => {
-    // BUG: the native colour input always emits #rrggbb, ignoring the configured format
-    it.fails('emits an rgb() value from the native input when format is rgb', async () => {
+    it('emits an rgb() value from the native input when format is rgb', async () => {
       const wrapper = mountPicker({ modelValue: 'rgb(0, 0, 0)', format: 'rgb' })
       await openPicker(wrapper)
 
@@ -434,22 +433,19 @@ describe('BaseColorPicker', () => {
       expect(emittedValues(wrapper, 'update:modelValue')).toEqual(['rgb(51, 102, 153)'])
     })
 
-    // BUG: HSL conversion for achromatic colours does not scale lightness (white gives 1%)
-    it.fails('converts the white preset to hsl(0, 0%, 100%)', async () => {
+    it('converts the white preset to hsl(0, 0%, 100%)', async () => {
       expect(await selectPreset(mountPicker({ presets: ['#ffffff'], format: 'hsl' }))).toBe(
         'hsl(0, 0%, 100%)',
       )
     })
 
-    // BUG: HSL conversion for achromatic colours does not scale lightness (grey gives 0.50196%)
-    it.fails('converts the grey preset to hsl(0, 0%, 50%)', async () => {
+    it('converts the grey preset to hsl(0, 0%, 50%)', async () => {
       expect(await selectPreset(mountPicker({ presets: ['#808080'], format: 'hsl' }))).toBe(
         'hsl(0, 0%, 50%)',
       )
     })
 
-    // BUG: 3-digit hex presets are parsed as 6-digit, producing NaN channels
-    it.fails('converts a 3-digit hex preset to rgb', async () => {
+    it('converts a 3-digit hex preset to rgb', async () => {
       expect(await selectPreset(mountPicker({ presets: ['#fff'], format: 'rgb' }))).toBe(
         'rgb(255, 255, 255)',
       )

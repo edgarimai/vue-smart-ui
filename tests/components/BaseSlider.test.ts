@@ -286,8 +286,7 @@ describe('BaseSlider', () => {
       expect(lastEmitted(wrapper, 'change')).toBe(35)
     })
 
-    // BUG: touchmove handler reads clientX from the TouchEvent instead of touches[0], emitting NaN
-    it.fails('emits finite values while dragging with touch', async () => {
+    it('emits finite values while dragging with touch', async () => {
       const wrapper = mountSlider({ modelValue: 0 })
 
       try {
@@ -515,8 +514,7 @@ describe('BaseSlider', () => {
   })
 
   describe('known defects', () => {
-    // BUG: step math ignores floating point error (0.3 is emitted as 0.30000000000000004)
-    it.fails('emits clean decimals for fractional steps', async () => {
+    it('emits clean decimals for fractional steps', async () => {
       const wrapper = mountSlider({ modelValue: 0, min: 0, max: 1, step: 0.1 })
 
       await wrapper.find('.base-slider__track').trigger('mousedown', { clientX: 30 })
@@ -524,8 +522,7 @@ describe('BaseSlider', () => {
       expect(lastEmitted(wrapper, 'change')).toBe(0.3)
     })
 
-    // BUG: step snapping is anchored at 0 instead of min (min 1, step 5 should give 1, 6, 11)
-    it.fails('uses min as the origin of the step grid', async () => {
+    it('uses min as the origin of the step grid', async () => {
       const wrapper = mountSlider({ modelValue: 1, min: 1, max: 11, step: 5 })
 
       await wrapper.find('.base-slider__track').trigger('mousedown', { clientX: 50 })
@@ -533,8 +530,7 @@ describe('BaseSlider', () => {
       expect(lastEmitted(wrapper, 'change')).toBe(6)
     })
 
-    // BUG: an out-of-range modelValue is not clamped when positioning the thumb
-    it.fails('clamps an out-of-range modelValue in the rendered thumb position', () => {
+    it('clamps an out-of-range modelValue in the rendered thumb position', () => {
       const wrapper = mountSlider({ modelValue: 150, max: 100 })
 
       expect((wrapper.find('.base-slider__thumb').element as HTMLElement).style.left).toBe('100%')

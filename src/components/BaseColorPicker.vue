@@ -80,7 +80,8 @@ const handleInput = (value: string | number) => {
 }
 
 const handleColorChange = (event: Event) => {
-  const newValue = (event.target as HTMLInputElement).value
+  // The native color input always yields #rrggbb; emit it in the configured format.
+  const newValue = convertHexToFormat((event.target as HTMLInputElement).value)
 
   colorValue.value = newValue
 
@@ -118,55 +119,58 @@ const toggleColorPicker = () => {
   }
 }
 
-const selectPresetColor = (color: string) => {
-  // Convert preset color to the selected format
-  let formattedColor = color
+// Converts a hex color (#rgb or #rrggbb) to the selected output format.
+// Anything that is not a hex color, or the hex format itself, is returned unchanged.
+const convertHexToFormat = (color: string): string => {
+  if (props.format === 'hex' || !color.startsWith('#')) return color
 
-  if (props.format !== 'hex' && color.startsWith('#')) {
-    const hex = color.replace('#', '')
-    const r = parseInt(hex.substring(0, 2), 16)
-    const g = parseInt(hex.substring(2, 4), 16)
-    const b = parseInt(hex.substring(4, 6), 16)
+  let hex = color.replace('#', '')
+  if (hex.length === 3) {
+    hex = hex
+      .split('')
+      .map((char) => char + char)
+      .join('')
+  }
 
-    if (props.format === 'rgb') formattedColor = `rgb(${r}, ${g}, ${b})`
-    else if (props.format === 'rgba') formattedColor = `rgba(${r}, ${g}, ${b}, 1)`
-    else if (props.format === 'hsl') {
-      const r1 = r / 255
-      const g1 = g / 255
-      const b1 = b / 255
+  const r = parseInt(hex.substring(0, 2), 16)
+  const g = parseInt(hex.substring(2, 4), 16)
+  const b = parseInt(hex.substring(4, 6), 16)
 
-      const max = Math.max(r1, g1, b1)
-      const min = Math.min(r1, g1, b1)
-      let h = 0,
-        s = 0,
-        l = (max + min) / 2
+  if (props.format === 'rgb') return `rgb(${r}, ${g}, ${b})`
+  if (props.format === 'rgba') return `rgba(${r}, ${g}, ${b}, 1)`
 
-      if (max === min) {
-        h = s = 0 // achromatic
-      } else {
-        const d = max - min
-        s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
+  const r1 = r / 255
+  const g1 = g / 255
+  const b1 = b / 255
 
-        switch (max) {
-          case r1:
-            h = (g1 - b1) / d + (g1 < b1 ? 6 : 0)
-            break
-          case g1:
-            h = (b1 - r1) / d + 2
-            break
-          case b1:
-            h = (r1 - g1) / d + 4
-            break
-        }
+  const max = Math.max(r1, g1, b1)
+  const min = Math.min(r1, g1, b1)
+  let h = 0
+  let s = 0
+  const l = (max + min) / 2
 
-        h = Math.round(h * 60)
-        s = Math.round(s * 100)
-        l = Math.round(l * 100)
-      }
+  if (max !== min) {
+    const d = max - min
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
 
-      formattedColor = `hsl(${h}, ${s}%, ${l}%)`
+    switch (max) {
+      case r1:
+        h = (g1 - b1) / d + (g1 < b1 ? 6 : 0)
+        break
+      case g1:
+        h = (b1 - r1) / d + 2
+        break
+      case b1:
+        h = (r1 - g1) / d + 4
+        break
     }
   }
+
+  return `hsl(${Math.round(h * 60)}, ${Math.round(s * 100)}%, ${Math.round(l * 100)}%)`
+}
+
+const selectPresetColor = (color: string) => {
+  const formattedColor = convertHexToFormat(color)
 
   colorValue.value = formattedColor
   emit('input', { target: { value: formattedColor } })

@@ -234,8 +234,8 @@ watch(
 )
 
 onMounted(() => {
-  inputRefs.value = Array.from({ length: props.length }) as HTMLInputElement[]
-
+  // inputRefs is already populated by the template's function refs; resetting it here
+  // would leave undefined entries until the next re-render.
   if (props.autoFocus) {
     setTimeout(() => {
       focus()

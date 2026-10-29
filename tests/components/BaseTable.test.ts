@@ -661,8 +661,7 @@ describe('BaseTable search and filters', () => {
     expect(firstColumn(wrapper)[0]).toBe('User 1')
   })
 
-  // BUG: typing in the global search while on a later page does not go back to page 1
-  it.fails('goes back to the first page when the search changes', async () => {
+  it('goes back to the first page when the search changes', async () => {
     const wrapper = mountTable({ filterable: true, data: makeRows(30) })
 
     await pageButton(wrapper, 'Next page').trigger('click')
@@ -885,8 +884,7 @@ describe('BaseTable pagination', () => {
     expect(bodyRows(wrapper)).toHaveLength(20)
   })
 
-  // BUG: a partial pagination object replaces the defaults, so { enabled: true } has no pageSize
-  it.fails('falls back to the default page size when only enabled is provided', () => {
+  it('falls back to the default page size when only enabled is provided', () => {
     const wrapper = mountTable({ data: makeRows(15), pagination: { enabled: true } })
 
     expect(bodyRows(wrapper)).toHaveLength(10)
@@ -1035,8 +1033,7 @@ describe('BaseTable selection', () => {
     expect(wrapper.emitted('select-all')).toBeUndefined()
   })
 
-  // BUG: the select-all payload `selected` is computed after the change, so it is inverted
-  it.fails('emits select-all with selected: true when selecting every row', async () => {
+  it('emits select-all with selected: true when selecting every row', async () => {
     const wrapper = mountTable({ selectable: true })
 
     await headerCheckbox(wrapper).setValue(true)
@@ -1044,8 +1041,7 @@ describe('BaseTable selection', () => {
     expect(wrapper.emitted('select-all')?.[0]?.[0]).toMatchObject({ selected: true })
   })
 
-  // BUG: the select-all payload `selected` is inverted when deselecting every row
-  it.fails('emits select-all with selected: false when deselecting every row', async () => {
+  it('emits select-all with selected: false when deselecting every row', async () => {
     const wrapper = mountTable({ selectable: true })
 
     await headerCheckbox(wrapper).setValue(true)

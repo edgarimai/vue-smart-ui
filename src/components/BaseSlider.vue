@@ -83,32 +83,43 @@ const displayValue = computed(() => {
   return sliderValue.value
 })
 
+// Position of a value along the track (0-100), kept inside the track for out-of-range values.
+const toPercent = (value: number): number => {
+  const span = props.max - props.min
+  if (!span) return 0
+  return Math.min(Math.max((value - props.min) / span, 0), 1) * 100
+}
+
+const decimalsOf = (value: number): number => {
+  const [, fraction = ''] = String(value).split('.')
+  return fraction.length
+}
+
+// Removes floating point noise (0.1 * 3 = 0.30000000000000004) introduced by stepping.
+const roundToStepPrecision = (value: number): number =>
+  Number(value.toFixed(Math.max(decimalsOf(props.step), decimalsOf(props.min))))
+
 const trackFillStyle = computed(() => {
   if (isRange.value) {
     const [start, end] = sliderValue.value as number[]
-    const startPercent = ((start - props.min) / (props.max - props.min)) * 100
-    const endPercent = ((end - props.min) / (props.max - props.min)) * 100
+    const startPercent = toPercent(start)
+    const endPercent = toPercent(end)
     return {
       left: `${startPercent}%`,
       width: `${endPercent - startPercent}%`,
     }
   } else {
-    const percent = (((sliderValue.value as number) - props.min) / (props.max - props.min)) * 100
     return {
-      width: `${percent}%`,
+      width: `${toPercent(sliderValue.value as number)}%`,
     }
   }
 })
 
 const thumbPositions = computed(() => {
   if (isRange.value) {
-    return (sliderValue.value as number[]).map((val) => {
-      const percent = ((val - props.min) / (props.max - props.min)) * 100
-      return `${percent}%`
-    })
+    return (sliderValue.value as number[]).map((val) => `${toPercent(val)}%`)
   } else {
-    const percent = (((sliderValue.value as number) - props.min) / (props.max - props.min)) * 100
-    return [`${percent}%`]
+    return [`${toPercent(sliderValue.value as number)}%`]
   }
 })
 
@@ -143,7 +154,10 @@ const updateValue = (event: MouseEvent | Touch, thumbIndex = 0) => {
   const offsetX = event.clientX - rect.left
   const percentage = Math.min(Math.max(offsetX / rect.width, 0), 1)
   const rawValue = props.min + percentage * (props.max - props.min)
-  const steppedValue = Math.round(rawValue / props.step) * props.step
+  // Snap to a grid that starts at `min`, so min=1 and step=5 gives 1, 6, 11.
+  const steppedValue = roundToStepPrecision(
+    props.min + Math.round((rawValue - props.min) / props.step) * props.step,
+  )
   const clampedValue = Math.min(Math.max(steppedValue, props.min), props.max)
 
   if (isRange.value) {
@@ -170,7 +184,9 @@ const startDrag = (event: MouseEvent | Touch, thumbIndex = 0) => {
   isDragging.value = true
   updateValue(event, thumbIndex)
 
-  const handleMove = (e: Event) => updateValue(e as MouseEvent | Touch, thumbIndex)
+  // A TouchEvent carries no clientX of its own; read it from the first touch point.
+  const handleMove = (e: Event) =>
+    updateValue('touches' in e ? (e as TouchEvent).touches[0] : (e as MouseEvent), thumbIndex)
   const handleEnd = () => {
     isDragging.value = false
     document.removeEventListener('mousemove', handleMove)
@@ -196,11 +212,11 @@ const handleKeyDown = (event: KeyboardEvent, thumbIndex = 0) => {
   switch (event.key) {
     case 'ArrowRight':
     case 'ArrowUp':
-      newValue = Math.min(currentValue + props.step, props.max)
+      newValue = Math.min(roundToStepPrecision(currentValue + props.step), props.max)
       break
     case 'ArrowLeft':
     case 'ArrowDown':
-      newValue = Math.max(currentValue - props.step, props.min)
+      newValue = Math.max(roundToStepPrecision(currentValue - props.step), props.min)
       break
     case 'Home':
       newValue = props.min

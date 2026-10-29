@@ -514,8 +514,7 @@ describe('BaseOTP', () => {
   })
 
   describe('known defects', () => {
-    // BUG: onMounted resets inputRefs, so the 'mounted' payload focus() does nothing right after mount
-    it.fails('focus() from the mounted payload focuses the first input immediately', () => {
+    it('focus() from the mounted payload focuses the first input immediately', () => {
       const wrapper = mountOtp()
 
       mountedPayload(wrapper).focus()

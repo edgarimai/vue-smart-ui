@@ -1055,8 +1055,7 @@ describe('BaseInput known bugs', () => {
     expect(lastValidation(wrapper)).toStrictEqual({ valid: true, error: '' })
   })
 
-  // BUG: min rule reads .length on a numeric modelValue (undefined), so it always fails
-  it.fails('accepts a numeric modelValue that satisfies the min length rule', async () => {
+  it('accepts a numeric modelValue that satisfies the min length rule', async () => {
     const wrapper = mountInput({ modelValue: 12345, rules: [{ min: 3 }] })
 
     await blur(wrapper)
@@ -1064,8 +1063,7 @@ describe('BaseInput known bugs', () => {
     expect(lastValidation(wrapper)).toStrictEqual({ valid: true, error: '' })
   })
 
-  // BUG: max rule reads .length on a numeric modelValue (undefined), so it always fails
-  it.fails('accepts a numeric modelValue that satisfies the max length rule', async () => {
+  it('accepts a numeric modelValue that satisfies the max length rule', async () => {
     const wrapper = mountInput({ modelValue: 12345, rules: [{ max: 10 }] })
 
     await blur(wrapper)
@@ -1073,8 +1071,7 @@ describe('BaseInput known bugs', () => {
     expect(lastValidation(wrapper)).toStrictEqual({ valid: true, error: '' })
   })
 
-  // BUG: minValue treats numeric 0 as empty (!value) and lets it pass
-  it.fails('rejects numeric 0 for { minValue: 1 }', async () => {
+  it('rejects numeric 0 for { minValue: 1 }', async () => {
     const wrapper = mountInput({ modelValue: 0, rules: [{ minValue: 1 }] })
 
     await blur(wrapper)

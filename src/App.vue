@@ -1098,7 +1098,7 @@ onMounted(() => {
           label="Birthdate"
           :rules="['required']"
           @mounted="(ref) => registerInput('birthdate', ref)"
-          mask="date"
+          type="date"
           placeholder="DD/MM/YYYY"
         />
         <!-- Currency mask -->

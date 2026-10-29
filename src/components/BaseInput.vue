@@ -124,6 +124,10 @@ const togglePasswordVisibility = (): void => {
 type ValidatorResult = { valid: boolean; message: string }
 type ValidatorFn = (value: string | number, param?: string | number) => ValidatorResult
 
+// 0 is a real value for numeric inputs, so emptiness is not a falsiness check.
+const isEmptyValue = (value: string | number | null | undefined): boolean =>
+  value === '' || value === null || value === undefined
+
 // Built-in validators
 const validators: Record<string, ValidatorFn> = {
   required: (value) => ({
@@ -135,11 +139,11 @@ const validators: Record<string, ValidatorFn> = {
     message: getValidationMessage('email'),
   }),
   min: (value, min) => ({
-    valid: !value || (value as string).length >= (min as number),
+    valid: isEmptyValue(value) || String(value).length >= (min as number),
     message: getValidationMessage('min', min),
   }),
   max: (value, max) => ({
-    valid: !value || (value as string).length <= (max as number),
+    valid: isEmptyValue(value) || String(value).length <= (max as number),
     message: getValidationMessage('max', max),
   }),
   pattern: (value, pattern) => ({
@@ -147,11 +151,11 @@ const validators: Record<string, ValidatorFn> = {
     message: getValidationMessage('pattern'),
   }),
   minValue: (value, min) => ({
-    valid: !value || Number(value) >= (min as number),
+    valid: isEmptyValue(value) || Number(value) >= (min as number),
     message: getValidationMessage('minValue', min),
   }),
   maxValue: (value, max) => ({
-    valid: !value || Number(value) <= (max as number),
+    valid: isEmptyValue(value) || Number(value) <= (max as number),
     message: getValidationMessage('maxValue', max),
   }),
   hexColor: (value) => ({

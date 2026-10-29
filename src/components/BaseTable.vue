@@ -112,8 +112,13 @@ const sortState = ref<{ column: string | null; direction: SortDirection }>({
 const filterState = ref<Record<string, string | number>>({})
 const selectedRows = ref<Set<unknown>>(new Set())
 const currentPage = ref(1)
-const pageSize = ref<number>(props.pagination.pageSize as number)
+const pageSize = ref<number>(props.pagination.pageSize ?? 10)
 const searchQuery = ref('')
+
+// A new search can leave the current page past the last one, which renders an empty table.
+watch(searchQuery, () => {
+  currentPage.value = 1
+})
 const tableRef = ref<HTMLDivElement | null>(null)
 
 // filtered data
@@ -251,7 +256,10 @@ const handleRowSelect = (row: Record<string, unknown>, index: number): void => {
 }
 
 const handleSelectAll = (): void => {
-  if (isAllSelected.value) {
+  // Read before mutating: isAllSelected is computed from the selection being changed.
+  const selecting = !isAllSelected.value
+
+  if (!selecting) {
     paginatedData.value.forEach((row, index) => {
       selectedRows.value.delete(getRowId(row, index))
     })
@@ -262,7 +270,7 @@ const handleSelectAll = (): void => {
   }
 
   emit('select-all', {
-    selected: !isAllSelected.value,
+    selected: selecting,
     selectedRows: Array.from(selectedRows.value),
   })
 }

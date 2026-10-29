@@ -1,0 +1,1460 @@
+{
+  "exports": [
+    "BaseAccordion",
+    "BaseAccordionItem",
+    "BaseAvatar",
+    "BaseButton",
+    "BaseCheckbox",
+    "BaseColorPicker",
+    "BaseCombobox",
+    "BaseDropdown",
+    "BaseInfiniteScroll",
+    "BaseInput",
+    "BaseOTP",
+    "BasePopup",
+    "BaseSegmentedButtons",
+    "BaseSkeleton",
+    "BaseSlider",
+    "BaseSwitch",
+    "BaseTable",
+    "BaseTextarea",
+    "BaseToast",
+    "ToastsContainer",
+    "default",
+    "useToast",
+    "useToastConfig",
+    "useValidationConfig"
+  ],
+  "composables": {
+    "useToast": [
+      "addToast",
+      "default",
+      "error",
+      "info",
+      "removeToast",
+      "success",
+      "toasts",
+      "warning"
+    ],
+    "useToastConfig": [
+      "getToastDefaults",
+      "resetToastDefaults",
+      "setToastDefaults",
+      "toastConfig"
+    ],
+    "useValidationConfig": [
+      "getValidationMessage",
+      "resetValidationMessages",
+      "setValidationMessages",
+      "validationConfig"
+    ]
+  },
+  "toastDefaults": {
+    "position": "top-right",
+    "duration": 3000,
+    "closable": true,
+    "simple": false
+  },
+  "validationMessageKeys": [
+    "email",
+    "hexColor",
+    "hslColor",
+    "max",
+    "maxValue",
+    "min",
+    "minValue",
+    "pattern",
+    "required",
+    "rgbColor",
+    "rgbaColor"
+  ],
+  "components": {
+    "BaseAccordion": {
+      "props": {
+        "id": {
+          "type": "String",
+          "required": false,
+          "default": ""
+        },
+        "multiple": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "variant": {
+          "type": "String",
+          "required": false,
+          "default": "default"
+        }
+      },
+      "emits": []
+    },
+    "BaseAccordionItem": {
+      "props": {
+        "disabled": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "title": {
+          "type": "String",
+          "required": true,
+          "default": "[none]"
+        }
+      },
+      "emits": []
+    },
+    "BaseAvatar": {
+      "props": {
+        "alt": {
+          "type": "String",
+          "required": false,
+          "default": ""
+        },
+        "disabled": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "fallback": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "id": {
+          "type": "String",
+          "required": false,
+          "default": ""
+        },
+        "name": {
+          "type": "String",
+          "required": false,
+          "default": ""
+        },
+        "shape": {
+          "type": "String",
+          "required": false,
+          "default": "circle"
+        },
+        "size": {
+          "type": "String",
+          "required": false,
+          "default": "medium"
+        },
+        "src": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "status": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "variant": {
+          "type": "String",
+          "required": false,
+          "default": "default"
+        }
+      },
+      "emits": [
+        "error",
+        "load"
+      ]
+    },
+    "BaseButton": {
+      "props": {
+        "block": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "disabled": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "hideFocusOutline": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "iconOnly": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "id": {
+          "type": "String",
+          "required": false,
+          "default": ""
+        },
+        "loading": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "size": {
+          "type": "String",
+          "required": false,
+          "default": "medium"
+        },
+        "type": {
+          "type": "String",
+          "required": false,
+          "default": "button"
+        },
+        "variant": {
+          "type": "String",
+          "required": false,
+          "default": "primary"
+        }
+      },
+      "emits": [
+        "click"
+      ]
+    },
+    "BaseCheckbox": {
+      "props": {
+        "disabled": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "error": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "id": {
+          "type": "String",
+          "required": false,
+          "default": ""
+        },
+        "indeterminate": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "label": {
+          "type": "String",
+          "required": false,
+          "default": ""
+        },
+        "modelValue": {
+          "type": "Boolean | Array",
+          "required": false,
+          "default": false
+        },
+        "size": {
+          "type": "String",
+          "required": false,
+          "default": "medium"
+        },
+        "value": {
+          "type": "String | Number | Boolean | Object | any",
+          "required": false,
+          "default": null
+        }
+      },
+      "emits": [
+        "update:modelValue"
+      ]
+    },
+    "BaseColorPicker": {
+      "props": {
+        "disabled": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "errorMessage": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "format": {
+          "type": "String",
+          "required": false,
+          "default": "hex"
+        },
+        "helperText": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "id": {
+          "type": "String",
+          "required": false,
+          "default": ""
+        },
+        "label": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "modelValue": {
+          "type": "String",
+          "required": false,
+          "default": "#000000"
+        },
+        "name": {
+          "type": "String",
+          "required": false,
+          "default": ""
+        },
+        "presets": {
+          "type": "Array",
+          "required": false,
+          "default": []
+        },
+        "readonly": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "required": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "rules": {
+          "type": "Array",
+          "required": false,
+          "default": []
+        },
+        "showPreview": {
+          "type": "Boolean",
+          "required": false,
+          "default": true
+        },
+        "state": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "variant": {
+          "type": "String",
+          "required": false,
+          "default": "default"
+        }
+      },
+      "emits": [
+        "blur",
+        "focus",
+        "input",
+        "mounted",
+        "update:modelValue",
+        "validation"
+      ]
+    },
+    "BaseCombobox": {
+      "props": {
+        "clearable": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "closeOnSelect": {
+          "type": "Boolean",
+          "required": false,
+          "default": true
+        },
+        "disabled": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "errorMessage": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "helperText": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "id": {
+          "type": "String",
+          "required": false,
+          "default": ""
+        },
+        "label": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "labelKey": {
+          "type": "String",
+          "required": false,
+          "default": "label"
+        },
+        "loading": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "maxHeight": {
+          "type": "String",
+          "required": false,
+          "default": "200px"
+        },
+        "minDropdownWidth": {
+          "type": "String | Number",
+          "required": false,
+          "default": 200
+        },
+        "modelValue": {
+          "type": "String | Number | Object | Array | any",
+          "required": false,
+          "default": null
+        },
+        "multiple": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "name": {
+          "type": "String",
+          "required": false,
+          "default": ""
+        },
+        "noDataText": {
+          "type": "String",
+          "required": false,
+          "default": "No options found"
+        },
+        "options": {
+          "type": "Array",
+          "required": false,
+          "default": []
+        },
+        "placeholder": {
+          "type": "String",
+          "required": false,
+          "default": "Select an option..."
+        },
+        "prefixIcon": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "readonly": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "removeSpecialChars": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "required": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "rules": {
+          "type": "Array",
+          "required": false,
+          "default": []
+        },
+        "searchable": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "selectedMultipleText": {
+          "type": "String | Function | any",
+          "required": false,
+          "default": null
+        },
+        "selectedSingleText": {
+          "type": "String",
+          "required": false,
+          "default": "1 item selected"
+        },
+        "showTags": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "state": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "suffixIcon": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "teleport": {
+          "type": "Boolean",
+          "required": false,
+          "default": true
+        },
+        "teleportTo": {
+          "type": "String",
+          "required": false,
+          "default": "body"
+        },
+        "validateOnBlur": {
+          "type": "Boolean",
+          "required": false,
+          "default": true
+        },
+        "validateOnInput": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "valueKey": {
+          "type": "String",
+          "required": false,
+          "default": "value"
+        },
+        "variant": {
+          "type": "String",
+          "required": false,
+          "default": "default"
+        },
+        "wrapOptionText": {
+          "type": "Boolean",
+          "required": false,
+          "default": true
+        }
+      },
+      "emits": [
+        "blur",
+        "clear",
+        "focus",
+        "input",
+        "mounted",
+        "search",
+        "select",
+        "update:modelValue",
+        "validation"
+      ]
+    },
+    "BaseDropdown": {
+      "props": {
+        "closeOnClick": {
+          "type": "Boolean",
+          "required": false,
+          "default": true
+        },
+        "closeOnClickOutside": {
+          "type": "Boolean",
+          "required": false,
+          "default": true
+        },
+        "id": {
+          "type": "String",
+          "required": false,
+          "default": ""
+        },
+        "modelValue": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "teleport": {
+          "type": "Boolean",
+          "required": false,
+          "default": true
+        },
+        "teleportTo": {
+          "type": "String",
+          "required": false,
+          "default": "body"
+        },
+        "variant": {
+          "type": "String",
+          "required": false,
+          "default": "default"
+        },
+        "width": {
+          "type": "String",
+          "required": false,
+          "default": "auto"
+        }
+      },
+      "emits": [
+        "update:modelValue"
+      ]
+    },
+    "BaseInfiniteScroll": {
+      "props": {
+        "container": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "disabled": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "endText": {
+          "type": "String",
+          "required": false,
+          "default": "There are no more items to load"
+        },
+        "loading": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "loadingText": {
+          "type": "String",
+          "required": false,
+          "default": "Loading more items..."
+        },
+        "threshold": {
+          "type": "Number",
+          "required": false,
+          "default": 20
+        }
+      },
+      "emits": [
+        "load-more"
+      ]
+    },
+    "BaseInput": {
+      "props": {
+        "dateDisplayFormat": {
+          "type": "String",
+          "required": false,
+          "default": "DD/MM/YYYY"
+        },
+        "dateValueFormat": {
+          "type": "String",
+          "required": false,
+          "default": "YYYY-MM-DD"
+        },
+        "disabled": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "errorMessage": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "helperText": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "id": {
+          "type": "String",
+          "required": false,
+          "default": ""
+        },
+        "label": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "lowercase": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "mask": {
+          "type": "String | Object | any",
+          "required": false,
+          "default": null
+        },
+        "max": {
+          "type": "Number | String",
+          "required": false,
+          "default": "[none]"
+        },
+        "min": {
+          "type": "Number | String",
+          "required": false,
+          "default": "[none]"
+        },
+        "modelValue": {
+          "type": "String | Number",
+          "required": false,
+          "default": ""
+        },
+        "name": {
+          "type": "String",
+          "required": false,
+          "default": ""
+        },
+        "placeholder": {
+          "type": "String",
+          "required": false,
+          "default": ""
+        },
+        "prefixIcon": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "rawValue": {
+          "type": "Boolean",
+          "required": false,
+          "default": true
+        },
+        "readonly": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "required": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "rules": {
+          "type": "Array",
+          "required": false,
+          "default": []
+        },
+        "state": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "suffixIcon": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "transparentBg": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "type": {
+          "type": "String",
+          "required": false,
+          "default": "text"
+        },
+        "uppercase": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "validateOnBlur": {
+          "type": "Boolean",
+          "required": false,
+          "default": true
+        },
+        "validateOnInput": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "variant": {
+          "type": "String",
+          "required": false,
+          "default": "default"
+        }
+      },
+      "emits": [
+        "blur",
+        "enter",
+        "focus",
+        "input",
+        "mounted",
+        "update:modelValue",
+        "validation"
+      ]
+    },
+    "BaseOTP": {
+      "props": {
+        "autoFocus": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "disabled": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "errorMessage": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "helperText": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "id": {
+          "type": "String",
+          "required": false,
+          "default": ""
+        },
+        "instructions": {
+          "type": "String",
+          "required": false,
+          "default": "Press Shift+Backspace to clear all fields"
+        },
+        "label": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "length": {
+          "type": "Number",
+          "required": false,
+          "default": 6
+        },
+        "modelValue": {
+          "type": "String",
+          "required": false,
+          "default": ""
+        },
+        "readonly": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "required": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "state": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "type": {
+          "type": "String",
+          "required": false,
+          "default": "number"
+        },
+        "variant": {
+          "type": "String",
+          "required": false,
+          "default": "default"
+        }
+      },
+      "emits": [
+        "complete",
+        "mounted",
+        "update:modelValue",
+        "validation"
+      ]
+    },
+    "BasePopup": {
+      "props": {
+        "closeOnEsc": {
+          "type": "Boolean",
+          "required": false,
+          "default": true
+        },
+        "disableClickOutside": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "modelValue": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "position": {
+          "type": "String",
+          "required": false,
+          "default": "center"
+        },
+        "scrollContentOnly": {
+          "type": "Boolean",
+          "required": false,
+          "default": true
+        },
+        "size": {
+          "type": "String",
+          "required": false,
+          "default": "medium"
+        },
+        "variant": {
+          "type": "String",
+          "required": false,
+          "default": "default"
+        }
+      },
+      "emits": [
+        "close",
+        "update:modelValue"
+      ]
+    },
+    "BaseSegmentedButtons": {
+      "props": {
+        "block": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "disabled": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "errorMessage": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "helperText": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "id": {
+          "type": "String",
+          "required": false,
+          "default": ""
+        },
+        "label": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "labelKey": {
+          "type": "String",
+          "required": false,
+          "default": "label"
+        },
+        "modelValue": {
+          "type": "String | Number | Array | any",
+          "required": false,
+          "default": []
+        },
+        "multiple": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "options": {
+          "type": "Array",
+          "required": false,
+          "default": []
+        },
+        "rules": {
+          "type": "Array",
+          "required": false,
+          "default": []
+        },
+        "size": {
+          "type": "String",
+          "required": false,
+          "default": "medium"
+        },
+        "validateOnChange": {
+          "type": "Boolean",
+          "required": false,
+          "default": true
+        },
+        "valueKey": {
+          "type": "String",
+          "required": false,
+          "default": "value"
+        },
+        "variant": {
+          "type": "String",
+          "required": false,
+          "default": "primary"
+        }
+      },
+      "emits": [
+        "change",
+        "mounted",
+        "update:modelValue",
+        "validation"
+      ]
+    },
+    "BaseSkeleton": {
+      "props": {
+        "animated": {
+          "type": "Boolean",
+          "required": false,
+          "default": true
+        },
+        "height": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "rounded": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "variant": {
+          "type": "String",
+          "required": false,
+          "default": "rectangle"
+        },
+        "width": {
+          "type": "String",
+          "required": false,
+          "default": "100%"
+        }
+      },
+      "emits": []
+    },
+    "BaseSlider": {
+      "props": {
+        "disabled": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "errorMessage": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "formatValue": {
+          "type": "Function | any",
+          "required": false,
+          "default": null
+        },
+        "helperText": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "id": {
+          "type": "String",
+          "required": false,
+          "default": ""
+        },
+        "label": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "marks": {
+          "type": "Array",
+          "required": false,
+          "default": []
+        },
+        "max": {
+          "type": "Number",
+          "required": false,
+          "default": 100
+        },
+        "min": {
+          "type": "Number",
+          "required": false,
+          "default": 0
+        },
+        "modelValue": {
+          "type": "Number | Array",
+          "required": false,
+          "default": 0
+        },
+        "range": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "required": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "showValue": {
+          "type": "Boolean",
+          "required": false,
+          "default": true
+        },
+        "state": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "step": {
+          "type": "Number",
+          "required": false,
+          "default": 1
+        },
+        "variant": {
+          "type": "String",
+          "required": false,
+          "default": "default"
+        }
+      },
+      "emits": [
+        "change",
+        "mounted",
+        "update:modelValue"
+      ]
+    },
+    "BaseSwitch": {
+      "props": {
+        "disabled": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "errorMessage": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "helperText": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "id": {
+          "type": "String",
+          "required": false,
+          "default": ""
+        },
+        "label": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "labelPosition": {
+          "type": "String",
+          "required": false,
+          "default": "right"
+        },
+        "loading": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "modelValue": {
+          "type": "Boolean | String | Number",
+          "required": false,
+          "default": false
+        },
+        "name": {
+          "type": "String",
+          "required": false,
+          "default": ""
+        },
+        "offLabel": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "offValue": {
+          "type": "Boolean | String | Number",
+          "required": false,
+          "default": false
+        },
+        "onLabel": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "onValue": {
+          "type": "Boolean | String | Number",
+          "required": false,
+          "default": true
+        },
+        "required": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "size": {
+          "type": "String",
+          "required": false,
+          "default": "medium"
+        },
+        "state": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "variant": {
+          "type": "String",
+          "required": false,
+          "default": "default"
+        }
+      },
+      "emits": [
+        "change",
+        "mounted",
+        "update:modelValue"
+      ]
+    },
+    "BaseTable": {
+      "props": {
+        "columns": {
+          "type": "Array",
+          "required": true,
+          "default": "[none]"
+        },
+        "data": {
+          "type": "Array",
+          "required": false,
+          "default": []
+        },
+        "emptyMessage": {
+          "type": "String",
+          "required": false,
+          "default": "No data found"
+        },
+        "filterable": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "id": {
+          "type": "String",
+          "required": false,
+          "default": ""
+        },
+        "loading": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "loadingRows": {
+          "type": "Number",
+          "required": false,
+          "default": 5
+        },
+        "pagination": {
+          "type": "Object",
+          "required": false,
+          "default": {
+            "enabled": true,
+            "pageSize": 10,
+            "pageSizeOptions": [
+              5,
+              10,
+              25,
+              50,
+              100
+            ],
+            "showTotal": true,
+            "showPageSizeSelector": true,
+            "showFirstLastButtons": true
+          }
+        },
+        "responsive": {
+          "type": "Boolean",
+          "required": false,
+          "default": true
+        },
+        "scrollOnPageChange": {
+          "type": "Boolean",
+          "required": false,
+          "default": true
+        },
+        "selectable": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "size": {
+          "type": "String",
+          "required": false,
+          "default": "medium"
+        },
+        "sortable": {
+          "type": "Boolean",
+          "required": false,
+          "default": true
+        },
+        "variant": {
+          "type": "String",
+          "required": false,
+          "default": "default"
+        }
+      },
+      "emits": [
+        "action-click",
+        "filter",
+        "page-change",
+        "page-size-change",
+        "row-click",
+        "select",
+        "select-all",
+        "sort"
+      ]
+    },
+    "BaseTextarea": {
+      "props": {
+        "autoResize": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "block": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "disabled": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "errorMessage": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "helperText": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "id": {
+          "type": "String",
+          "required": false,
+          "default": ""
+        },
+        "label": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "maxRows": {
+          "type": "String | Number | any",
+          "required": false,
+          "default": null
+        },
+        "modelValue": {
+          "type": "String",
+          "required": false,
+          "default": ""
+        },
+        "name": {
+          "type": "String",
+          "required": false,
+          "default": ""
+        },
+        "placeholder": {
+          "type": "String",
+          "required": false,
+          "default": ""
+        },
+        "readonly": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "required": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "resize": {
+          "type": "String",
+          "required": false,
+          "default": "vertical"
+        },
+        "rows": {
+          "type": "String | Number",
+          "required": false,
+          "default": 3
+        },
+        "rules": {
+          "type": "Array",
+          "required": false,
+          "default": []
+        },
+        "state": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "transparentBg": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "validateOnBlur": {
+          "type": "Boolean",
+          "required": false,
+          "default": true
+        },
+        "validateOnInput": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "variant": {
+          "type": "String",
+          "required": false,
+          "default": "default"
+        }
+      },
+      "emits": [
+        "blur",
+        "focus",
+        "input",
+        "mounted",
+        "update:modelValue",
+        "validation"
+      ]
+    },
+    "BaseToast": {
+      "props": {
+        "closable": {
+          "type": "Boolean",
+          "required": false,
+          "default": true
+        },
+        "duration": {
+          "type": "Number",
+          "required": false,
+          "default": 3000
+        },
+        "id": {
+          "type": "String | Number",
+          "required": true,
+          "default": "[none]"
+        },
+        "message": {
+          "type": "String",
+          "required": true,
+          "default": "[none]"
+        },
+        "position": {
+          "type": "String",
+          "required": false,
+          "default": "top-right"
+        },
+        "simple": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "title": {
+          "type": "String",
+          "required": false,
+          "default": ""
+        },
+        "variant": {
+          "type": "String",
+          "required": false,
+          "default": "default"
+        }
+      },
+      "emits": [
+        "close"
+      ]
+    },
+    "ToastsContainer": {
+      "props": {},
+      "emits": []
+    }
+  }
+}

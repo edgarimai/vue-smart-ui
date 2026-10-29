@@ -263,18 +263,5 @@ defineEmits<{
       transform: rotate(360deg);
     }
   }
-
-  // Slot adjustments
-  :deep([name='prefix']),
-  :deep([name='suffix']) {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    svg {
-      width: 1em;
-      height: 1em;
-    }
-  }
 }
 </style>

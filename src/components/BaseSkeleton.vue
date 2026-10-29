@@ -75,7 +75,7 @@ withDefaults(defineProps<Props>(), {
   }
 
   &--rounded {
-    border-radius: 0.375rem;
+    border-radius: var(--vsui-skeleton-rounded-radius, 0.375rem);
   }
 
   // Animation

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { inject, ref, computed, onMounted, onUnmounted, watch, type Ref } from 'vue'
+import { inject, ref, computed, onMounted, onUnmounted, unref, watch, type Ref } from 'vue'
 
 interface Props {
   title: string
@@ -13,16 +13,28 @@ const props = withDefaults(defineProps<Props>(), {
 interface AccordionContext {
   activeItems: Ref<symbol[]>
   toggleItem: (id: symbol) => void
-  variant: string
+  variant: string | Ref<string>
 }
 
-const accordion = inject('accordion') as AccordionContext
+// Outside a BaseAccordion the item manages its own open state instead of throwing.
+const createStandaloneContext = (): AccordionContext => {
+  const activeItems = ref<symbol[]>([])
+  return {
+    activeItems,
+    toggleItem: (itemId) => {
+      activeItems.value = activeItems.value.includes(itemId) ? [] : [itemId]
+    },
+    variant: 'default',
+  }
+}
+
+const accordion = inject<AccordionContext>('accordion', createStandaloneContext, true)
 const id = ref<symbol>(Symbol())
 const contentHeight = ref('0px')
 const contentRef = ref<HTMLDivElement | null>(null)
 
 const isActive = computed(() => accordion.activeItems.value.includes(id.value))
-const variant = computed(() => accordion.variant)
+const variant = computed(() => unref(accordion.variant))
 
 const toggle = () => {
   if (!props.disabled) {
@@ -36,18 +48,22 @@ const updateHeight = () => {
   }
 }
 
-// Update height when the content changes
-const observer = new ResizeObserver(updateHeight)
+// Update height when the content changes. Created on mount: ResizeObserver does not exist
+// during server-side rendering.
+let observer: ResizeObserver | null = null
 
 onMounted(() => {
   if (contentRef.value) {
-    observer.observe(contentRef.value)
+    if (typeof ResizeObserver !== 'undefined') {
+      observer = new ResizeObserver(updateHeight)
+      observer.observe(contentRef.value)
+    }
     updateHeight()
   }
 })
 
 onUnmounted(() => {
-  observer.disconnect()
+  observer?.disconnect()
 })
 
 // Update height when the active state changes
@@ -66,6 +82,7 @@ watch(isActive, updateHeight)
     ]"
   >
     <button
+      type="button"
       class="base-accordion-item__header"
       @click="toggle"
       :disabled="disabled"

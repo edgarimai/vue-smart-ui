@@ -244,8 +244,7 @@ describe('BaseSwitch', () => {
       expect(wrapper.classes()).toContain('base-switch--on')
     })
 
-    // BUG: an empty-string offValue is cast to `true` by Vue's boolean prop casting
-    it.fails('emits an empty-string offValue when toggled back off', async () => {
+    it('emits an empty-string offValue when toggled back off', async () => {
       const wrapper = mountSwitch({ modelValue: 'on', onValue: 'on', offValue: '' })
 
       await wrapper.find('input').trigger('change')
@@ -358,8 +357,7 @@ describe('BaseSwitch', () => {
   })
 
   describe('known defects', () => {
-    // BUG: the switch input has no role="switch", so assistive tech announces a plain checkbox
-    it.fails('exposes role="switch" on the input', () => {
+    it('exposes role="switch" on the input', () => {
       expect(mountSwitch().find('input').attributes('role')).toBe('switch')
     })
   })

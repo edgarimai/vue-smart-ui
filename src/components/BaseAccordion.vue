@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { provide, ref } from 'vue'
+import { provide, ref, toRef } from 'vue'
 import { useAutoId } from '../composables/autoId'
 
 export type AccordionVariant = 'default' | 'bordered' | 'minimal'
@@ -35,7 +35,8 @@ const toggleItem = (id: symbol) => {
 provide('accordion', {
   activeItems,
   toggleItem,
-  variant: props.variant,
+  // A ref, so items follow a variant that changes after mount.
+  variant: toRef(props, 'variant'),
 })
 </script>
 

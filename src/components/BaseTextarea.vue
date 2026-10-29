@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useAutoId } from '../composables/autoId'
+import { useValidationConfig } from '../composables/validationConfig'
 
 export type TextareaVariant = 'default' | 'filled' | 'outlined'
 export type TextareaState = 'success' | 'error' | 'warning'
@@ -88,18 +89,20 @@ const textareaClasses = computed(() => ({
 
 type ValidatorResult = { valid: boolean; message: string }
 
+const { getValidationMessage } = useValidationConfig()
+
 const validators: Record<string, (value: string, arg?: number) => ValidatorResult> = {
   required: (value) => ({
     valid: !!value?.toString().trim(),
-    message: 'This field is required',
+    message: getValidationMessage('required'),
   }),
   min: (value, min) => ({
     valid: !value || value.toString().length >= (min as number),
-    message: `Must be at least ${min} characters`,
+    message: getValidationMessage('min', min),
   }),
   max: (value, max) => ({
     valid: !value || value.toString().length <= (max as number),
-    message: `Must be no more than ${max} characters`,
+    message: getValidationMessage('max', max),
   }),
 }
 
@@ -220,6 +223,15 @@ const isRequired = computed(() => {
   )
 })
 
+// A programmatic change (async load, form reset) does not fire `input`, so follow the model.
+watch(
+  () => props.modelValue,
+  () => {
+    if (props.autoResize) autoResize()
+  },
+  { flush: 'post' },
+)
+
 onMounted(() => {
   if (props.autoResize) {
     autoResize()
@@ -230,6 +242,9 @@ onMounted(() => {
     focus,
   })
 })
+
+// Also reachable through a template ref (`textareaRef.value.focus()`), not only the `mounted` payload.
+defineExpose({ focus, validate: validateField })
 </script>
 
 <template>
@@ -246,6 +261,7 @@ onMounted(() => {
       <textarea
         :id="autoId"
         ref="textareaRef"
+        :name="name || undefined"
         :value="modelValue"
         :rows="rows"
         :placeholder="placeholder"

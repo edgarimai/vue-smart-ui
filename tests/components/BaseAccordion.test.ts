@@ -85,8 +85,7 @@ describe('BaseAccordion', () => {
     expect(wrapper.findAll('.base-accordion-item')).toHaveLength(3)
   })
 
-  // BUG: the variant is provided once as a plain value, so items never see later prop changes
-  it.fails('updates the item variant classes when the variant changes after mount', async () => {
+  it('updates the item variant classes when the variant changes after mount', async () => {
     const wrapper = mountAccordion({ variant: 'default' })
 
     await wrapper.setProps({ variant: 'bordered' })
@@ -255,16 +254,14 @@ describe('BaseAccordionItem', () => {
   })
 
   describe('outside a BaseAccordion', () => {
-    // BUG: inject('accordion') has no default, so an item used standalone throws on mount
-    it.fails('renders without throwing', () => {
+    it('renders without throwing', () => {
       vi.spyOn(console, 'warn').mockImplementation(() => undefined)
 
       expect(() => mount(BaseAccordionItem, { props: { title: 'Standalone' } })).not.toThrow()
     })
   })
 
-  // BUG: the header <button> has no type attribute, so it submits a surrounding <form>
-  it.fails('renders the header button with type="button"', () => {
+  it('renders the header button with type="button"', () => {
     const wrapper = mountAccordion()
 
     expect(headers(wrapper)[0].attributes('type')).toBe('button')

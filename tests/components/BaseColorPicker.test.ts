@@ -103,13 +103,13 @@ describe('BaseColorPicker', () => {
       expect(textInput(wrapper).required).toBe(true)
     })
 
-    it('forwards name to validation payloads (it is not rendered on the input)', () => {
+    it('forwards name to the input element and to validation payloads', () => {
       const wrapper = mountPicker({ name: 'brandColor', modelValue: 'oops' })
       const payload = wrapper.emitted('mounted')?.[0][0] as ColorPickerMountedPayload
 
       payload.validate()
 
-      expect(textInput(wrapper).hasAttribute('name')).toBe(false)
+      expect(textInput(wrapper).getAttribute('name')).toBe('brandColor')
       expect(emittedValues(wrapper, 'validation')).toEqual([
         { valid: false, error: 'Invalid HEX color', name: 'brandColor' },
       ])
@@ -451,8 +451,7 @@ describe('BaseColorPicker', () => {
       )
     })
 
-    // BUG: the swatch that opens the picker is a plain div without role or tabindex
-    it.fails('makes the preview swatch keyboard focusable', () => {
+    it('makes the preview swatch keyboard focusable', () => {
       const preview = mountPicker().find('.base-color-picker__preview')
 
       expect(
@@ -460,8 +459,7 @@ describe('BaseColorPicker', () => {
       ).toBe(true)
     })
 
-    // BUG: the icon that opens the picker is a plain div without role or tabindex
-    it.fails('makes the picker icon keyboard focusable', () => {
+    it('makes the picker icon keyboard focusable', () => {
       const icon = mountPicker().find('.base-color-picker__icon')
 
       expect(

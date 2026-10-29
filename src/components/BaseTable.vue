@@ -8,10 +8,6 @@ import BaseSkeleton from './BaseSkeleton.vue'
 import BaseCombobox from './BaseCombobox.vue'
 import type { ComboboxModelValue } from './BaseCombobox.vue'
 
-defineOptions({
-  inheritAttrs: false,
-})
-
 export type TableVariant = 'default' | 'striped' | 'bordered'
 export type TableSize = 'small' | 'medium' | 'large'
 export type SortDirection = 'asc' | 'desc' | null
@@ -298,6 +294,11 @@ const handleActionClick = (action: unknown, row: Record<string, unknown>, index:
   emit('action-click', { action, row, index })
 }
 
+const getAriaSort = (column: TableColumn): 'ascending' | 'descending' | undefined => {
+  if (sortState.value.column !== column.key) return undefined
+  return sortState.value.direction === 'asc' ? 'ascending' : 'descending'
+}
+
 const getSortIcon = (column: TableColumn): string => {
   if (sortState.value.column !== column.key) return '↕️'
   return sortState.value.direction === 'asc' ? '↑' : '↓'
@@ -335,7 +336,6 @@ watch(
         'base-table--responsive': responsive,
         'base-table--selectable': selectable,
       },
-      $attrs.class,
     ]"
   >
     <!-- Header with search and actions -->
@@ -371,6 +371,7 @@ watch(
                 'base-table__th--sortable': sortable && column.sortable !== false,
                 'base-table__th--sorted': sortState.column === column.key,
               }"
+              :aria-sort="getAriaSort(column)"
               @click="handleSort(column)"
             >
               <div class="base-table__th-content">

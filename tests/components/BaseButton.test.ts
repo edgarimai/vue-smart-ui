@@ -191,8 +191,7 @@ describe('BaseButton attrs', () => {
     )
   })
 
-  // BUG: inheritAttrs is false and only $attrs.class is applied, so title/aria-*/data-* are dropped
-  it.fails('forwards title, aria-label and data-* attributes to the <button>', () => {
+  it('forwards title, aria-label and data-* attributes to the <button>', () => {
     const wrapper = mount(BaseButton, {
       attrs: { title: 'Save changes', 'aria-label': 'Save', 'data-testid': 'save' },
     })
@@ -202,8 +201,7 @@ describe('BaseButton attrs', () => {
     expect(wrapper.attributes('data-testid')).toBe('save')
   })
 
-  // BUG: inline style passed to <BaseButton> is dropped (only class is applied)
-  it.fails('forwards an inline style to the <button>', () => {
+  it('forwards an inline style to the <button>', () => {
     const wrapper = mount(BaseButton, { attrs: { style: 'color: red' } })
 
     expect(wrapper.attributes('style')).toContain('color: red')

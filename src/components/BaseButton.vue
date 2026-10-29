@@ -1,10 +1,6 @@
 <script setup lang="ts">
 import { useAutoId } from '../composables/autoId'
 
-defineOptions({
-  inheritAttrs: false,
-})
-
 export type ButtonType = 'button' | 'submit' | 'reset'
 export type ButtonVariant =
   | 'primary'
@@ -61,7 +57,6 @@ defineEmits<{
         'base-button--loading': loading,
         'base-button--hide-focus-outline': hideFocusOutline,
       },
-      $attrs.class,
     ]"
     :disabled="disabled"
     @click="$emit('click', $event)"

@@ -617,8 +617,7 @@ describe('BaseTextarea autoResize', () => {
     expect(wrapper.get('textarea').element.style.height).toBe('60px')
   })
 
-  // BUG: autoResize only runs on user input, not when the modelValue changes programmatically
-  it.fails('recomputes the height when the modelValue changes programmatically', async () => {
+  it('recomputes the height when the modelValue changes programmatically', async () => {
     const setScrollHeight = mockScrollHeight(100)
     const wrapper = mountTextarea({ autoResize: true, modelValue: 'short' })
 
@@ -639,15 +638,13 @@ describe('BaseTextarea exposed API', () => {
     return exposed
   }
 
-  // BUG: BaseTextarea has no defineExpose, so focus() is not reachable through a template ref
-  it.fails('exposes focus() to a parent through a template ref', () => {
+  it('exposes focus() to a parent through a template ref', () => {
     const exposed = mountWithTemplateRef()
 
     expect(typeof exposed.value?.focus).toBe('function')
   })
 
-  // BUG: BaseTextarea has no defineExpose, so validate() is not reachable through a template ref
-  it.fails('exposes validate() to a parent through a template ref', () => {
+  it('exposes validate() to a parent through a template ref', () => {
     const exposed = mountWithTemplateRef()
 
     expect(typeof exposed.value?.validate).toBe('function')
@@ -674,15 +671,13 @@ describe('BaseTextarea known bugs', () => {
     expect(lastValidation(wrapper)).toStrictEqual({ valid: true, error: '' })
   })
 
-  // BUG: the name prop is not bound to the DOM element
-  it.fails('binds the name prop to the textarea element', () => {
+  it('binds the name prop to the textarea element', () => {
     const wrapper = mountTextarea({ name: 'notes' })
 
     expect(wrapper.get('textarea').attributes('name')).toBe('notes')
   })
 
-  // BUG: messages from useValidationConfig are ignored, the textarea uses hard-coded English
-  it.fails('uses the required message configured through useValidationConfig', async () => {
+  it('uses the required message configured through useValidationConfig', async () => {
     setValidationMessages({ required: 'Obrigatório' })
     const wrapper = mountVModel({ rules: ['required'] })
 
@@ -691,8 +686,7 @@ describe('BaseTextarea known bugs', () => {
     expect(lastValidation(wrapper)?.error).toBe('Obrigatório')
   })
 
-  // BUG: messages from useValidationConfig are ignored, the textarea uses hard-coded English
-  it.fails('uses the min message configured through useValidationConfig', async () => {
+  it('uses the min message configured through useValidationConfig', async () => {
     setValidationMessages({ min: (min) => `Mínimo de ${min} caracteres` })
     const wrapper = mountVModel({ rules: [{ min: 3 }] })
 

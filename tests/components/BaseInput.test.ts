@@ -1011,15 +1011,13 @@ describe('BaseInput exposed API', () => {
     return exposed
   }
 
-  // BUG: BaseInput has no defineExpose, so focus() is not reachable through a template ref
-  it.fails('exposes focus() to a parent through a template ref', () => {
+  it('exposes focus() to a parent through a template ref', () => {
     const exposed = mountWithTemplateRef()
 
     expect(typeof exposed.value?.focus).toBe('function')
   })
 
-  // BUG: BaseInput has no defineExpose, so validate() is not reachable through a template ref
-  it.fails('exposes validate() to a parent through a template ref', () => {
+  it('exposes validate() to a parent through a template ref', () => {
     const exposed = mountWithTemplateRef()
 
     expect(typeof exposed.value?.validate).toBe('function')
@@ -1108,8 +1106,7 @@ describe('BaseInput known bugs', () => {
     expect(wrapper.find('.base-input__required').exists()).toBe(false)
   })
 
-  // BUG: the name prop is not bound to the DOM element
-  it.fails('binds the name prop to the input element', () => {
+  it('binds the name prop to the input element', () => {
     const wrapper = mountInput({ name: 'email' })
 
     expect(wrapper.get('input').attributes('name')).toBe('email')

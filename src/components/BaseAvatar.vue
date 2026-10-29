@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useAutoId } from '../composables/autoId'
 
 export type AvatarVariant = 'default' | 'filled' | 'outlined'
@@ -40,8 +40,22 @@ const emit = defineEmits<{
   load: [event: Event]
 }>()
 
+// A source that fails to load falls back to the initials instead of a broken image.
+const imageFailed = ref(false)
+watch(
+  () => props.src,
+  () => {
+    imageFailed.value = false
+  },
+)
+
 // Computed properties
-const hasImage = computed(() => !!props.src)
+const hasImage = computed(() => !!props.src && !imageFailed.value)
+
+// The initials alone read as stray letters to assistive technology.
+const initialsLabel = computed(() =>
+  hasImage.value ? undefined : props.name || props.alt || props.fallback || undefined,
+)
 
 const initials = computed(() => {
   if (!props.name && !props.fallback) return '?'
@@ -72,6 +86,7 @@ const statusClasses = computed(() => ({
 
 // Event handlers
 const handleImageError = (event: Event) => {
+  imageFailed.value = true
   emit('error', event)
 }
 
@@ -81,7 +96,13 @@ const handleImageLoad = (event: Event) => {
 </script>
 
 <template>
-  <div :id="autoId" :class="avatarClasses" :title="name || alt">
+  <div
+    :id="autoId"
+    :class="avatarClasses"
+    :title="name || alt"
+    :role="initialsLabel && !$slots.default ? 'img' : undefined"
+    :aria-label="initialsLabel && !$slots.default ? initialsLabel : undefined"
+  >
     <!-- Avatar image -->
     <img
       v-if="hasImage"

@@ -159,12 +159,16 @@ const selectedValue = computed({
   },
 })
 
+// A validation error is only shown after interaction; an `errorMessage` passed by the parent
+// (e.g. from the server) is an error from the start.
+const hasErrorState = computed(() => (!!error.value && touched.value) || !!props.errorMessage)
+
 const containerClasses = computed(() => ({
   'vsui base-segmented-buttons': true,
   [`base-segmented-buttons--${props.size}`]: true,
   'base-segmented-buttons--block': props.block,
   'base-segmented-buttons--disabled': props.disabled,
-  'base-segmented-buttons--error': error.value && touched.value,
+  'base-segmented-buttons--error': hasErrorState.value,
 }))
 
 const getValue = (option: unknown): unknown => {
@@ -293,7 +297,7 @@ onMounted(() => {
     <div
       v-if="displayMessage"
       class="base-segmented-buttons__helper"
-      :class="{ 'base-segmented-buttons__helper--error': error && touched }"
+      :class="{ 'base-segmented-buttons__helper--error': hasErrorState }"
     >
       {{ displayMessage }}
     </div>

@@ -172,8 +172,7 @@ describe('BaseAvatar', () => {
   })
 
   describe('known defects', () => {
-    // BUG: a broken image only emits `error`; the avatar does not fall back to initials
-    it.fails('falls back to initials when the image fails to load', async () => {
+    it('falls back to initials when the image fails to load', async () => {
       const wrapper = mountAvatar({ src: '/broken.png', name: 'Jane Doe' })
 
       await wrapper.find('img').trigger('error')
@@ -182,8 +181,7 @@ describe('BaseAvatar', () => {
       expect(initials(wrapper)).toBe('JD')
     })
 
-    // BUG: an initials-only avatar has no role or accessible name for assistive tech
-    it.fails('exposes an accessible name for an initials-only avatar', () => {
+    it('exposes an accessible name for an initials-only avatar', () => {
       const wrapper = mountAvatar({ name: 'Jane Doe' })
 
       expect(wrapper.attributes('role')).toBe('img')

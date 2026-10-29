@@ -667,8 +667,7 @@ describe('BaseSegmentedButtons errorMessage', () => {
     expect(wrapper.find('.base-segmented-buttons__helper').text()).toBe('This field is required')
   })
 
-  // BUG: errorMessage alone is shown as plain helper text; the helper does not get the error class
-  it.fails('applies the helper error class when only errorMessage is provided', () => {
+  it('applies the helper error class when only errorMessage is provided', () => {
     const wrapper = mount(BaseSegmentedButtons, {
       props: { options: PRIMITIVES, errorMessage: 'Server says no' },
     })
@@ -678,8 +677,7 @@ describe('BaseSegmentedButtons errorMessage', () => {
     )
   })
 
-  // BUG: errorMessage alone does not apply the error modifier on the container
-  it.fails('applies the container error class when only errorMessage is provided', () => {
+  it('applies the container error class when only errorMessage is provided', () => {
     const wrapper = mount(BaseSegmentedButtons, {
       props: { options: PRIMITIVES, errorMessage: 'Server says no' },
     })

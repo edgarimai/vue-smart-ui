@@ -180,8 +180,7 @@ describe('BaseTable rendering', () => {
     expect(wrapper.classes()).toEqual(expect.arrayContaining(['base-table', 'my-table']))
   })
 
-  // BUG: inheritAttrs is false and only $attrs.class is applied; data-*/aria-* are dropped
-  it.fails('forwards data-* and aria-* attributes to the root element', () => {
+  it('forwards data-* and aria-* attributes to the root element', () => {
     const wrapper = mount(BaseTable, {
       props: { columns: COLUMNS, data: PEOPLE },
       attrs: { 'data-testid': 'users', 'aria-label': 'Users' },
@@ -191,8 +190,7 @@ describe('BaseTable rendering', () => {
     expect(wrapper.attributes('aria-label')).toBe('Users')
   })
 
-  // BUG: inline style passed to <BaseTable> is dropped
-  it.fails('forwards an inline style to the root element', () => {
+  it('forwards an inline style to the root element', () => {
     const wrapper = mount(BaseTable, {
       props: { columns: COLUMNS, data: PEOPLE },
       attrs: { style: 'max-width: 400px' },
@@ -536,8 +534,7 @@ describe('BaseTable sorting', () => {
     expect(headerCell(wrapper, 'Age').find('.base-table__sort-icon').exists()).toBe(true)
   })
 
-  // BUG: sortable headers expose no aria-sort, so assistive tech cannot tell the sort state
-  it.fails('exposes aria-sort on the sorted header', async () => {
+  it('exposes aria-sort on the sorted header', async () => {
     const wrapper = mountTable()
 
     await headerCell(wrapper, 'Age').trigger('click')

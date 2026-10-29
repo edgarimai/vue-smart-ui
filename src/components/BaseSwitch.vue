@@ -2,7 +2,9 @@
 import { ref, computed, watch, onMounted } from 'vue'
 import { useAutoId } from '../composables/autoId'
 
-export type SwitchValue = boolean | string | number
+// Boolean must come last: Vue casts '' to true for a prop that lists Boolean before String,
+// which turned `offValue: ''` into `true`.
+export type SwitchValue = string | number | boolean
 export type SwitchLabelPosition = 'top' | 'left' | 'right'
 export type SwitchState = 'success' | 'error' | 'warning'
 export type SwitchSize = 'small' | 'medium' | 'large'
@@ -154,6 +156,7 @@ onMounted(() => {
             :id="autoId"
             ref="switchRef"
             type="checkbox"
+            role="switch"
             :checked="isOn"
             :disabled="disabled || loading"
             :required="required"

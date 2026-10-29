@@ -641,6 +641,9 @@ onMounted(() => {
     focus,
   })
 })
+
+// Also reachable through a template ref (`inputRef.value.focus()`), not only the `mounted` payload.
+defineExpose({ focus, validate: validateField })
 </script>
 
 <template>
@@ -660,6 +663,7 @@ onMounted(() => {
       <input
         :id="autoId"
         ref="inputRef"
+        :name="name || undefined"
         :type="inputType"
         :value="inputValue"
         :placeholder="placeholder"

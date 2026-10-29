@@ -268,13 +268,28 @@ const computedRules = computed(() => {
         <template #prefix v-if="showPreview">
           <div
             class="base-color-picker__preview"
+            role="button"
+            :tabindex="disabled || readonly ? -1 : 0"
+            aria-label="Pick a color"
+            :aria-expanded="showPicker"
             :style="{ backgroundColor: colorValue }"
             @click="toggleColorPicker"
+            @keydown.enter.prevent="toggleColorPicker"
+            @keydown.space.prevent="toggleColorPicker"
           ></div>
         </template>
 
         <template #suffix>
-          <div class="base-color-picker__icon" @click="toggleColorPicker">
+          <div
+            class="base-color-picker__icon"
+            role="button"
+            :tabindex="disabled || readonly ? -1 : 0"
+            aria-label="Pick a color"
+            :aria-expanded="showPicker"
+            @click="toggleColorPicker"
+            @keydown.enter.prevent="toggleColorPicker"
+            @keydown.space.prevent="toggleColorPicker"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="16"

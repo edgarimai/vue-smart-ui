@@ -1135,7 +1135,7 @@
           "default": false
         },
         "modelValue": {
-          "type": "Boolean | String | Number",
+          "type": "String | Number | Boolean",
           "required": false,
           "default": false
         },
@@ -1150,7 +1150,7 @@
           "default": null
         },
         "offValue": {
-          "type": "Boolean | String | Number",
+          "type": "String | Number | Boolean",
           "required": false,
           "default": false
         },
@@ -1160,7 +1160,7 @@
           "default": null
         },
         "onValue": {
-          "type": "Boolean | String | Number",
+          "type": "String | Number | Boolean",
           "required": false,
           "default": true
         },

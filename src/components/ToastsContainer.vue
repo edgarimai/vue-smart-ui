@@ -2,7 +2,7 @@
 import { useToast, type Toast } from '@/composables/toast'
 import { type ToastPosition } from '@/composables/toastConfig'
 import { computed } from 'vue'
-import { BaseToast } from '@/components'
+import BaseToast from './BaseToast.vue'
 
 const { toasts, removeToast } = useToast()
 
@@ -17,7 +17,8 @@ const groupedToasts = computed(() => {
   }
 
   toasts.value.forEach((toast: Toast) => {
-    groups[toast.position].push(toast)
+    // An unsupported position (e.g. 'top' from untyped JS) would throw and break every toast.
+    ;(groups[toast.position] ?? groups['top-right']).push(toast)
   })
 
   return groups

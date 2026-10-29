@@ -211,8 +211,7 @@ describe('BaseToast closing', () => {
     expect(wrapper.emitted('close')).toBeUndefined()
   })
 
-  // BUG: auto-dismiss of a non-simple toast relies only on the CSS animationend event, no timer fallback
-  it.fails('closes after duration even if no animationend event is fired', async () => {
+  it('closes after duration even if no animationend event is fired', async () => {
     const wrapper = mountToast({ duration: 1000 })
 
     await vi.advanceTimersByTimeAsync(1000 + 100)
@@ -220,8 +219,7 @@ describe('BaseToast closing', () => {
     expect(wrapper.emitted('close')).toHaveLength(1)
   })
 
-  // BUG: the simple-toast auto-close timer is never cleared on unmount (e.g. removeToast), it keeps running
-  it.fails('leaves no pending timers after a simple toast is unmounted', async () => {
+  it('leaves no pending timers after a simple toast is unmounted', async () => {
     const wrapper = mountToast({ simple: true, duration: 5000 })
     await vi.advanceTimersByTimeAsync(100)
 
@@ -287,8 +285,7 @@ describe('useToastConfig', () => {
     expect(useToastConfig().getToastDefaults().duration).toBe(42)
   })
 
-  // BUG: setToastDefaults replaces the whole config instead of merging with the current one
-  it.fails('keeps previously set defaults when called again with another partial', async () => {
+  it('keeps previously set defaults when called again with another partial', async () => {
     const { config } = await loadToast()
 
     config.setToastDefaults({ position: 'bottom-left' })
@@ -572,8 +569,7 @@ describe('toast container', () => {
     expect(toast.toasts.value).toHaveLength(0)
   })
 
-  // BUG: an invalid position (not one of the 6 supported) crashes the container render
-  it.fails('does not crash the container when a toast has an unsupported position', async () => {
+  it('does not crash the container when a toast has an unsupported position', async () => {
     const { toast } = await loadToast()
     const errors = vi.spyOn(console, 'error').mockImplementation(() => {})
 
@@ -584,8 +580,7 @@ describe('toast container', () => {
     expect(document.querySelector('[data-toast-id]')).not.toBeNull()
   })
 
-  // BUG: an invalid default position set through setToastDefaults crashes the container render
-  it.fails('does not crash the container when the default position is unsupported', async () => {
+  it('does not crash the container when the default position is unsupported', async () => {
     const { toast, config } = await loadToast()
     const errors = vi.spyOn(console, 'error').mockImplementation(() => {})
     config.setToastDefaults({ position: 'top' as ToastPosition })

@@ -48,13 +48,21 @@ const createObserver = () => {
   }
 }
 
-// Watch for changes in loading to reobserve after loading
+let rearmTimer: ReturnType<typeof setTimeout> | null = null
+
+// An IntersectionObserver only reports changes, so a sentinel that is still visible after
+// loading finishes (or after `disabled` is lifted) never fires again unless it is re-observed.
 watch(
-  () => props.loading,
-  (newValue, oldValue) => {
-    if (oldValue === true && newValue === false) {
+  [() => props.loading, () => props.disabled],
+  ([loading, disabled], [wasLoading, wasDisabled]) => {
+    const finishedLoading = wasLoading === true && loading === false
+    const reenabled = wasDisabled === true && disabled === false
+
+    if (finishedLoading || reenabled) {
+      if (rearmTimer) clearTimeout(rearmTimer)
       // Small delay to ensure the DOM was updated
-      setTimeout(() => {
+      rearmTimer = setTimeout(() => {
+        rearmTimer = null
         createObserver()
       }, 100)
     }
@@ -66,6 +74,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
+  if (rearmTimer) clearTimeout(rearmTimer)
   if (observer.value) {
     observer.value.disconnect()
   }

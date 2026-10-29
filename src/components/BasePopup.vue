@@ -29,6 +29,11 @@ const emit = defineEmits<{ 'update:modelValue': [value: boolean]; close: [] }>()
 
 const popupRef = ref<HTMLElement | null>(null)
 
+const close = () => {
+  emit('update:modelValue', false)
+  emit('close')
+}
+
 const handleClickOutside = (event: MouseEvent) => {
   if (
     !props.disableClickOutside &&
@@ -38,18 +43,14 @@ const handleClickOutside = (event: MouseEvent) => {
     const clickedInAnyPopup = (event.target as HTMLElement).closest(
       '.base-popup, [data-vsui-floating]',
     )
-    if (!clickedInAnyPopup) {
-      emit('update:modelValue', false)
-      emit('close')
-    }
+    if (!clickedInAnyPopup) close()
   }
 }
 
 const handleEscKey = (event: KeyboardEvent) => {
-  if (props.closeOnEsc && event.key === 'Escape') {
-    emit('update:modelValue', false)
-    emit('close')
-  }
+  // The listener lives on `document` for as long as the component is mounted, so a closed
+  // popup must ignore Escape instead of emitting `close` for every press on the page.
+  if (props.modelValue && props.closeOnEsc && event.key === 'Escape') close()
 }
 
 onMounted(() => {
@@ -92,11 +93,7 @@ onUnmounted(() => {
           <slot name="footer" />
         </div>
 
-        <button
-          v-if="$slots.close"
-          class="base-popup__close"
-          @click="$emit('update:modelValue', false)"
-        >
+        <button v-if="$slots.close" class="base-popup__close" @click="close">
           <slot name="close" />
         </button>
       </div>

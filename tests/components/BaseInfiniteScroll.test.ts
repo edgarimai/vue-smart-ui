@@ -294,29 +294,24 @@ describe('BaseInfiniteScroll', () => {
     })
   })
 
-  describe('known defects', () => {
-    // BUG: re-enabling while the sentinel is still visible never re-arms the observer or fires load-more
-    it.fails(
-      're-triggers load-more when disabled goes from true to false with the sentinel visible',
-      async () => {
-        vi.useFakeTimers()
-        const wrapper = mountScroll({ disabled: true })
-        currentObserver().report(true)
-        expect(wrapper.emitted('load-more')).toBeUndefined()
+  describe('re-arming the observer', () => {
+    it('re-triggers load-more when disabled goes from true to false with the sentinel visible', async () => {
+      vi.useFakeTimers()
+      const wrapper = mountScroll({ disabled: true })
+      currentObserver().report(true)
+      expect(wrapper.emitted('load-more')).toBeUndefined()
 
-        await wrapper.setProps({ disabled: false })
-        await nextTick()
-        vi.advanceTimersByTime(500)
+      await wrapper.setProps({ disabled: false })
+      await nextTick()
+      vi.advanceTimersByTime(500)
 
-        const rearmed =
-          observers().length > 1 ||
-          observers().reduce((total, o) => total + o.observe.mock.calls.length, 0) > 1
-        expect(rearmed || wrapper.emitted('load-more') !== undefined).toBe(true)
-      },
-    )
+      const rearmed =
+        observers().length > 1 ||
+        observers().reduce((total, o) => total + o.observe.mock.calls.length, 0) > 1
+      expect(rearmed || wrapper.emitted('load-more') !== undefined).toBe(true)
+    })
 
-    // BUG: the 100ms re-arm timer is not cleared on unmount, so an observer is created after unmount
-    it.fails('does not create a new observer after unmount', async () => {
+    it('does not create a new observer after unmount', async () => {
       vi.useFakeTimers()
       const wrapper = mountScroll({ loading: true })
       await wrapper.setProps({ loading: false })

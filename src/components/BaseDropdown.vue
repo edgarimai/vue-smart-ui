@@ -48,6 +48,7 @@ watch(
     isVisible.value = newValue
     if (newValue) {
       document.addEventListener('click', handleClickOutside)
+      document.addEventListener('keydown', handleEscape, true)
       startTracking()
       // Update position after render
       nextTick(() => {
@@ -55,10 +56,20 @@ watch(
       })
     } else {
       document.removeEventListener('click', handleClickOutside)
+      document.removeEventListener('keydown', handleEscape, true)
       stopTracking()
     }
   },
 )
+
+// Registered in the capture phase and only while open, so Escape closes the dropdown first
+// and does not also reach an enclosing BasePopup listening on `document`.
+const handleEscape = (event: KeyboardEvent) => {
+  if (event.key === 'Escape') {
+    event.stopPropagation()
+    emit('update:modelValue', false)
+  }
+}
 
 const handleClickOutside = (event: MouseEvent) => {
   if (
@@ -81,12 +92,14 @@ const handleItemClick = (event: MouseEvent) => {
 onMounted(() => {
   if (props.modelValue) {
     document.addEventListener('click', handleClickOutside)
+    document.addEventListener('keydown', handleEscape, true)
     startTracking()
   }
 })
 
 onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside)
+  document.removeEventListener('keydown', handleEscape, true)
   stopTracking()
 })
 </script>

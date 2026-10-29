@@ -28,7 +28,7 @@ const toastConfig = reactive<{ defaults: ToastDefaults }>({
 
 export const useToastConfig = () => {
   const setToastDefaults = (config: Partial<ToastDefaults>): void => {
-    toastConfig.defaults = { ...defaultToastConfig, ...config }
+    toastConfig.defaults = { ...toastConfig.defaults, ...config }
   }
 
   const getToastDefaults = (): ToastDefaults => {

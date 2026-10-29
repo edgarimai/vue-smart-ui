@@ -148,9 +148,16 @@ const error = ref('')
 const searchQuery = ref('')
 const highlightedIndex = ref(-1)
 
+// 0 is a valid option value and an empty array is "nothing selected", so this is not a
+// falsiness check.
+const hasValue = (value: unknown): boolean => {
+  if (Array.isArray(value)) return value.length > 0
+  return value !== null && value !== undefined && value !== ''
+}
+
 const validators: Record<string, Validator> = {
   required: (value) => ({
-    valid: !!value || (Array.isArray(value) && value.length > 0),
+    valid: hasValue(value),
     message: getValidationMessage('required'),
   }),
   min: (value, min) => ({
@@ -188,7 +195,10 @@ const validate = (value: ComboboxModelValue) => {
     }
 
     if (typeof rule === 'object') {
-      const [validatorName, config] = Object.entries(rule)[0]
+      const entry = Object.entries(rule)[0]
+      if (!entry) continue
+
+      const [validatorName, config] = entry
       const validator = validators[validatorName]
 
       if (validator) {
@@ -223,9 +233,8 @@ const getValue = (option: ComboboxOptionItem): string | number => {
 
 const getLabel = (option: ComboboxOptionItem): string => {
   if (typeof option === 'object' && option !== null) {
-    return (
-      (option[props.labelKey] as string) || (option[props.valueKey] as string) || String(option)
-    )
+    // String() because a numeric label (e.g. labelKey: 'year') would break `.toLowerCase()`.
+    return String(option[props.labelKey] || option[props.valueKey] || option)
   }
   return String(option)
 }
@@ -254,7 +263,8 @@ const filteredOptions = computed(() => {
 })
 
 const selectedOptions = computed<ComboboxOptionItem[]>(() => {
-  if (!props.modelValue) return []
+  if (props.modelValue === null || props.modelValue === undefined || props.modelValue === '')
+    return []
 
   if (props.multiple) {
     if (!Array.isArray(props.modelValue)) return []
@@ -337,7 +347,8 @@ const showClearButton = computed(() => {
     props.clearable &&
     !props.disabled &&
     !props.readonly &&
-    ((props.multiple && selectedOptions.value.length > 0) || (!props.multiple && props.modelValue))
+    ((props.multiple && selectedOptions.value.length > 0) ||
+      (!props.multiple && hasValue(props.modelValue)))
   )
 })
 
@@ -392,10 +403,12 @@ const handleClickOutside = (event: MouseEvent) => {
   }
 }
 
-const handleInputClick = () => {
+const handleInputClick = (event: MouseEvent) => {
   if (props.disabled || props.readonly) return
 
   if (isOpen.value) {
+    // Clicking the search field of an open combobox just places the caret.
+    if (props.searchable && event.target === inputRef.value) return
     closeDropdown()
   } else {
     openDropdown()
@@ -417,6 +430,19 @@ const handleBlur = (event?: FocusEvent) => {
       emit('validation', { valid: isValid, error: error.value })
     }
   }
+}
+
+// The wrapper is the focus target when there is no search field (or while it is closed).
+// Focus moving between the wrapper, the search field and the menu is not a blur; the search
+// field reports its own blur.
+const handleWrapperFocusOut = (event: FocusEvent) => {
+  const wrapper = comboboxRef.value
+  if (!wrapper || event.target !== wrapper) return
+
+  const next = event.relatedTarget as Node | null
+  if (next && (wrapper.contains(next) || menuRef.value?.contains(next))) return
+
+  handleBlur(event)
 }
 
 const handleInput = (event: Event) => {
@@ -543,8 +569,13 @@ const handleKeydown = (event: KeyboardEvent) => {
       break
 
     case 'Escape':
-      event.preventDefault()
-      closeDropdown()
+      // Only claim the key while there is a menu to close, so an enclosing BasePopup
+      // does not close along with it, and a closed combobox leaves Escape alone.
+      if (isOpen.value) {
+        event.preventDefault()
+        event.stopPropagation()
+        closeDropdown()
+      }
       break
 
     case 'Tab':
@@ -607,6 +638,7 @@ onUnmounted(() => {
       :tabindex="searchable && isOpen ? -1 : 0"
       @click="handleInputClick"
       @focus="handleFocus"
+      @focusout="handleWrapperFocusOut"
       @keydown="handleKeydown"
     >
       <div v-if="$slots.prefix || prefixIcon" class="base-combobox__prefix">

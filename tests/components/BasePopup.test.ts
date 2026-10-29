@@ -149,8 +149,7 @@ describe('BasePopup slots', () => {
     expect(wrapper.emitted('update:modelValue')).toEqual([[false]])
   })
 
-  // BUG: the close-slot button emits update:modelValue(false) but never emits `close`
-  it.fails('emits close when the close button is clicked', () => {
+  it('emits close when the close button is clicked', () => {
     const wrapper = mountPopup({}, { close: 'x' })
 
     query('.base-popup__close')?.click()
@@ -198,8 +197,7 @@ describe('BasePopup Escape key', () => {
     expect(wrapper.emitted('close')).toBeUndefined()
   })
 
-  // BUG: Escape emits update:modelValue(false) and close even when the popup is already closed
-  it.fails('does not emit update:modelValue when Escape is pressed while closed', () => {
+  it('does not emit update:modelValue when Escape is pressed while closed', () => {
     const wrapper = mountPopup({ modelValue: false })
 
     pressKey('Escape')
@@ -207,8 +205,7 @@ describe('BasePopup Escape key', () => {
     expect(wrapper.emitted('update:modelValue')).toBeUndefined()
   })
 
-  // BUG: Escape emits update:modelValue(false) and close even when the popup is already closed
-  it.fails('does not emit close when Escape is pressed while closed', () => {
+  it('does not emit close when Escape is pressed while closed', () => {
     const wrapper = mountPopup({ modelValue: false })
 
     pressKey('Escape')

@@ -834,8 +834,7 @@ describe('BaseCombobox searchable', () => {
     expect(wrapper.emitted('validation')).toEqual([[{ valid: false, error: REQUIRED_MESSAGE }]])
   })
 
-  // BUG: clicking the search input of an already-open searchable combobox closes it
-  it.fails('stays open when the search input of an open combobox is clicked', async () => {
+  it('stays open when the search input of an open combobox is clicked', async () => {
     const wrapper = mountCombobox({ searchable: true })
     const input = wrapper.find('input')
 
@@ -849,8 +848,7 @@ describe('BaseCombobox searchable', () => {
     expect(isOpenClass(wrapper)).toBe(true)
   })
 
-  // BUG: a numeric value under labelKey makes searching throw (toLowerCase is not a function)
-  it.fails('searches options whose label value is a number', async () => {
+  it('searches options whose label value is a number', async () => {
     const options = [
       { label: 'x', value: 'a', id: 1, name: 123 },
       { label: 'y', value: 'b', id: 2, name: 456 },
@@ -1182,8 +1180,7 @@ describe('BaseCombobox focus and blur', () => {
     expect(wrapper.emitted('validation')).toBeUndefined()
   })
 
-  // BUG: a non-searchable combobox has no focusout/blur handler, so it never emits 'blur'
-  it.fails('emits blur when a non-searchable combobox loses focus', async () => {
+  it('emits blur when a non-searchable combobox loses focus', async () => {
     const wrapper = mountCombobox()
     const el = toggleEl(wrapper).element as HTMLElement
     el.focus()
@@ -1373,8 +1370,7 @@ describe('BaseCombobox validation', () => {
     expect(wrapper.emitted('validation')).toBeUndefined()
   })
 
-  // BUG: the "required" rule treats an empty array as a valid value
-  it.fails('fails "required" for an empty array in multiple mode', async () => {
+  it('fails "required" for an empty array in multiple mode', async () => {
     const wrapper = mountCombobox({
       multiple: true,
       showTags: true,
@@ -1395,8 +1391,7 @@ describe('BaseCombobox validation', () => {
     expect(getApi(wrapper).validate()).toBe(false)
   })
 
-  // BUG: an empty object rule throws instead of being ignored
-  it.fails('ignores an empty object rule', () => {
+  it('ignores an empty object rule', () => {
     const wrapper = mountCombobox({ rules: [{}] })
 
     expect(() => getApi(wrapper).validate()).not.toThrow()
@@ -1425,22 +1420,19 @@ describe('BaseCombobox falsy option values', () => {
     expect(getOptionEls()[0].classList.contains('base-combobox__option--selected')).toBe(true)
   })
 
-  // BUG: modelValue 0 is treated as "nothing selected", so the placeholder is shown
-  it.fails('displays the label of the option whose value is 0', () => {
+  it('displays the label of the option whose value is 0', () => {
     const wrapper = mountCombobox({ options: ZERO_OPTIONS, modelValue: 0 })
 
     expect(displayText(wrapper)).toBe('Zero')
   })
 
-  // BUG: modelValue 0 is treated as "nothing selected", so the clear button is hidden
-  it.fails('shows the clear button when modelValue is 0', () => {
+  it('shows the clear button when modelValue is 0', () => {
     const wrapper = mountCombobox({ options: ZERO_OPTIONS, modelValue: 0, clearable: true })
 
     expect(wrapper.find('.base-combobox__clear').exists()).toBe(true)
   })
 
-  // BUG: modelValue 0 is treated as "nothing selected", so the required rule fails
-  it.fails('passes the required rule when modelValue is 0', () => {
+  it('passes the required rule when modelValue is 0', () => {
     const wrapper = mountCombobox({ options: ZERO_OPTIONS, modelValue: 0, rules: ['required'] })
 
     expect(getApi(wrapper).validate()).toBe(true)
@@ -1547,8 +1539,7 @@ describe('BaseCombobox teleport and menu sizing', () => {
 })
 
 describe('BaseCombobox inside BasePopup', () => {
-  // BUG: Escape inside a combobox within an open BasePopup also closes the popup (event reaches document)
-  it.fails('keeps the popup open when Escape closes the combobox menu', async () => {
+  it('keeps the popup open when Escape closes the combobox menu', async () => {
     const popupOpen = ref(true)
     const Host = defineComponent({
       setup: () => () =>

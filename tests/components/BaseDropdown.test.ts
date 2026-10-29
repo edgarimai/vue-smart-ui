@@ -285,8 +285,7 @@ describe('BaseDropdown click outside', () => {
 })
 
 describe('BaseDropdown keyboard', () => {
-  // BUG: BaseDropdown has no Escape handler, an open dropdown cannot be closed with the keyboard
-  it.fails('emits update:modelValue(false) when Escape is pressed while open', () => {
+  it('emits update:modelValue(false) when Escape is pressed while open', () => {
     const wrapper = mountDropdown({ modelValue: true })
 
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))

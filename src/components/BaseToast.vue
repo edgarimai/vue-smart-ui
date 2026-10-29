@@ -44,16 +44,45 @@ const startProgress = () => {
   }
 }
 
+let visibleTimer: ReturnType<typeof setTimeout> | null = null
+let autoCloseTimer: ReturnType<typeof setTimeout> | null = null
+let closeTimer: ReturnType<typeof setTimeout> | null = null
+let autoCloseStartedAt = 0
+let autoCloseRemaining = props.duration
+let isClosing = false
+
+const clearAutoClose = () => {
+  if (autoCloseTimer) clearTimeout(autoCloseTimer)
+  autoCloseTimer = null
+}
+
 const close = () => {
+  if (isClosing) return
+  isClosing = true
+
+  clearAutoClose()
   isVisible.value = false
-  setTimeout(() => {
+  closeTimer = setTimeout(() => {
     emit('close')
   }, 100) // Time for exit animation
+}
+
+// The auto-close is driven by a timer instead of the progress bar's `animationend`, which
+// never fires when animations are disabled (e.g. a global `animation: none`). The bar's
+// `animationend` still closes the toast, whichever comes first.
+const startAutoClose = () => {
+  autoCloseStartedAt = Date.now()
+  autoCloseTimer = setTimeout(close, autoCloseRemaining)
 }
 
 const handleMouseEnter = () => {
   if (progressBarRef.value) {
     progressBarRef.value.style.animationPlayState = 'paused'
+  }
+
+  if (autoCloseTimer) {
+    clearAutoClose()
+    autoCloseRemaining = Math.max(0, autoCloseRemaining - (Date.now() - autoCloseStartedAt))
   }
 }
 
@@ -61,6 +90,8 @@ const handleMouseLeave = () => {
   if (progressBarRef.value) {
     progressBarRef.value.style.animationPlayState = 'running'
   }
+
+  if (props.duration > 0 && !isClosing && !autoCloseTimer) startAutoClose()
 }
 
 const icons: Record<ToastVariant, Component> = {
@@ -74,13 +105,13 @@ const icons: Record<ToastVariant, Component> = {
 const iconComponent = computed(() => icons[props.variant] || icons.default)
 
 onMounted(() => {
-  setTimeout(() => {
+  visibleTimer = setTimeout(() => {
     isVisible.value = true
   }, 100)
 
   if (props.duration > 0) {
-    if (props.simple) setTimeout(close, props.duration)
-    else progressBarRef.value?.addEventListener('animationend', close, { once: true })
+    startAutoClose()
+    progressBarRef.value?.addEventListener('animationend', close, { once: true })
   }
 
   startProgress()
@@ -90,6 +121,10 @@ onUnmounted(() => {
   if (progressBarRef.value) {
     progressBarRef.value.removeEventListener('animationend', close)
   }
+
+  if (visibleTimer) clearTimeout(visibleTimer)
+  if (closeTimer) clearTimeout(closeTimer)
+  clearAutoClose()
 })
 </script>
 

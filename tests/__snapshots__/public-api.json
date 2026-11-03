@@ -671,7 +671,7 @@
         "lowercase": {
           "type": "Boolean",
           "required": false,
-          "default": false
+          "default": "[undefined]"
         },
         "mask": {
           "type": "String | Object | any",

@@ -81,7 +81,8 @@ const props = withDefaults(defineProps<Props>(), {
   dateDisplayFormat: 'DD/MM/YYYY',
   dateValueFormat: 'YYYY-MM-DD',
   uppercase: false,
-  lowercase: false,
+  // Left undefined so type="email" can default to lowercase while `:lowercase="false"` opts out.
+  lowercase: undefined,
   passwordStrength: false,
 })
 const { autoId } = useAutoId('input', props)
@@ -419,10 +420,12 @@ const applyMask = (value: string, maskDef: MaskDefinition | null): string => {
   return value
 }
 
+const shouldLowercase = computed(() => props.lowercase ?? props.type === 'email')
+
 const applyCase = (str: string): string => {
   if (!str) return str
   if (props.uppercase) return str.toUpperCase()
-  if (props.lowercase) return str.toLowerCase()
+  if (shouldLowercase.value) return str.toLowerCase()
   return str
 }
 
@@ -506,10 +509,10 @@ const removeMask = (value: string, maskDef: MaskDefinition | null): string | num
 const inputValue = computed<string | number>({
   get: () => {
     if (!props.mask) {
-      if (props.modelValue && (props.uppercase || props.lowercase)) {
+      if (props.modelValue && (props.uppercase || shouldLowercase.value)) {
         const strValue = String(props.modelValue)
         if (props.uppercase) return strValue.toUpperCase()
-        if (props.lowercase) return strValue.toLowerCase()
+        if (shouldLowercase.value) return strValue.toLowerCase()
       }
       return props.modelValue
     }
@@ -573,13 +576,11 @@ const handleInput = (event: Event): void => {
     if (props.uppercase) {
       valueToEmit = newValue.toUpperCase()
       if (inputRef.value) inputRef.value.value = valueToEmit
-    } else if (props.lowercase) {
+    } else if (shouldLowercase.value) {
       valueToEmit = newValue.toLowerCase()
       if (inputRef.value) inputRef.value.value = valueToEmit
     }
   }
-
-  if (props.type === 'email' && valueToEmit) valueToEmit = (valueToEmit as string).toLowerCase()
 
   emit('update:modelValue', valueToEmit)
   emit('input', { ...event, target: { ...event.target, value: newValue } })

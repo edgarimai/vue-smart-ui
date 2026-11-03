@@ -321,6 +321,38 @@ describe('BaseInput events and v-model', () => {
     await typeInto(wrapper, 'John@Example.COM')
 
     expect(modelUpdates(wrapper)).toEqual(['john@example.com'])
+    expect(displayed(wrapper)).toBe('john@example.com')
+  })
+
+  it('displays an existing email modelValue in lowercase without changing the prop', () => {
+    expect(displayed(mountInput({ type: 'email', modelValue: 'John@Example.COM' }))).toBe(
+      'john@example.com',
+    )
+  })
+
+  it('keeps the case when type="email" opts out with :lowercase="false"', async () => {
+    const wrapper = mountInput({ type: 'email', lowercase: false })
+
+    await typeInto(wrapper, 'John@Example.COM')
+
+    expect(modelUpdates(wrapper)).toEqual(['John@Example.COM'])
+    expect(displayed(wrapper)).toBe('John@Example.COM')
+  })
+
+  it('does not lowercase other types by default', async () => {
+    const wrapper = mountInput({ type: 'text' })
+
+    await typeInto(wrapper, 'ABC')
+
+    expect(modelUpdates(wrapper)).toEqual(['ABC'])
+  })
+
+  it('lets uppercase win over the email default', async () => {
+    const wrapper = mountInput({ type: 'email', uppercase: true })
+
+    await typeInto(wrapper, 'john@example.com')
+
+    expect(modelUpdates(wrapper)).toEqual(['JOHN@EXAMPLE.COM'])
   })
 })
 

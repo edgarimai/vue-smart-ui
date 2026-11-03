@@ -4,9 +4,11 @@
     "BaseAccordionItem",
     "BaseAvatar",
     "BaseButton",
+    "BaseCalendar",
     "BaseCheckbox",
     "BaseColorPicker",
     "BaseCombobox",
+    "BaseDatePicker",
     "BaseDropdown",
     "BaseInfiniteScroll",
     "BaseInput",
@@ -21,7 +23,10 @@
     "BaseTextarea",
     "BaseToast",
     "ToastsContainer",
+    "convertDateFormat",
     "default",
+    "formatDate",
+    "parseDate",
     "useToast",
     "useToastConfig",
     "useValidationConfig"
@@ -221,6 +226,157 @@
       },
       "emits": [
         "click"
+      ]
+    },
+    "BaseCalendar": {
+      "props": {
+        "block": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "disabled": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "disabledDates": {
+          "type": "Array",
+          "required": false,
+          "default": []
+        },
+        "disabledWeekdays": {
+          "type": "Array",
+          "required": false,
+          "default": []
+        },
+        "firstDayOfWeek": {
+          "type": "Number",
+          "required": false,
+          "default": 0
+        },
+        "fixedWeeks": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "highlightToday": {
+          "type": "Boolean",
+          "required": false,
+          "default": true
+        },
+        "isDateDisabled": {
+          "type": "Function",
+          "required": false,
+          "default": "[none]"
+        },
+        "labels": {
+          "type": "Object",
+          "required": false,
+          "default": {}
+        },
+        "locale": {
+          "type": "String",
+          "required": false,
+          "default": "pt-BR"
+        },
+        "max": {
+          "type": "String | Number | Object | any",
+          "required": false,
+          "default": "[none]"
+        },
+        "maxRange": {
+          "type": "Number",
+          "required": false,
+          "default": "[none]"
+        },
+        "maxSelections": {
+          "type": "Number",
+          "required": false,
+          "default": "[none]"
+        },
+        "min": {
+          "type": "String | Number | Object | any",
+          "required": false,
+          "default": "[none]"
+        },
+        "minRange": {
+          "type": "Number",
+          "required": false,
+          "default": "[none]"
+        },
+        "mode": {
+          "type": "String",
+          "required": false,
+          "default": "single"
+        },
+        "modelValue": {
+          "type": "String | Number | Object | Array | any",
+          "required": false,
+          "default": null
+        },
+        "parse": {
+          "type": "Function",
+          "required": false,
+          "default": "[none]"
+        },
+        "readonly": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "serialize": {
+          "type": "Function",
+          "required": false,
+          "default": "[none]"
+        },
+        "showClearButton": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "showOutsideDays": {
+          "type": "Boolean",
+          "required": false,
+          "default": true
+        },
+        "showTodayButton": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "showWeekNumbers": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "size": {
+          "type": "String",
+          "required": false,
+          "default": "medium"
+        },
+        "valueFormat": {
+          "type": "String",
+          "required": false,
+          "default": "YYYY-MM-DD"
+        },
+        "viewDate": {
+          "type": "String | Number | Object | any",
+          "required": false,
+          "default": "[none]"
+        },
+        "weekdayFormat": {
+          "type": "String",
+          "required": false,
+          "default": "short"
+        }
+      },
+      "emits": [
+        "month-change",
+        "mounted",
+        "select",
+        "update:modelValue",
+        "view-change"
       ]
     },
     "BaseCheckbox": {
@@ -544,6 +700,242 @@
         "search",
         "select",
         "update:modelValue",
+        "validation"
+      ]
+    },
+    "BaseDatePicker": {
+      "props": {
+        "clearable": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "closeOnSelect": {
+          "type": "Boolean",
+          "required": false,
+          "default": true
+        },
+        "disabled": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "disabledDates": {
+          "type": "Array",
+          "required": false,
+          "default": []
+        },
+        "disabledWeekdays": {
+          "type": "Array",
+          "required": false,
+          "default": []
+        },
+        "displayFormat": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "errorMessage": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "firstDayOfWeek": {
+          "type": "Number",
+          "required": false,
+          "default": 0
+        },
+        "fixedWeeks": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "helperText": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "highlightToday": {
+          "type": "Boolean",
+          "required": false,
+          "default": true
+        },
+        "id": {
+          "type": "String",
+          "required": false,
+          "default": ""
+        },
+        "isDateDisabled": {
+          "type": "Function",
+          "required": false,
+          "default": "[none]"
+        },
+        "label": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "labels": {
+          "type": "Object",
+          "required": false,
+          "default": {}
+        },
+        "locale": {
+          "type": "String",
+          "required": false,
+          "default": "pt-BR"
+        },
+        "max": {
+          "type": "String | Number | Object | any",
+          "required": false,
+          "default": "[none]"
+        },
+        "maxRange": {
+          "type": "Number",
+          "required": false,
+          "default": "[none]"
+        },
+        "min": {
+          "type": "String | Number | Object | any",
+          "required": false,
+          "default": "[none]"
+        },
+        "minRange": {
+          "type": "Number",
+          "required": false,
+          "default": "[none]"
+        },
+        "mode": {
+          "type": "String",
+          "required": false,
+          "default": "single"
+        },
+        "modelValue": {
+          "type": "String | Number | Object | Array | any",
+          "required": false,
+          "default": null
+        },
+        "name": {
+          "type": "String",
+          "required": false,
+          "default": ""
+        },
+        "open": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "parse": {
+          "type": "Function",
+          "required": false,
+          "default": "[none]"
+        },
+        "placeholder": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "readonly": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "required": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "rules": {
+          "type": "Array",
+          "required": false,
+          "default": []
+        },
+        "serialize": {
+          "type": "Function",
+          "required": false,
+          "default": "[none]"
+        },
+        "showClearButton": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "showOutsideDays": {
+          "type": "Boolean",
+          "required": false,
+          "default": true
+        },
+        "showTodayButton": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "showWeekNumbers": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "size": {
+          "type": "String",
+          "required": false,
+          "default": "medium"
+        },
+        "state": {
+          "type": "String | any",
+          "required": false,
+          "default": null
+        },
+        "teleport": {
+          "type": "Boolean",
+          "required": false,
+          "default": true
+        },
+        "teleportTo": {
+          "type": "String",
+          "required": false,
+          "default": "body"
+        },
+        "validateOnBlur": {
+          "type": "Boolean",
+          "required": false,
+          "default": true
+        },
+        "validateOnInput": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
+        },
+        "valueFormat": {
+          "type": "String",
+          "required": false,
+          "default": "YYYY-MM-DD"
+        },
+        "variant": {
+          "type": "String",
+          "required": false,
+          "default": "default"
+        },
+        "viewDate": {
+          "type": "String | Number | Object | any",
+          "required": false,
+          "default": "[none]"
+        },
+        "weekdayFormat": {
+          "type": "String",
+          "required": false,
+          "default": "short"
+        }
+      },
+      "emits": [
+        "blur",
+        "change",
+        "clear",
+        "close",
+        "focus",
+        "mounted",
+        "open",
+        "update:modelValue",
+        "update:open",
         "validation"
       ]
     },

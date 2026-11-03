@@ -21,6 +21,9 @@ import BaseOTP from './components/BaseOTP.vue'
 import BaseTable from './components/BaseTable.vue'
 import BaseAvatar from './components/BaseAvatar.vue'
 import BaseSwitch from './components/BaseSwitch.vue'
+import BaseCalendar from './components/BaseCalendar.vue'
+import BaseDatePicker from './components/BaseDatePicker.vue'
+import { formatDate, parseDate, convertDateFormat } from './composables/calendar'
 import { useToast } from './composables/toast'
 import { useValidationConfig } from './composables/validationConfig'
 import { useToastConfig } from './composables/toastConfig'
@@ -48,6 +51,8 @@ const plugin: Plugin = {
     app.component('BaseTable', BaseTable)
     app.component('BaseAvatar', BaseAvatar)
     app.component('BaseSwitch', BaseSwitch)
+    app.component('BaseCalendar', BaseCalendar)
+    app.component('BaseDatePicker', BaseDatePicker)
   },
 }
 
@@ -78,6 +83,8 @@ declare module 'vue' {
     BaseTable: typeof BaseTable
     BaseAvatar: typeof BaseAvatar
     BaseSwitch: typeof BaseSwitch
+    BaseCalendar: typeof BaseCalendar
+    BaseDatePicker: typeof BaseDatePicker
   }
 }
 
@@ -106,8 +113,27 @@ export {
   BaseTable,
   BaseAvatar,
   BaseSwitch,
+  BaseCalendar,
+  BaseDatePicker,
+  formatDate,
+  parseDate,
+  convertDateFormat,
 }
 
+export type {
+  CalendarDatePayload,
+  CalendarDateValue,
+  CalendarLabels,
+  CalendarMode,
+  CalendarRangePayload,
+  CalendarRangeValue,
+  CalendarSize,
+  CalendarValue,
+  CalendarView,
+  CalendarWeekdayFormat,
+  DisabledDateRule,
+  DisplayDateFormat,
+} from './composables/calendar'
 export type { Toast, ToastOptions, ToastVariant } from './composables/toast'
 export type { ToastDefaults, ToastPosition } from './composables/toastConfig'
 export type { ValidationMessage, ValidationMessages } from './composables/validationConfig'

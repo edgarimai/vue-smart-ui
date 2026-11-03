@@ -314,6 +314,29 @@
   --vsui-combobox-option-selected-text: var(--vsui-color-primary);
   --vsui-combobox-option-text-color: var(--vsui-text-muted);
 
+  // Calendar / date picker variables
+  --vsui-calendar-bg: var(--vsui-bg-default);
+  --vsui-calendar-border-color: var(--vsui-border-default);
+  --vsui-calendar-radius: 0.5rem;
+  --vsui-calendar-padding: 0.75rem;
+  --vsui-calendar-popover-shadow:
+    0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  --vsui-calendar-text-color: var(--vsui-text-default);
+  --vsui-calendar-header-color: var(--vsui-text-default);
+  --vsui-calendar-nav-color: var(--vsui-text-muted);
+  --vsui-calendar-weekday-color: var(--vsui-text-subtle);
+  --vsui-calendar-day-size: 2.25rem;
+  --vsui-calendar-day-radius: 0.375rem;
+  --vsui-calendar-day-hover-bg: var(--vsui-surface-hover);
+  --vsui-calendar-day-outside-color: var(--vsui-text-disabled);
+  --vsui-calendar-day-disabled-color: var(--vsui-text-disabled);
+  --vsui-calendar-today-color: var(--vsui-color-primary);
+  --vsui-calendar-selected-bg: var(--vsui-color-primary);
+  --vsui-calendar-selected-color: var(--vsui-text-inverse);
+  --vsui-calendar-range-bg: var(--vsui-color-primary-light);
+  --vsui-calendar-range-color: var(--vsui-color-primary-text);
+  --vsui-calendar-focus-ring: var(--vsui-color-primary);
+
   // Textarea variables
   --textarea-font-size: 1rem;
   --vsui-textarea-font-family: var(--vsui-font-family-base);

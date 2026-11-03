@@ -20,7 +20,10 @@ import {
   BaseTable,
   BaseAvatar,
   BaseSwitch,
+  BaseCalendar,
+  BaseDatePicker,
 } from './components'
+import { addDays, todayISO, type CalendarValue } from './composables/calendar'
 import type { PopupVariant, PopupSize, PopupPosition } from './components/BasePopup.vue'
 import type { TableColumn, SortDirection } from './components/BaseTable.vue'
 import type { ComboboxModelValue, ComboboxOptionItem } from './components/BaseCombobox.vue'
@@ -163,6 +166,17 @@ interface PageState {
     loading: boolean
     disabled: boolean
   }
+  calendar: {
+    single: CalendarValue
+    multiple: CalendarValue
+    range: CalendarValue
+    limited: CalendarValue
+    brazilian: CalendarValue
+    picker: CalendarValue
+    pickerRange: CalendarValue
+    pickerBackend: CalendarValue
+    pickerLimited: CalendarValue
+  }
   slider: {
     value: number
     range: number[]
@@ -272,6 +286,17 @@ const pageState = reactive<PageState>({
     state: false,
     loading: false,
     disabled: false,
+  },
+  calendar: {
+    single: null,
+    multiple: [],
+    range: { start: null, end: null },
+    limited: null,
+    brazilian: null,
+    picker: null,
+    pickerRange: { start: null, end: null },
+    pickerBackend: null,
+    pickerLimited: null,
   },
   slider: {
     value: 0,
@@ -481,6 +506,16 @@ const userOptions: ComboboxOptionItem[] = [
 ] as unknown as ComboboxOptionItem[]
 
 const toast = useToast()
+
+// The calendar demos are relative to today so they always have something to show.
+const calendarLimits = (() => {
+  const today = todayISO()
+  return {
+    min: today,
+    max: addDays(today, 30),
+    disabledDates: [addDays(today, 3), { start: addDays(today, 8), end: addDays(today, 10) }],
+  }
+})()
 const showToast = () => {
   toast[pageState.toast.variant](pageState.toast.message, {
     title: 'Toast title',
@@ -1343,6 +1378,115 @@ onMounted(() => {
 
     <hr />
 
+    <div class="calendar-container">
+      <h2>Calendar</h2>
+      <div class="container calendar-demos">
+        <div class="calendar-demo">
+          <h4>Single (pt-BR)</h4>
+          <BaseCalendar v-model="pageState.calendar.single" show-today-button show-clear-button />
+          <code>{{ pageState.calendar.single }}</code>
+        </div>
+
+        <div class="calendar-demo">
+          <h4>Multiple, max 3 (en-US)</h4>
+          <BaseCalendar
+            v-model="pageState.calendar.multiple"
+            mode="multiple"
+            locale="en-US"
+            :max-selections="3"
+            show-clear-button
+          />
+          <code>{{ pageState.calendar.multiple }}</code>
+        </div>
+
+        <div class="calendar-demo">
+          <h4>Range, 2 to 7 days, week starts Monday</h4>
+          <BaseCalendar
+            v-model="pageState.calendar.range"
+            mode="range"
+            :first-day-of-week="1"
+            :min-range="2"
+            :max-range="7"
+            show-week-numbers
+          />
+          <code>{{ pageState.calendar.range }}</code>
+        </div>
+
+        <div class="calendar-demo">
+          <h4>Min/max, disabled dates and weekends</h4>
+          <BaseCalendar
+            v-model="pageState.calendar.limited"
+            :min="calendarLimits.min"
+            :max="calendarLimits.max"
+            :disabled-dates="calendarLimits.disabledDates"
+            :disabled-weekdays="[0, 6]"
+          />
+          <code>{{ pageState.calendar.limited }}</code>
+        </div>
+
+        <div class="calendar-demo">
+          <h4>Value format DD/MM/YYYY, Japanese locale</h4>
+          <BaseCalendar
+            v-model="pageState.calendar.brazilian"
+            value-format="DD/MM/YYYY"
+            locale="ja-JP"
+            size="small"
+          />
+          <code>{{ pageState.calendar.brazilian }}</code>
+        </div>
+      </div>
+
+      <h3>Date picker</h3>
+      <div class="container calendar-demos">
+        <div class="calendar-demo calendar-demo--field">
+          <BaseDatePicker
+            v-model="pageState.calendar.picker"
+            label="Birthday"
+            clearable
+            show-today-button
+            :rules="['required']"
+            helper-text="Type it or pick it"
+          />
+          <code>{{ pageState.calendar.picker }}</code>
+        </div>
+
+        <div class="calendar-demo calendar-demo--field">
+          <BaseDatePicker
+            v-model="pageState.calendar.pickerRange"
+            mode="range"
+            label="Trip"
+            clearable
+            locale="en-US"
+          />
+          <code>{{ pageState.calendar.pickerRange }}</code>
+        </div>
+
+        <div class="calendar-demo calendar-demo--field">
+          <BaseDatePicker
+            v-model="pageState.calendar.pickerBackend"
+            label="Sent to the backend as YYYY-MM-DD[T00:00:00Z]"
+            value-format="YYYY-MM-DD[T00:00:00Z]"
+            variant="filled"
+          />
+          <code>{{ pageState.calendar.pickerBackend }}</code>
+        </div>
+
+        <div class="calendar-demo calendar-demo--field">
+          <BaseDatePicker
+            v-model="pageState.calendar.pickerLimited"
+            label="Next 30 days, no Sundays"
+            variant="outlined"
+            :min="calendarLimits.min"
+            :max="calendarLimits.max"
+            :disabled-weekdays="[0]"
+          />
+          <code>{{ pageState.calendar.pickerLimited }}</code>
+        </div>
+      </div>
+    </div>
+
+    <hr />
+
     <div class="slider-container">
       <h2>Slider</h2>
       <div class="container">
@@ -1992,6 +2136,47 @@ body {
       gap: 1rem;
       justify-content: center;
       flex-wrap: wrap;
+    }
+  }
+
+  .calendar-container {
+    h3,
+    h4 {
+      text-align: center;
+      color: var(--vsui-text-default);
+    }
+
+    h3 {
+      margin-top: 2rem;
+    }
+
+    .calendar-demos {
+      align-items: flex-start;
+    }
+
+    .calendar-demo {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+
+      h4 {
+        font-size: 0.875rem;
+        max-width: 18rem;
+      }
+
+      code {
+        color: var(--vsui-text-subtle);
+        font-size: 0.75rem;
+        max-width: 18rem;
+        word-break: break-all;
+        min-height: 1rem;
+      }
+
+      &--field {
+        width: 18rem;
+        align-items: stretch;
+      }
     }
   }
 

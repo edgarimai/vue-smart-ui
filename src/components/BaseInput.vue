@@ -8,6 +8,8 @@ export type InputState = 'success' | 'error' | 'warning'
 export type DateFormat = 'DD/MM/YYYY' | 'MM/DD/YYYY' | 'YYYY-MM-DD' | 'YYYY/MM/DD'
 
 export type PasswordRequirement = 'lowercase' | 'uppercase' | 'number' | 'special'
+export type PasswordStrengthLevel = 'weak' | 'medium' | 'strong'
+export type PasswordLabels = Partial<Record<PasswordRequirement | PasswordStrengthLevel, string>>
 
 export type ValidationRule =
   | string
@@ -49,6 +51,7 @@ interface Props {
   lowercase?: boolean
   passwordStrength?: boolean
   passwordRequirements?: PasswordRequirement[]
+  passwordLabels?: PasswordLabels
 }
 
 const slots = useSlots()
@@ -149,12 +152,20 @@ const passwordChecks: Record<PasswordRequirement, RegExp> = {
   special: /[^A-Za-z0-9]/,
 }
 
-const passwordLabelKeys: Record<PasswordRequirement, string> = {
+const passwordLabelKeys: Record<PasswordRequirement | PasswordStrengthLevel, string> = {
   lowercase: 'passwordLowercase',
   uppercase: 'passwordUppercase',
   number: 'passwordNumber',
   special: 'passwordSpecial',
+  weak: 'passwordStrengthWeak',
+  medium: 'passwordStrengthMedium',
+  strong: 'passwordStrengthStrong',
 }
+
+// The `passwordLabels` prop wins over the global messages (`setValidationMessages`), which win
+// over the English defaults.
+const passwordLabel = (key: PasswordRequirement | PasswordStrengthLevel): string =>
+  props.passwordLabels?.[key] ?? getValidationMessage(passwordLabelKeys[key])
 
 // `true` (or anything that is not a list) means the default requirements.
 const resolvePasswordRequirements = (config: unknown): PasswordRequirement[] =>
@@ -220,12 +231,7 @@ const validators: Record<string, ValidatorFn> = {
     )
     return {
       valid: isEmptyValue(value) || !missing.length,
-      message: getValidationMessage(
-        'passwordStrength',
-        missing
-          .map((requirement) => getValidationMessage(passwordLabelKeys[requirement]))
-          .join(', '),
-      ),
+      message: getValidationMessage('passwordStrength', missing.map(passwordLabel).join(', ')),
     }
   },
 }
@@ -658,7 +664,7 @@ const passwordItems = computed(() => {
   const value = String(props.modelValue ?? '')
   return activePasswordRequirements.value.map((key) => ({
     key,
-    label: getValidationMessage(passwordLabelKeys[key]),
+    label: passwordLabel(key),
     met: passwordChecks[key].test(value),
   }))
 })
@@ -669,18 +675,14 @@ const showPasswordStrength = computed(
 
 const passwordMetCount = computed(() => passwordItems.value.filter((item) => item.met).length)
 
-const passwordLevel = computed<'weak' | 'medium' | 'strong'>(() => {
+const passwordLevel = computed<PasswordStrengthLevel>(() => {
   const ratio = passwordMetCount.value / passwordItems.value.length
   if (ratio >= 1) return 'strong'
   if (ratio >= 0.5) return 'medium'
   return 'weak'
 })
 
-const passwordLevelLabel = computed(() =>
-  getValidationMessage(
-    `passwordStrength${passwordLevel.value[0].toUpperCase()}${passwordLevel.value.slice(1)}`,
-  ),
-)
+const passwordLevelLabel = computed(() => passwordLabel(passwordLevel.value))
 
 const passwordStrengthPercent = computed(() =>
   passwordItems.value.length

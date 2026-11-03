@@ -510,6 +510,49 @@ describe('BaseInput password strength indicator', () => {
     expect(requirementLabels(wrapper)).toEqual(['número', 'lowercase letter', 'uppercase letter'])
     expect(wrapper.get('.base-input__strength-label').text()).toBe('Fraca')
   })
+
+  it('lets the passwordLabels prop override the requirement and level texts', () => {
+    const wrapper = mountInput({
+      type: 'password',
+      passwordStrength: true,
+      passwordRequirements: ['number', 'lowercase'],
+      passwordLabels: {
+        number: 'Pelo menos 1 dígito',
+        lowercase: 'Letra minúscula',
+        medium: 'Quase',
+      },
+      modelValue: 'a',
+    })
+
+    expect(requirementLabels(wrapper)).toEqual(['Pelo menos 1 dígito', 'Letra minúscula'])
+    expect(wrapper.get('.base-input__strength-label').text()).toBe('Quase')
+  })
+
+  it('falls back to the global messages for labels the prop leaves out', () => {
+    setValidationMessages({ passwordLowercase: 'minúscula', passwordStrengthWeak: 'Fraca' })
+    const wrapper = mountInput({
+      type: 'password',
+      passwordStrength: true,
+      passwordRequirements: ['number', 'lowercase', 'uppercase'],
+      passwordLabels: { number: 'dígito' },
+      modelValue: 'a',
+    })
+
+    expect(requirementLabels(wrapper)).toEqual(['dígito', 'minúscula', 'uppercase letter'])
+    expect(wrapper.get('.base-input__strength-label').text()).toBe('Fraca')
+  })
+
+  it('prefers the prop over the global messages', () => {
+    setValidationMessages({ passwordNumber: 'número' })
+    const wrapper = mountInput({
+      type: 'password',
+      passwordStrength: true,
+      passwordRequirements: ['number'],
+      passwordLabels: { number: 'dígito' },
+    })
+
+    expect(requirementLabels(wrapper)).toEqual(['dígito'])
+  })
 })
 
 describe('BaseInput passwordStrength rule', () => {
@@ -574,6 +617,19 @@ describe('BaseInput passwordStrength rule', () => {
 
     mountedApi(wrapper).validate()
     expect(lastValidation(wrapper)?.error).toBe('Faltando: número')
+  })
+
+  it('names the missing requirements with the passwordLabels prop', () => {
+    const wrapper = mountInput({
+      type: 'password',
+      rules: [{ passwordStrength: ['number', 'special'] }],
+      passwordLabels: { number: 'dígito', special: 'símbolo' },
+      modelValue: 'abc',
+      validateOnBlur: false,
+    })
+
+    mountedApi(wrapper).validate()
+    expect(lastValidation(wrapper)?.error).toBe('Must contain: dígito, símbolo')
   })
 })
 

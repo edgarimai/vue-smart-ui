@@ -111,7 +111,37 @@ The indicator shows the requirements from the `passwordStrength` rule. To show a
 than the rule enforces, pass `:password-requirements="['number', 'special']"`, which takes
 precedence. Without either, all four are shown.
 
-Labels and the error message can be translated with `setValidationMessages`:
+#### Changing the texts
+
+Texts are resolved in this order: the `password-labels` prop (one input), then the global
+messages (`setValidationMessages`, every input), then the English defaults. Any key you leave out
+falls back to the next level.
+
+Per input, with `password-labels` (keys: `lowercase`, `uppercase`, `number`, `special`, `weak`,
+`medium`, `strong`):
+
+```vue
+<BaseInput
+  v-model="password"
+  type="password"
+  password-strength
+  :password-labels="{
+    lowercase: 'Letra minúscula',
+    uppercase: 'Letra maiúscula',
+    number: 'Pelo menos 1 número',
+    special: 'Símbolo (!@#…)',
+    weak: 'Fraca',
+    medium: 'Média',
+    strong: 'Forte',
+  }"
+  :rules="[{ passwordStrength: true, message: 'Senha muito simples' }]"
+/>
+```
+
+The same labels name the missing items in the rule's error message. To replace the whole error
+text for one input, use `message` on the rule, as above.
+
+Globally, for every input (e.g. the app language):
 
 ```javascript
 setValidationMessages({

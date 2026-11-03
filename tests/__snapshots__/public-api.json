@@ -698,6 +698,11 @@
           "required": false,
           "default": ""
         },
+        "passwordLabels": {
+          "type": "Object",
+          "required": false,
+          "default": "[none]"
+        },
         "passwordRequirements": {
           "type": "Array",
           "required": false,

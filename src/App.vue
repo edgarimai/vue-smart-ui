@@ -1077,9 +1077,11 @@ onMounted(() => {
           v-model="pageState.input.password"
           type="password"
           label="Password"
+          password-strength
           :rules="[
             { required: true, message: 'Password is required' },
             { min: 8, message: 'Password must be at least 8 characters' },
+            'passwordStrength',
           ]"
           @mounted="(ref) => registerInput('password', ref)"
         />

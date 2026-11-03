@@ -64,6 +64,14 @@
     "maxValue",
     "min",
     "minValue",
+    "passwordLowercase",
+    "passwordNumber",
+    "passwordSpecial",
+    "passwordStrength",
+    "passwordStrengthMedium",
+    "passwordStrengthStrong",
+    "passwordStrengthWeak",
+    "passwordUppercase",
     "pattern",
     "required",
     "rgbColor",
@@ -689,6 +697,16 @@
           "type": "String",
           "required": false,
           "default": ""
+        },
+        "passwordRequirements": {
+          "type": "Array",
+          "required": false,
+          "default": "[none]"
+        },
+        "passwordStrength": {
+          "type": "Boolean",
+          "required": false,
+          "default": false
         },
         "placeholder": {
           "type": "String",

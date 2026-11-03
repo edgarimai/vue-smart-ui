@@ -403,6 +403,180 @@ describe('BaseInput password toggle', () => {
   })
 })
 
+describe('BaseInput password strength indicator', () => {
+  const requirementLabels = (wrapper: InputWrapper): string[] =>
+    wrapper.findAll('.base-input__requirement').map((item) => item.text())
+
+  const metLabels = (wrapper: InputWrapper): string[] =>
+    wrapper.findAll('.base-input__requirement--met').map((item) => item.text())
+
+  it('is off by default and ignored for other types', () => {
+    expect(mountInput({ type: 'password' }).find('.base-input__strength').exists()).toBe(false)
+    expect(
+      mountInput({ type: 'text', passwordStrength: true }).find('.base-input__strength').exists(),
+    ).toBe(false)
+  })
+
+  it('lists lowercase, uppercase, number and special character by default', () => {
+    const wrapper = mountInput({ type: 'password', passwordStrength: true })
+
+    expect(requirementLabels(wrapper)).toEqual([
+      'lowercase letter',
+      'uppercase letter',
+      'number',
+      'special character',
+    ])
+    expect(metLabels(wrapper)).toEqual([])
+  })
+
+  it('marks requirements and moves through the levels as the user types', async () => {
+    const wrapper = mountVModel({ type: 'password', passwordStrength: true })
+    const strength = () => wrapper.get('.base-input__strength')
+    const label = () => wrapper.get('.base-input__strength-label').text()
+
+    expect(label()).toBe('')
+
+    await typeInto(wrapper, 'abc')
+    expect(metLabels(wrapper)).toEqual(['lowercase letter'])
+    expect(strength().classes()).toContain('base-input__strength--weak')
+    expect(label()).toBe('Weak')
+
+    await typeInto(wrapper, 'abcDE1')
+    expect(metLabels(wrapper)).toEqual(['lowercase letter', 'uppercase letter', 'number'])
+    expect(strength().classes()).toContain('base-input__strength--medium')
+    expect(label()).toBe('Medium')
+
+    await typeInto(wrapper, 'abcDE1!')
+    expect(strength().classes()).toContain('base-input__strength--strong')
+    expect(label()).toBe('Strong')
+
+    const bar = wrapper.get('.base-input__strength-bar')
+    expect(bar.attributes('style')).toContain('width: 100%')
+    expect(wrapper.get('[role="progressbar"]').attributes('aria-valuenow')).toBe('4')
+  })
+
+  it('only tracks the requirements it is given', () => {
+    const wrapper = mountInput({
+      type: 'password',
+      passwordStrength: true,
+      passwordRequirements: ['number', 'special'],
+      modelValue: 'abc1',
+    })
+
+    expect(requirementLabels(wrapper)).toEqual(['number', 'special character'])
+    expect(metLabels(wrapper)).toEqual(['number'])
+  })
+
+  it('renders nothing when there are no requirements', () => {
+    const wrapper = mountInput({
+      type: 'password',
+      passwordStrength: true,
+      passwordRequirements: [],
+    })
+
+    expect(wrapper.find('.base-input__strength').exists()).toBe(false)
+  })
+
+  it('takes its requirements from the passwordStrength rule when none are given', () => {
+    const wrapper = mountInput({
+      type: 'password',
+      passwordStrength: true,
+      rules: [{ passwordStrength: ['uppercase'] }],
+    })
+
+    expect(requirementLabels(wrapper)).toEqual(['uppercase letter'])
+  })
+
+  it('prefers passwordRequirements over the rule', () => {
+    const wrapper = mountInput({
+      type: 'password',
+      passwordStrength: true,
+      passwordRequirements: ['number'],
+      rules: [{ passwordStrength: ['uppercase'] }],
+    })
+
+    expect(requirementLabels(wrapper)).toEqual(['number'])
+  })
+
+  it('uses translated labels', () => {
+    setValidationMessages({ passwordNumber: 'número', passwordStrengthWeak: 'Fraca' })
+    const wrapper = mountInput({
+      type: 'password',
+      passwordStrength: true,
+      passwordRequirements: ['number', 'lowercase', 'uppercase'],
+      modelValue: 'a',
+    })
+
+    expect(requirementLabels(wrapper)).toEqual(['número', 'lowercase letter', 'uppercase letter'])
+    expect(wrapper.get('.base-input__strength-label').text()).toBe('Fraca')
+  })
+})
+
+describe('BaseInput passwordStrength rule', () => {
+  const validateWith = (rules: Rules, modelValue: string) =>
+    mountInput({ type: 'password', rules, modelValue, validateOnBlur: false })
+
+  it('rejects a password missing a default requirement and lists what is missing', () => {
+    const wrapper = validateWith(['passwordStrength'], 'abcdef')
+
+    expect(mountedApi(wrapper).validate()).toBe(false)
+    expect(lastValidation(wrapper)?.error).toBe(
+      'Must contain: uppercase letter, number, special character',
+    )
+  })
+
+  it('accepts a password that meets every default requirement', () => {
+    const wrapper = validateWith(['passwordStrength'], 'abcDEF1!')
+
+    expect(mountedApi(wrapper).validate()).toBe(true)
+    expect(lastValidation(wrapper)?.error).toBe('')
+  })
+
+  it('only requires the listed requirements', () => {
+    const rules: Rules = [{ passwordStrength: ['number'] }]
+
+    expect(mountedApi(validateWith(rules, 'abc')).validate()).toBe(false)
+    expect(mountedApi(validateWith(rules, 'abc1')).validate()).toBe(true)
+  })
+
+  it('treats true as the defaults and false as off', () => {
+    expect(mountedApi(validateWith([{ passwordStrength: true }], 'abc')).validate()).toBe(false)
+    expect(mountedApi(validateWith([{ passwordStrength: false }], 'abc')).validate()).toBe(true)
+  })
+
+  it('lets an empty value pass, leaving presence to required', () => {
+    expect(mountedApi(validateWith(['passwordStrength'], '')).validate()).toBe(true)
+    expect(mountedApi(validateWith(['required', 'passwordStrength'], '')).validate()).toBe(false)
+  })
+
+  it('prefers a custom message', () => {
+    const wrapper = validateWith([{ passwordStrength: ['number'], message: 'Add a digit' }], 'abc')
+
+    mountedApi(wrapper).validate()
+    expect(lastValidation(wrapper)?.error).toBe('Add a digit')
+  })
+
+  it('validates on blur and shows the error', async () => {
+    const wrapper = mountInput({ type: 'password', rules: ['passwordStrength'], modelValue: 'abc' })
+
+    await blur(wrapper)
+
+    expect(lastValidation(wrapper)?.valid).toBe(false)
+    expect(helperText(wrapper)).toBe('Must contain: uppercase letter, number, special character')
+  })
+
+  it('uses a translated message', () => {
+    setValidationMessages({
+      passwordStrength: (missing) => `Faltando: ${missing}`,
+      passwordNumber: 'número',
+    })
+    const wrapper = validateWith([{ passwordStrength: ['number'] }], 'abc')
+
+    mountedApi(wrapper).validate()
+    expect(lastValidation(wrapper)?.error).toBe('Faltando: número')
+  })
+})
+
 describe('BaseInput masks', () => {
   it.each([
     ['cpf', '12345678901', '123.456.789-01', '12345678901'],

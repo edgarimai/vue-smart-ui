@@ -14,6 +14,14 @@ export interface ValidationMessages {
   rgbColor: ValidationMessage
   rgbaColor: ValidationMessage
   hslColor: ValidationMessage
+  passwordStrength: ValidationMessage
+  passwordLowercase: ValidationMessage
+  passwordUppercase: ValidationMessage
+  passwordNumber: ValidationMessage
+  passwordSpecial: ValidationMessage
+  passwordStrengthWeak: ValidationMessage
+  passwordStrengthMedium: ValidationMessage
+  passwordStrengthStrong: ValidationMessage
   [key: string]: ValidationMessage
 }
 
@@ -29,6 +37,15 @@ const defaultMessages: ValidationMessages = {
   rgbColor: 'Invalid RGB color',
   rgbaColor: 'Invalid RGBA color',
   hslColor: 'Invalid HSL color',
+  // The param is the list of unmet requirements, already labelled (e.g. "number, special character").
+  passwordStrength: (missing) => `Must contain: ${missing}`,
+  passwordLowercase: 'lowercase letter',
+  passwordUppercase: 'uppercase letter',
+  passwordNumber: 'number',
+  passwordSpecial: 'special character',
+  passwordStrengthWeak: 'Weak',
+  passwordStrengthMedium: 'Medium',
+  passwordStrengthStrong: 'Strong',
 }
 
 const validationConfig = reactive<{ messages: ValidationMessages }>({

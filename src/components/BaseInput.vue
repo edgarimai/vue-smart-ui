@@ -7,6 +7,8 @@ export type InputVariant = 'default' | 'filled' | 'outlined'
 export type InputState = 'success' | 'error' | 'warning'
 export type DateFormat = 'DD/MM/YYYY' | 'MM/DD/YYYY' | 'YYYY-MM-DD' | 'YYYY/MM/DD'
 
+export type PasswordRequirement = 'lowercase' | 'uppercase' | 'number' | 'special'
+
 export type ValidationRule =
   | string
   | Record<string, unknown>
@@ -45,6 +47,8 @@ interface Props {
   dateValueFormat?: DateFormat
   uppercase?: boolean
   lowercase?: boolean
+  passwordStrength?: boolean
+  passwordRequirements?: PasswordRequirement[]
 }
 
 const slots = useSlots()
@@ -75,6 +79,7 @@ const props = withDefaults(defineProps<Props>(), {
   dateValueFormat: 'YYYY-MM-DD',
   uppercase: false,
   lowercase: false,
+  passwordStrength: false,
 })
 const { autoId } = useAutoId('input', props)
 
@@ -121,12 +126,43 @@ const togglePasswordVisibility = (): void => {
   }
 }
 
+type ValidatorParam = string | number | boolean | PasswordRequirement[]
 type ValidatorResult = { valid: boolean; message: string }
-type ValidatorFn = (value: string | number, param?: string | number) => ValidatorResult
+type ValidatorFn = (value: string | number, param?: ValidatorParam) => ValidatorResult
 
 // 0 is a real value for numeric inputs, so emptiness is not a falsiness check.
 const isEmptyValue = (value: string | number | null | undefined): boolean =>
   value === '' || value === null || value === undefined
+
+// Shared by the `passwordStrength` rule and the strength indicator, so both agree on what counts.
+const DEFAULT_PASSWORD_REQUIREMENTS: PasswordRequirement[] = [
+  'lowercase',
+  'uppercase',
+  'number',
+  'special',
+]
+
+const passwordChecks: Record<PasswordRequirement, RegExp> = {
+  lowercase: /[a-z]/,
+  uppercase: /[A-Z]/,
+  number: /\d/,
+  special: /[^A-Za-z0-9]/,
+}
+
+const passwordLabelKeys: Record<PasswordRequirement, string> = {
+  lowercase: 'passwordLowercase',
+  uppercase: 'passwordUppercase',
+  number: 'passwordNumber',
+  special: 'passwordSpecial',
+}
+
+// `true` (or anything that is not a list) means the default requirements.
+const resolvePasswordRequirements = (config: unknown): PasswordRequirement[] =>
+  Array.isArray(config)
+    ? config.filter(
+        (requirement): requirement is PasswordRequirement => requirement in passwordChecks,
+      )
+    : DEFAULT_PASSWORD_REQUIREMENTS
 
 // Built-in validators
 const validators: Record<string, ValidatorFn> = {
@@ -140,11 +176,11 @@ const validators: Record<string, ValidatorFn> = {
   }),
   min: (value, min) => ({
     valid: isEmptyValue(value) || String(value).length >= (min as number),
-    message: getValidationMessage('min', min),
+    message: getValidationMessage('min', min as number),
   }),
   max: (value, max) => ({
     valid: isEmptyValue(value) || String(value).length <= (max as number),
-    message: getValidationMessage('max', max),
+    message: getValidationMessage('max', max as number),
   }),
   pattern: (value, pattern) => ({
     valid: !value || new RegExp(pattern as string).test(value as string),
@@ -152,11 +188,11 @@ const validators: Record<string, ValidatorFn> = {
   }),
   minValue: (value, min) => ({
     valid: isEmptyValue(value) || Number(value) >= (min as number),
-    message: getValidationMessage('minValue', min),
+    message: getValidationMessage('minValue', min as number),
   }),
   maxValue: (value, max) => ({
     valid: isEmptyValue(value) || Number(value) <= (max as number),
-    message: getValidationMessage('maxValue', max),
+    message: getValidationMessage('maxValue', max as number),
   }),
   hexColor: (value) => ({
     valid: !value || /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(value as string),
@@ -178,6 +214,20 @@ const validators: Record<string, ValidatorFn> = {
     valid: !value || /^hsl\(\s*(\d{1,3})\s*,\s*(\d{1,3})%\s*,\s*(\d{1,3})%\s*\)$/.test(value as string),
     message: getValidationMessage('hslColor'),
   }),
+  passwordStrength: (value, requirements) => {
+    const missing = resolvePasswordRequirements(requirements).filter(
+      (requirement) => !passwordChecks[requirement].test(String(value)),
+    )
+    return {
+      valid: isEmptyValue(value) || !missing.length,
+      message: getValidationMessage(
+        'passwordStrength',
+        missing
+          .map((requirement) => getValidationMessage(passwordLabelKeys[requirement]))
+          .join(', '),
+      ),
+    }
+  },
 }
 
 // Validation logic
@@ -208,7 +258,7 @@ const validate = (value: string | number): boolean => {
         const validator = validators[validatorName]
         if (!validator) continue
 
-        const result = validator(value, config as string | number)
+        const result = validator(value, config as ValidatorParam)
         if (!result.valid) {
           error.value = (rule.message as string) || result.message
           return false
@@ -590,6 +640,54 @@ const isRequired = computed(() => {
   })
 })
 
+// Requirements shown by the indicator: the explicit prop, else the list given to the
+// `passwordStrength` rule (so rule and indicator needn't be declared twice), else the defaults.
+const activePasswordRequirements = computed<PasswordRequirement[]>(() => {
+  if (props.passwordRequirements) return resolvePasswordRequirements(props.passwordRequirements)
+
+  for (const rule of props.rules) {
+    if (typeof rule !== 'object') continue
+    const config = (rule as Record<string, unknown>).passwordStrength
+    if (Array.isArray(config)) return resolvePasswordRequirements(config)
+  }
+
+  return DEFAULT_PASSWORD_REQUIREMENTS
+})
+
+const passwordItems = computed(() => {
+  const value = String(props.modelValue ?? '')
+  return activePasswordRequirements.value.map((key) => ({
+    key,
+    label: getValidationMessage(passwordLabelKeys[key]),
+    met: passwordChecks[key].test(value),
+  }))
+})
+
+const showPasswordStrength = computed(
+  () => props.passwordStrength && props.type === 'password' && passwordItems.value.length > 0,
+)
+
+const passwordMetCount = computed(() => passwordItems.value.filter((item) => item.met).length)
+
+const passwordLevel = computed<'weak' | 'medium' | 'strong'>(() => {
+  const ratio = passwordMetCount.value / passwordItems.value.length
+  if (ratio >= 1) return 'strong'
+  if (ratio >= 0.5) return 'medium'
+  return 'weak'
+})
+
+const passwordLevelLabel = computed(() =>
+  getValidationMessage(
+    `passwordStrength${passwordLevel.value[0].toUpperCase()}${passwordLevel.value.slice(1)}`,
+  ),
+)
+
+const passwordStrengthPercent = computed(() =>
+  passwordItems.value.length
+    ? Math.round((passwordMetCount.value / passwordItems.value.length) * 100)
+    : 0,
+)
+
 const maxLength = computed<number | undefined>(() => {
   if (!props.mask) return undefined
 
@@ -741,6 +839,57 @@ defineExpose({ focus, validate: validateField })
     </div>
 
     <div
+      v-if="showPasswordStrength"
+      class="base-input__strength"
+      :class="`base-input__strength--${passwordLevel}`"
+    >
+      <div class="base-input__strength-header">
+        <div
+          class="base-input__strength-track"
+          role="progressbar"
+          aria-valuemin="0"
+          :aria-valuemax="passwordItems.length"
+          :aria-valuenow="passwordMetCount"
+          :aria-valuetext="modelValue !== '' ? passwordLevelLabel : undefined"
+        >
+          <div
+            class="base-input__strength-bar"
+            :style="{ width: `${passwordStrengthPercent}%` }"
+          ></div>
+        </div>
+        <span class="base-input__strength-label" aria-live="polite">
+          {{ modelValue !== '' ? passwordLevelLabel : '' }}
+        </span>
+      </div>
+
+      <ul class="base-input__requirements">
+        <li
+          v-for="item in passwordItems"
+          :key="item.key"
+          class="base-input__requirement"
+          :class="{ 'base-input__requirement--met': item.met }"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <polyline v-if="item.met" points="20 6 9 17 4 12" />
+            <circle v-else cx="12" cy="12" r="9" />
+          </svg>
+          <span>{{ item.label }}</span>
+        </li>
+      </ul>
+    </div>
+
+    <div
       v-if="displayMessage"
       class="base-input__helper"
       :class="{ 'base-input__helper--error': error }"
@@ -844,6 +993,78 @@ defineExpose({ focus, validate: validateField })
 
     svg {
       display: block;
+    }
+  }
+
+  // Password strength indicator
+  &__strength {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    font-size: var(--vsui-input-helper-font-size);
+    --base-input-strength-color: var(--vsui-input-strength-weak-color, #ef4444);
+
+    &--medium {
+      --base-input-strength-color: var(--vsui-input-strength-medium-color, #f59e0b);
+    }
+
+    &--strong {
+      --base-input-strength-color: var(--vsui-input-strength-strong-color, #22c55e);
+    }
+  }
+
+  &__strength-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  &__strength-track {
+    flex: 1;
+    height: 0.25rem;
+    border-radius: 9999px;
+    overflow: hidden;
+    background-color: var(--vsui-input-strength-track-bg, #e5e7eb);
+  }
+
+  &__strength-bar {
+    height: 100%;
+    border-radius: inherit;
+    background-color: var(--base-input-strength-color);
+    transition:
+      width 0.2s,
+      background-color 0.2s;
+  }
+
+  &__strength-label {
+    min-width: 3.5rem;
+    text-align: right;
+    font-weight: 500;
+    color: var(--base-input-strength-color);
+  }
+
+  &__requirements {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.75rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__requirement {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: var(--vsui-input-helper-color, #6b7280);
+    transition: color 0.2s;
+
+    svg {
+      flex-shrink: 0;
+    }
+
+    &--met {
+      color: var(--vsui-input-strength-requirement-met-color, #22c55e);
     }
   }
 

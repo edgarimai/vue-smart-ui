@@ -76,6 +76,7 @@ resetValidationMessages()
 | `rgbColor` | Valid RGB color | `:rules="['rgbColor']"` |
 | `rgbaColor` | Valid RGBA color | `:rules="['rgbaColor']"` |
 | `hslColor` | Valid HSL color | `:rules="['hslColor']"` |
+| `passwordStrength` | Password with lowercase, uppercase, number and special character | `:rules="['passwordStrength']"` |
 
 ### Validators with Parameters (Object)
 
@@ -85,6 +86,45 @@ resetValidationMessages()
 | `max` | number | Maximum characters | `:rules="[{ max: 50 }]"` |
 | `minValue` | number | Minimum numeric value | `:rules="[{ minValue: 18 }]"` |
 | `maxValue` | number | Maximum numeric value | `:rules="[{ maxValue: 100 }]"` |
+| `passwordStrength` | `('lowercase' \| 'uppercase' \| 'number' \| 'special')[]` | Required character types (`true` = all four, `false` = off) | `:rules="[{ passwordStrength: ['number', 'special'] }]"` |
+
+### Password Strength
+
+The `passwordStrength` rule makes the requirements mandatory: the field is invalid until every
+one is met (an empty value passes, so combine it with `required`). The error lists what is
+missing, e.g. `Must contain: uppercase letter, number`.
+
+The `password-strength` prop on `type="password"` adds a visual indicator (strength bar plus a
+checklist). It is purely visual and never blocks on its own.
+
+```vue
+<BaseInput
+  v-model="password"
+  type="password"
+  label="Password"
+  password-strength
+  :rules="['required', { min: 8 }, { passwordStrength: ['lowercase', 'number'] }]"
+/>
+```
+
+The indicator shows the requirements from the `passwordStrength` rule. To show a different list
+than the rule enforces, pass `:password-requirements="['number', 'special']"`, which takes
+precedence. Without either, all four are shown.
+
+Labels and the error message can be translated with `setValidationMessages`:
+
+```javascript
+setValidationMessages({
+  passwordStrength: (missing) => `Faltando: ${missing}`,
+  passwordLowercase: 'letra minúscula',
+  passwordUppercase: 'letra maiúscula',
+  passwordNumber: 'número',
+  passwordSpecial: 'caractere especial',
+  passwordStrengthWeak: 'Fraca',
+  passwordStrengthMedium: 'Média',
+  passwordStrengthStrong: 'Forte',
+})
+```
 
 ## Validation Behavior
 

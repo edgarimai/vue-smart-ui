@@ -11,6 +11,7 @@ import {
   BaseInput as BaseInputComponent,
   BaseCheckbox,
   BaseTextarea,
+  BaseRichTextEditor,
   BaseSlider,
   BaseSegmentedButtons,
   BaseColorPicker,
@@ -140,6 +141,13 @@ interface PageState {
     content4: string
     content5: string
   }
+  richText: {
+    content: string
+    description: string
+    shortNote: string
+    filled: string
+    readonly: string
+  }
   checkbox: {
     checked: boolean
     selectedFruits: string[]
@@ -242,6 +250,13 @@ const pageState = reactive<PageState>({
     content3: '',
     content4: '',
     content5: '',
+  },
+  richText: {
+    content: '<h2>Release notes</h2><p>Write <strong>anything</strong> here.</p>',
+    description: '',
+    shortNote: '',
+    filled: '',
+    readonly: '<p>This content is <em>read-only</em>.</p>',
   },
   checkbox: {
     checked: false,
@@ -1176,6 +1191,67 @@ onMounted(() => {
           label="Resizable"
           resize="both"
           :rows="4"
+        />
+      </div>
+    </div>
+
+    <hr />
+
+    <div class="rich-text-editor-container">
+      <h2>Rich Text Editor</h2>
+
+      <div style="padding-inline: 20px">
+        <BaseRichTextEditor
+          v-model="pageState.richText.content"
+          label="Full toolbar"
+          helper-text="v-model holds HTML. Treat it as untrusted when rendering it."
+          placeholder="Start writing..."
+          block
+        />
+        <!-- The emitted HTML is shown as text, never rendered -->
+        <pre style="white-space: pre-wrap; font-size: 0.75rem">{{
+          pageState.richText.content || '(empty)'
+        }}</pre>
+
+        <BaseRichTextEditor
+          v-model="pageState.richText.description"
+          label="With validation (rules count the visible text)"
+          :rules="['required', { min: 20, message: 'Write at least 20 characters' }]"
+          validate-on-input
+          placeholder="Describe the change..."
+          block
+        />
+        <BaseRichTextEditor
+          v-model="pageState.richText.shortNote"
+          label="Reduced toolbar with custom colors"
+          :toolbar="[
+            'bold',
+            'italic',
+            'underline',
+            'color',
+            'separator',
+            'bulletList',
+            'orderedList',
+            'link',
+          ]"
+          :colors="['#111827', '#dc2626', '#ea580c', '#ca8a04', '#16a34a', '#2563eb']"
+          :min-height="96"
+          variant="outlined"
+          block
+        />
+        <BaseRichTextEditor
+          v-model="pageState.richText.filled"
+          label="Filled variant"
+          variant="filled"
+          placeholder="Add your notes here"
+          block
+        />
+        <BaseRichTextEditor
+          v-model="pageState.richText.readonly"
+          label="Read-only"
+          readonly
+          :min-height="64"
+          block
         />
       </div>
     </div>

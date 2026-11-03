@@ -1171,6 +1171,38 @@ defineExpose({ focus, validate: validateField })
       margin-bottom: 0;
     }
 
+    // Inline formatting is declared here, not left to browser defaults: app resets such as
+    // `* { font-weight: normal }` (the create-vue base.css) would otherwise erase bold.
+    b,
+    strong {
+      font-weight: 700;
+    }
+
+    i,
+    em {
+      font-style: italic;
+    }
+
+    u {
+      text-decoration: underline;
+    }
+
+    s,
+    strike,
+    del {
+      text-decoration: line-through;
+    }
+
+    sub {
+      vertical-align: sub;
+      font-size: 0.8em;
+    }
+
+    sup {
+      vertical-align: super;
+      font-size: 0.8em;
+    }
+
     h1 {
       font-size: 1.75em;
       font-weight: 700;

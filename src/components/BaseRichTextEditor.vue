@@ -75,6 +75,7 @@ export interface RichTextEditorLabels {
   orderedList: string
   link: string
   linkUrl: string
+  openLink: string
   applyLink: string
   removeLink: string
   textType: string
@@ -208,6 +209,7 @@ const DEFAULT_LABELS: RichTextEditorLabels = {
   orderedList: 'Numbered list',
   link: 'Link',
   linkUrl: 'Link URL',
+  openLink: 'Open',
   applyLink: 'Apply',
   removeLink: 'Remove link',
   textType: 'Text type',
@@ -280,6 +282,7 @@ const toolbarEntries = computed(() =>
 
 const editorRef = ref<HTMLDivElement | null>(null)
 const rootRef = ref<HTMLDivElement | null>(null)
+const wrapperRef = ref<HTMLDivElement | null>(null)
 const isFocused = ref(false)
 const isEmpty = ref(true)
 const error = ref('')
@@ -302,6 +305,11 @@ const currentColor = ref('')
 const openMenu = ref<string | null>(null)
 const linkUrl = ref('')
 const hasLink = ref(false)
+
+// Notice shown under a link while the caret is inside it, with the address and an "Open" button
+// (a plain click only places the caret, so this is the discoverable way to follow the link).
+const linkHint = ref<{ url: string; top: number; left: number } | null>(null)
+const LINK_HINT_WIDTH = 240
 
 const classes = computed(() => ({
   'vsui base-rich-text-editor': true,
@@ -447,15 +455,44 @@ const refreshToolbarState = () => {
   currentColor.value = queryEditorValue('foreColor')
 }
 
+const updateLinkHint = (range: Range | null) => {
+  const el = editorRef.value
+  const wrapper = wrapperRef.value
+  const anchor = editable.value && el && range ? findAncestorTag(range.startContainer, el, 'a') : null
+  const url = anchor ? sanitizeUrl(anchor.getAttribute('href') ?? '') : ''
+
+  if (!anchor || !wrapper || !url) {
+    linkHint.value = null
+    return
+  }
+
+  // A link wrapped over several lines has one rect per line; the notice goes under the last.
+  const rects = anchor.getClientRects()
+  const rect = rects[rects.length - 1] ?? anchor.getBoundingClientRect()
+  const box = wrapper.getBoundingClientRect()
+  const maxLeft = Math.max(0, box.width - LINK_HINT_WIDTH)
+
+  linkHint.value = {
+    url,
+    top: rect.bottom - box.top + 4,
+    left: Math.min(Math.max(0, rect.left - box.left), maxLeft),
+  }
+}
+
 const handleSelectionChange = () => {
   const el = editorRef.value
   if (!el) return
 
   const range = getSelectionRangeWithin(el)
+  updateLinkHint(range)
   if (!range) return
 
   savedRange = range
   refreshToolbarState()
+}
+
+const openHintLink = () => {
+  if (linkHint.value) window.open(linkHint.value.url, '_blank', 'noopener,noreferrer')
 }
 
 // Runs an editing command on the saved selection, even when a popup had taken the focus.
@@ -541,6 +578,20 @@ const handlePaste = (event: ClipboardEvent) => {
   commit()
 }
 
+// A `contenteditable` never follows links, so the editor opens them itself: Ctrl/Cmd+click while
+// editing (a plain click places the caret) and a plain click when read-only.
+const handleClick = (event: MouseEvent) => {
+  const el = editorRef.value
+  const anchor = (event.target as HTMLElement | null)?.closest?.('a')
+  if (!el || !anchor || !el.contains(anchor) || props.disabled) return
+
+  if (editable.value && !(event.ctrlKey || event.metaKey)) return
+
+  event.preventDefault()
+  const url = sanitizeUrl(anchor.getAttribute('href') ?? '')
+  if (url) window.open(url, '_blank', 'noopener,noreferrer')
+}
+
 const handleInput = (event: Event) => commit(event)
 
 const handleFocus = (event: FocusEvent) => {
@@ -556,6 +607,7 @@ const handleBlur = (event: FocusEvent) => {
   if (next && (rootRef.value?.contains(next) || next.closest?.('[data-vsui-floating]'))) return
 
   isFocused.value = false
+  linkHint.value = null
   emit('blur', event)
 
   if (props.validateOnBlur) {
@@ -598,6 +650,10 @@ const fontLabel = computed(
 
 const colorInputValue = computed(() => toHexColor(currentColor.value))
 
+watch(editable, (value) => {
+  if (!value) linkHint.value = null
+})
+
 // A programmatic change (async load, form reset) does not fire `input`, so follow the model.
 // An echo of what we just emitted is skipped: rewriting the DOM would drop the caret and undo stack.
 watch(
@@ -633,6 +689,7 @@ defineExpose({ focus, validate: validateField })
     </label>
 
     <div
+      ref="wrapperRef"
       class="base-rich-text-editor__wrapper"
       :class="{ 'base-rich-text-editor__wrapper--transparent': transparentBg }"
     >
@@ -873,9 +930,32 @@ defineExpose({ focus, validate: validateField })
         @input="handleInput"
         @focus="handleFocus"
         @blur="handleBlur"
+        @click="handleClick"
+        @scroll="handleSelectionChange"
         @paste="handlePaste"
         @drop.prevent
       />
+
+      <!-- mousedown is cancelled so using the notice does not take the focus out of the editor -->
+      <div
+        v-if="linkHint"
+        class="base-rich-text-editor__link-hint"
+        role="group"
+        :aria-label="text.link"
+        :style="{ top: `${linkHint.top}px`, left: `${linkHint.left}px` }"
+        @mousedown.prevent
+      >
+        <span class="base-rich-text-editor__link-hint-url" :title="linkHint.url">{{
+          linkHint.url
+        }}</span>
+        <button
+          type="button"
+          class="base-rich-text-editor__link-btn base-rich-text-editor__link-btn--primary"
+          @click="openHintLink"
+        >
+          {{ text.openLink }}
+        </button>
+      </div>
     </div>
 
     <input v-if="name" type="hidden" :name="name" :value="modelValue" />
@@ -1243,6 +1323,35 @@ defineExpose({ focus, validate: validateField })
       color: var(--vsui-rte-link-color, #2563eb);
       text-decoration: underline;
     }
+  }
+
+  &--readonly &__content a {
+    cursor: pointer;
+  }
+
+  &__link-hint {
+    position: absolute;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    max-width: 15rem;
+    padding: 0.25rem 0.25rem 0.25rem 0.625rem;
+    border: 1px solid var(--vsui-rte-border-color, #d1d5db);
+    border-radius: 0.375rem;
+    background-color: var(--vsui-rte-bg, white);
+    color: var(--vsui-rte-text-color, #111827);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+    font-size: 0.8125rem;
+    box-sizing: border-box;
+  }
+
+  &__link-hint-url {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   &__helper {

@@ -488,6 +488,168 @@ describe('BaseRichTextEditor content and v-model', () => {
   })
 })
 
+describe('BaseRichTextEditor links', () => {
+  const withLink = (props: EditorProps = {}, href = 'https://example.com') =>
+    mountEditor({ modelValue: `<p><a href="${href}">site</a></p>`, ...props })
+
+  // A browser never navigates from inside a contenteditable, but jsdom would try to.
+  const cancelNavigation = (event: Event) => event.preventDefault()
+  beforeEach(() => document.addEventListener('click', cancelNavigation))
+  afterEach(() => document.removeEventListener('click', cancelNavigation))
+
+  it('does not follow a link on a plain click while editing, so the caret can be placed', async () => {
+    const open = vi.spyOn(window, 'open').mockReturnValue(null)
+    const wrapper = withLink()
+
+    await wrapper.get('a').trigger('click')
+
+    expect(open).not.toHaveBeenCalled()
+  })
+
+  it.each([
+    ['ctrlKey', { ctrlKey: true }],
+    ['metaKey', { metaKey: true }],
+  ])('opens the link in a new tab on %s+click while editing', async (_name, modifier) => {
+    const open = vi.spyOn(window, 'open').mockReturnValue(null)
+    const wrapper = withLink()
+
+    await wrapper.get('a').trigger('click', modifier)
+
+    expect(open).toHaveBeenCalledWith('https://example.com', '_blank', 'noopener,noreferrer')
+  })
+
+  it('opens the link on a plain click when read-only', async () => {
+    const open = vi.spyOn(window, 'open').mockReturnValue(null)
+    const wrapper = withLink({ readonly: true })
+
+    await wrapper.get('a').trigger('click')
+
+    expect(open).toHaveBeenCalledWith('https://example.com', '_blank', 'noopener,noreferrer')
+  })
+
+  it('never opens a link when disabled', async () => {
+    const open = vi.spyOn(window, 'open').mockReturnValue(null)
+    const wrapper = withLink({ disabled: true })
+
+    await wrapper.get('a').trigger('click', { ctrlKey: true })
+
+    expect(open).not.toHaveBeenCalled()
+  })
+
+  it('does not open anything for a click outside a link', async () => {
+    const open = vi.spyOn(window, 'open').mockReturnValue(null)
+    const wrapper = withLink({ readonly: true })
+
+    await wrapper.get('p').trigger('click', { ctrlKey: true })
+
+    expect(open).not.toHaveBeenCalled()
+  })
+
+  it('refuses an unsafe href even if one reaches the DOM', async () => {
+    const open = vi.spyOn(window, 'open').mockReturnValue(null)
+    const wrapper = withLink({ readonly: true })
+    // Bypasses the sanitizer on purpose: the click handler must not trust the DOM either.
+    wrapper.get('a').element.setAttribute('href', 'javascript:alert(1)')
+
+    await wrapper.get('a').trigger('click')
+
+    expect(open).not.toHaveBeenCalled()
+  })
+
+  describe('notice', () => {
+    const placeCaret = async (node: Node, offset = 1) => {
+      const range = document.createRange()
+      range.setStart(node, offset)
+      range.collapse(true)
+      window.getSelection()?.removeAllRanges()
+      window.getSelection()?.addRange(range)
+      document.dispatchEvent(new Event('selectionchange'))
+      await nextTick()
+    }
+
+    const caretInLink = (wrapper: EditorWrapper) => placeCaret(wrapper.get('a').element.firstChild!)
+
+    const hint = (wrapper: EditorWrapper) => wrapper.find('.base-rich-text-editor__link-hint')
+
+    it('shows the address and an Open button while the caret is inside a link', async () => {
+      const wrapper = withLink()
+
+      await caretInLink(wrapper)
+
+      expect(hint(wrapper).exists()).toBe(true)
+      expect(hint(wrapper).text()).toContain('https://example.com')
+      expect(hint(wrapper).get('button').text()).toBe('Open')
+    })
+
+    it('opens the link in a new tab from the Open button', async () => {
+      const open = vi.spyOn(window, 'open').mockReturnValue(null)
+      const wrapper = withLink()
+      await caretInLink(wrapper)
+
+      await hint(wrapper).get('button').trigger('click')
+
+      expect(open).toHaveBeenCalledWith('https://example.com', '_blank', 'noopener,noreferrer')
+    })
+
+    it('is not shown while the caret is outside any link, and goes away when it leaves', async () => {
+      const wrapper = withLink({ modelValue: '<p>before <a href="https://example.com">site</a></p>' })
+
+      await placeCaret(content(wrapper).querySelector('p')!.firstChild!, 2)
+      expect(hint(wrapper).exists()).toBe(false)
+
+      await caretInLink(wrapper)
+      expect(hint(wrapper).exists()).toBe(true)
+
+      await placeCaret(content(wrapper).querySelector('p')!.firstChild!, 2)
+      expect(hint(wrapper).exists()).toBe(false)
+    })
+
+    it('is not shown when read-only (a plain click already opens the link)', async () => {
+      const wrapper = withLink({ readonly: true })
+
+      await caretInLink(wrapper)
+
+      expect(hint(wrapper).exists()).toBe(false)
+    })
+
+    it('is hidden when the editor loses focus', async () => {
+      const wrapper = withLink()
+      await caretInLink(wrapper)
+
+      await blur(wrapper)
+
+      expect(hint(wrapper).exists()).toBe(false)
+    })
+
+    it('does not show an unsafe address', async () => {
+      const wrapper = withLink()
+      wrapper.get('a').element.setAttribute('href', 'javascript:alert(1)')
+
+      await caretInLink(wrapper)
+
+      expect(hint(wrapper).exists()).toBe(false)
+    })
+
+    it('keeps the editor focused when the notice is pressed', async () => {
+      const wrapper = withLink()
+      await caretInLink(wrapper)
+      const event = new MouseEvent('mousedown', { bubbles: true, cancelable: true })
+
+      hint(wrapper).element.dispatchEvent(event)
+
+      expect(event.defaultPrevented).toBe(true)
+    })
+
+    it('lets the Open label be translated', async () => {
+      const wrapper = withLink({ labels: { openLink: 'Abrir' } })
+
+      await caretInLink(wrapper)
+
+      expect(hint(wrapper).get('button').text()).toBe('Abrir')
+    })
+  })
+})
+
 describe('BaseRichTextEditor paste and drop', () => {
   it('inserts pasted HTML after sanitizing it', () => {
     const wrapper = mountEditor()
